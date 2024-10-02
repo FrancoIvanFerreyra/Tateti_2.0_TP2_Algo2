@@ -23,27 +23,27 @@ public class ValidacionesUtiles {
         return lista.contains(objeto);
     }
 
-    public boolean esMayorQue(int numero, int minimo)
+    public static boolean esMayorQue(int numero, int minimo)
     {
         return numero > minimo;
     }
-    public boolean esMayorOIgualQue(int numero, int minimo)
+    public static boolean esMayorOIgualQue(int numero, int minimo)
     {
         return numero >= minimo;
     }
-    public boolean esMenorQue(int numero, int maximo)
+    public static boolean esMenorQue(int numero, int maximo)
     {
         return numero < maximo;
     }
-    public boolean esMenorOIgualQue(int numero, int maximo)
+    public static boolean esMenorOIgualQue(int numero, int maximo)
     {
         return numero <= maximo;
     }
-    public boolean estaEntre(int numero, int minimo, int maximo)
+    public static boolean estaEntre(int numero, int minimo, int maximo)
     {
         return numero >= minimo && numero <= maximo;
     }
-    public boolean estaEstrictamenteEntre(int numero, int minimo, int maximo)
+    public static boolean estaEstrictamenteEntre(int numero, int minimo, int maximo)
     {
         return numero > minimo && numero < maximo;
     }
