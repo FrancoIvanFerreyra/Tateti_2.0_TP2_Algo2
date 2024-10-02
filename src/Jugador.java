@@ -56,4 +56,44 @@ public class Jugador {
     {
         return this.turnosAPerder > 0;
     }
+    
+    public void agregarCarta(Carta carta) throws Exception
+    {
+        if(carta == null)
+        {
+            throw new Exception("La carta no puede ser nula");
+        }
+        this.cartas.add(carta);
+    }
+
+    public void quitarCarta(Carta carta) throws Exception
+    {
+        if(carta == null)
+        {
+            throw new Exception("La carta no puede ser nula");
+        }
+        if(obtenerCantidadCartas() == 0)
+        {
+            throw new Exception("El jugador no tiene cartas");
+        }
+        if(!ValidacionesUtiles.estaEnLaLista(carta, obtenerCartas()))
+        {
+            throw new Exception("El jugador no tiene esa carta");
+        }
+        this.cartas.remove(carta);
+    }
+
+    public void asignarCartaActiva(Carta carta) throws Exception
+    {
+        if(carta == null)
+        {
+            throw new Exception("La carta no puede ser nula");
+        }
+        this.cartaActiva = carta;
+    }
+
+    public void limpiarCartaActiva()
+    {
+        this.cartaActiva = null;
+    }
 }
