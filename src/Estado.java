@@ -1,4 +1,4 @@
-public enum EstadoCelda {
+public enum Estado {
     NORMAL,
-    ANULADA
+    BLOQUEADO
 }
