@@ -10,6 +10,14 @@ public class Ficha {
             throw new Exception("El jugador no puede ser nulo");
         }
         this.jugador = jugador;
-        this.estado = Estado.NORMAL;
+        this.estado = new Estado();
+    }
+
+    public Jugador obtenerJugador(){
+        return this.jugador;
+    }
+
+    public Estado obtenerEstado(){
+        return this.estado;
     }
 }
