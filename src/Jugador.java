@@ -1,4 +1,6 @@
 
+import java.lang.classfile.attribute.StackMapFrameInfo;
+import java.lang.reflect.GenericSignatureFormatError;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,9 +54,9 @@ public class Jugador {
         return this.estado;
     }
 
-    public boolean tieneTurnosAPerder()
+    public int obtenerTurnosAPerder()
     {
-        return this.turnosAPerder > 0;
+        return this.turnosAPerder;
     }
     
     public void agregarCarta(Carta carta) throws Exception
@@ -95,5 +97,31 @@ public class Jugador {
     public void limpiarCartaActiva()
     {
         this.cartaActiva = null;
+    }
+
+    public void agregarTurnosAPerder(int cantidad) throws Exception
+    {
+        if(cantidad <= 0)
+        {
+            throw new Exception("La cantidad de turnos a perder debe ser mayor a 0");
+        }
+        if(ValidacionesUtiles.esMayorQue(obtenerTurnosAPerder() + cantidad, 3))
+        {
+            throw new Exception("El jugador " + obtenerNumero() + " no puede perder mas turnos. El maximo es 3");
+        }
+        this.turnosAPerder += cantidad;
+    }
+
+    public void quitarTurnosAPerder(int cantidad) throws Exception
+    {
+        if(cantidad <= 0)
+        {
+            throw new Exception("La cantidad de turnos a perder debe ser mayor a 0");
+        }
+        if(ValidacionesUtiles.esMenorQue(obtenerTurnosAPerder() - cantidad, 0))
+        {
+            throw new Exception("El jugador " + obtenerNumero() + " solo puede recuperar hasta " + obtenerTurnosAPerder() + "turnos");
+        }
+        this.turnosAPerder -= cantidad;
     }
 }
