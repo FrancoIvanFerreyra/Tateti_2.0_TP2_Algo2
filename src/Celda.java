@@ -12,11 +12,31 @@ public class Celda {
         }
         this.posicion = new int[]{posX, posY, posZ};
         this.ficha = null;
-        this.estado = Estado.NORMAL;
+        this.estado = new Estado();
     }
 
     public Celda(int posX, int posY) throws Exception
     {
         this(posX, posY, 0);
+    }
+
+    public int[] obtenerPosicionEnElTablero()
+    {
+        int[] coordenadas = new int[3];
+        for(int i = 0; i < this.posicion.length; i++)
+        {
+            coordenadas[i] = this.posicion[i];
+        }
+        return coordenadas;
+    }
+
+    public Ficha obtenerFicha()
+    {
+        return this.ficha;
+    }
+
+    public Estado obtenerEstado()
+    {
+        return this.estado;
     }
 }
