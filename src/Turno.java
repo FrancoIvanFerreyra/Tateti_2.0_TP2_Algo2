@@ -5,10 +5,10 @@ public class Turno {
     public static int numeroDeTurnoActual = 1;
 
     private int numero;
-    private Celda[] celdasModificadas;
+    private Vector<Celda> celdasModificadas;
     private Carta cartaUtilizada;
     private Jugador jugadorAsignado;
-    private Jugador[] jugadoresAfectados;
+    private Vector<Jugador> jugadoresAfectados;
 
     public Turno(Jugador jugadorAsignado, List<Celda> celdasModificadas, Carta cartaUtilizada, List<Jugador> jugadoresAfectados) throws Exception
     {
@@ -34,9 +34,9 @@ public class Turno {
         this.numero = numeroDeTurnoActual;
         numeroDeTurnoActual++;
         this.jugadorAsignado = jugadorAsignado;
-        this.celdasModificadas = (Celda[])celdasModificadas.toArray();
+        this.celdasModificadas = new Vector<>(celdasModificadas);
         this.cartaUtilizada = cartaUtilizada;
-        this.jugadoresAfectados = (Jugador[])jugadoresAfectados.toArray();
+        this.jugadoresAfectados = new Vector<>(jugadoresAfectados);
     }
     
     public int obtenerNumero()
@@ -45,17 +45,12 @@ public class Turno {
     }
     public Celda[] obtenerCeldasModificadas()
     {
-        Celda[] celdas = new Celda[this.celdasModificadas.length];
-        for(int i = 0; i < this.celdasModificadas.length; i++)
-        {
-            celdas[i] = this.celdasModificadas[i];
-        }
-        return celdas;
+        return this.celdasModificadas.obtenerElementos();
     }
 
     public boolean existenCeldasModificadas()
     {
-        return ValidacionesUtiles.esMayorQue(this.celdasModificadas.length, 0);
+        return ValidacionesUtiles.esMayorQue(this.celdasModificadas.obtenerElementos().length, 0);
     }
 
     public Carta obtenerCartaUtilizada()
@@ -68,11 +63,6 @@ public class Turno {
     }
     public Jugador[] obtenerJugadoresAfectados()
     {
-        Jugador[] jugadores = new Jugador[this.jugadoresAfectados.length];
-        for(int i = 0; i < this.celdasModificadas.length; i++)
-        {
-            jugadores[i] = this.jugadoresAfectados[i];
-        }
-        return jugadores;
+        return this.jugadoresAfectados.obtenerElementos();
     }
 }
