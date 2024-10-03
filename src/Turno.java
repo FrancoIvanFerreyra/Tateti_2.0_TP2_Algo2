@@ -38,4 +38,41 @@ public class Turno {
         this.cartaUtilizada = cartaUtilizada;
         this.jugadoresAfectados = (Jugador[])jugadoresAfectados.toArray();
     }
+    
+    public int obtenerNumero()
+    {
+        return this.numero;
+    }
+    public Celda[] obtenerCeldasModificadas()
+    {
+        Celda[] celdas = new Celda[this.celdasModificadas.length];
+        for(int i = 0; i < this.celdasModificadas.length; i++)
+        {
+            celdas[i] = this.celdasModificadas[i];
+        }
+        return celdas;
+    }
+
+    public boolean existenCeldasModificadas()
+    {
+        return ValidacionesUtiles.esMayorQue(this.celdasModificadas.length, 0);
+    }
+
+    public Carta obtenerCartaUtilizada()
+    {
+        return this.cartaUtilizada;
+    }
+    public Jugador obtenerJugadorAsignado()
+    {
+        return this.jugadorAsignado;
+    }
+    public Jugador[] obtenerJugadoresAfectados()
+    {
+        Jugador[] jugadores = new Jugador[this.jugadoresAfectados.length];
+        for(int i = 0; i < this.celdasModificadas.length; i++)
+        {
+            jugadores[i] = this.jugadoresAfectados[i];
+        }
+        return jugadores;
+    }
 }
