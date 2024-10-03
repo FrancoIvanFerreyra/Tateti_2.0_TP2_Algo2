@@ -1,35 +1,41 @@
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Turno {
     public static int numeroDeTurnoActual = 1;
 
     private int numero;
-    private List<Celda> celdasModificadas;
+    private Celda[] celdasModificadas;
     private Carta cartaUtilizada;
-    private Jugador jugadorAsignado, jugadorAfectado;
+    private Jugador jugadorAsignado;
+    private Jugador[] jugadoresAfectados;
 
-    public Turno(Jugador jugadorAsignado, Carta cartaUtilizada, Jugador jugadorAfectado) throws Exception
+    public Turno(Jugador jugadorAsignado, List<Celda> celdasModificadas, Carta cartaUtilizada, List<Jugador> jugadoresAfectados) throws Exception
     {
         if(jugadorAsignado == null)
         {
             throw new Exception("El jugador no puede ser nulo");
         }
-        if(cartaUtilizada != null && jugadorAfectado == null)
+        if(celdasModificadas == null)
         {
-            throw new Exception("El jugador afectado por la carta no puede ser nulo");
+            throw new Exception("La lista de celdas modificadas no puede ser nula");
         }
-        this.jugadorAsignado = jugadorAsignado;
+
+        if(jugadoresAfectados == null)
+        {
+            throw new Exception("La lista de jugadores afectados no puede ser nula");
+        }
+
+        if(cartaUtilizada == null
+            && !jugadoresAfectados.isEmpty())
+        {
+            throw new Exception("No se pueden afectar a jugadores sin una carta");
+        }
         this.numero = numeroDeTurnoActual;
         numeroDeTurnoActual++;
-        this.celdasModificadas = new ArrayList<Celda>();
+        this.jugadorAsignado = jugadorAsignado;
+        this.celdasModificadas = (Celda[])celdasModificadas.toArray();
         this.cartaUtilizada = cartaUtilizada;
-        this.jugadorAfectado = jugadorAfectado;
-    }
-
-    public Turno(Jugador jugador) throws Exception
-    {
-        this(jugador, null, null);
+        this.jugadoresAfectados = (Jugador[])jugadoresAfectados.toArray();
     }
 }
