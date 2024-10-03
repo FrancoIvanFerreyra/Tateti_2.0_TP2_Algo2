@@ -39,4 +39,40 @@ public class Celda {
     {
         return this.estado;
     }
+
+    public boolean estaVacia()
+    {
+        return this.ficha == null;
+    }
+
+    public void AsignarFicha(Ficha ficha) throws Exception
+    {
+        if(ficha == null)
+        {
+            throw new Exception("La ficha a asignar no debe ser nula");
+        }
+        if(obtenerEstado().obtenerTipoEstado() == TipoEstado.BLOQUEADO)
+        {
+            throw new Exception("La celda esta bloqueada");
+        }
+        if(!estaVacia())
+        {
+            throw new Exception("Ya existe la ficha " + obtenerFicha() + "en la celda");
+        }
+        this.ficha = ficha;
+    }
+    public Ficha RemoverFicha() throws Exception
+    {
+        if(obtenerEstado().obtenerTipoEstado() == TipoEstado.BLOQUEADO)
+        {
+            throw new Exception("La celda esta bloqueada");
+        }
+        if(estaVacia())
+        {
+            throw new Exception("La celda no posee ninguna ficha");
+        }
+        Ficha ficha = obtenerFicha();
+        this.ficha = null;
+        return ficha;
+    }
 }
