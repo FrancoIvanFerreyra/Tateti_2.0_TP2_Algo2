@@ -61,10 +61,7 @@ public class Vector<T extends Object> {
          * post: remueve el valor en la posicion y deja el valor inicial
          */
         public void remover(int posicion) throws Exception {
-            if ((posicion < 1) ||
-                    (posicion > this.getLongitud())) {
-                throw new Exception("La " + posicion + " no esta en el rango 1 y " + this.getLongitud() + " inclusive");
-            }
+            validarPosicion(posicion);
             this.datos[posicion - 1] = this.datoInicial;
         }
     
