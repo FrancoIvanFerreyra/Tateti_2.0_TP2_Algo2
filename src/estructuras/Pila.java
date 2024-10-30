@@ -55,8 +55,10 @@ public class Pila<T> {
 			throw new Exception("La lista no puede ser null");
 		}
 		lista.iniciarCursor();
-		while (!lista.avanzarCursor()) {
+		int i = 0;
+		while (lista.avanzarCursor() && i < lista.getTamanio()) {
 			this.apilar(lista.obtenerCursor());
+			i++;
 		}
 	}
 
