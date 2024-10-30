@@ -4,11 +4,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import estructuras.Vector;
 
-public class PruebaDeVector extends Prueba{
+public class PruebaDeVector{
     
-    @Override
     @Test
-    public void iniciarPrueba() throws Exception {
+    public void pruebaDeVector() throws Exception {
         //Pruebo el constructor del vector con largo negativo
         Assertions.assertThrows(Exception.class, () -> {
             new Vector(-1, null);
