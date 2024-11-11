@@ -1,5 +1,7 @@
 package estructuras;
 
+import java.util.function.Predicate;
+
 public class Vector<T extends Object> {
     //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
     //ATRIBUTOS -----------------------------------------------------------------------------------------------
@@ -120,11 +122,52 @@ public class Vector<T extends Object> {
             }
             return (T[]) new Object[longitud];
         }
+
+        public Vector<T> filtrar(Predicate<T> condicion) throws Exception{
+		
+            if(condicion == null)
+            {
+                throw new Exception("Condicion no puede ser null");
+            }
+
+            Vector<T> elementosFiltrados = new Vector<T>(this.getLongitud(), null); 
+
+            for (int i = 1; i <= this.getLongitud(); i++)
+            {
+                T elemento = this.obtener(i);
+                try
+                {
+                    if(condicion.test(elemento))
+                    {
+                        elementosFiltrados.agregar(elemento);
+                    }
+                }
+                catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            return elementosFiltrados;
+	}
+
             
     //GETTERS SIMPLES -----------------------------------------------------------------------------------------
         
         public int getLongitud() {
             return this.datos.length;
+        }
+
+        public int contarElementos() throws Exception
+        {
+            int cantidadDeElementos = 0;
+            for(int i = 1; i < this.getLongitud(); i++)
+            {
+                if(this.obtener(i) != this.datoInicial)
+                {
+                    cantidadDeElementos++;
+                }
+            }
+            return cantidadDeElementos;
         }
         
     
