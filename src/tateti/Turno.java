@@ -8,7 +8,7 @@ public class Turno {
 	
 	private Jugador jugador = null;
 	private Ficha fichaUtilizada = null;
-	private Direccion direccionAplicada = null;
+	private Movimiento movimientoAplicado = null;
 	private Jugada jugadaEjecutada = null;
 
 	private int cantidadDeSubTurnos = 0;
@@ -66,7 +66,7 @@ public class Turno {
 	public void limpiar()
 	{
 		setFichaUtilizada(null);
-		setDireccionAplicada(null);
+		setMovimientoAplicado(null);
 		setJugadaEjecutada(null);
 	}
 	
@@ -93,9 +93,9 @@ public class Turno {
 		return this.fichaUtilizada;
 	}
 
-	public Direccion getDireccionAplicada()
+	public Movimiento getMovimientoAplicado()
 	{
-		return this.direccionAplicada;
+		return this.movimientoAplicado;
 	}
 
 	public Jugada getJugadaEjecutada()
@@ -111,9 +111,9 @@ public class Turno {
 		this.fichaUtilizada = ficha;
 	}
 
-	public void setDireccionAplicada(Direccion direccion)
+	public void setMovimientoAplicado(Movimiento movimiento)
 	{
-		this.direccionAplicada = direccion;
+		this.movimientoAplicado = movimiento;
 	}
 
 	public void setJugadaEjecutada(Jugada jugada)
