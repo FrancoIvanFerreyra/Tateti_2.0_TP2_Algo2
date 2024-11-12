@@ -72,6 +72,25 @@ public class Cola<T> {
 		}
 	}
 
+		/*
+	 * pre: el elemento no es vacio
+	 * post: agrega cada elemento no nulo del vector a la cola
+	 */
+	public void acolar(Vector<T> vector) throws Exception{
+		//validar
+		if(vector == null)
+		{
+			throw new Exception("El vector no puede ser null");
+		}
+		for(int i = 1; i <= vector.getLongitud(); i++)
+		{
+			if(vector.obtener(i) != null)
+			{
+				acolar(vector.obtener(i));
+			}
+		}
+	}
+
 	/*
 	 * pre :
 	 * post: devuelve el elemento en el frente de la cola quitandolo.
