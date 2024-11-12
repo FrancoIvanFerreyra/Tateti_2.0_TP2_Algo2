@@ -64,7 +64,7 @@ public abstract class Lista<T> {
 			throw new Exception("El vector no puede ser null");
 		}
 
-		for(int i = 1; i < vector.getLongitud(); i++)
+		for(int i = 1; i <= vector.getLongitud(); i++)
 		{
 			if(vector.obtener(i) != null)
 			{
