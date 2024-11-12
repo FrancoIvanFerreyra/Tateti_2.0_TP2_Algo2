@@ -31,7 +31,7 @@ public class Tateti {
 
 	public Tateti(int anchoTablero, int altoTablero, int cantidadJugadores,
 					 int cantidadDeFichasPorJugador) throws Exception {
-		this.tablero = new Tablero<Ficha>(3, 3);
+		this.tablero = new Tablero<Ficha>(anchoTablero, altoTablero);
 		this.jugadores = new Vector<Jugador>(cantidadJugadores, null);
 		for(int i = 1; i <= this.jugadores.getLongitud(); i++)
 		{
@@ -64,8 +64,8 @@ public class Tateti {
 			throw new Exception("El jugador no puede ser null");
 		}
 		boolean encontrado = false;
-		int i = 0;
-		while(!encontrado && i < turnos.getLongitud())
+		int i = 1;
+		while(!encontrado && i <= turnos.getLongitud())
 		{
 			Turno turno = turnos.obtener(i);
 			if(turno.getJugador() == jugador)
@@ -142,9 +142,9 @@ public class Tateti {
 			Consola.imprimirMensaje("Turno de jugar para " + turnoActual.getJugador().getNombre());
 			turnoActual.limpiar();
 			Casillero<Ficha> casilleroDestino = null;
-			turnoActual.iniciarTurno();
 
 			if (!turnoActual.estaBloqueado()) {
+				turnoActual.iniciarTurno();
 				while (turnoActual.haySubturnos()) {
 					turnoActual.utilizarSubturno();
 					if (!turnoActual.getJugador().tieneTodasLasFichasEnElTablero(this.tablero)) {
@@ -161,16 +161,18 @@ public class Tateti {
 						turnoActual.setJugadaEjecutada(jugada);
 					}				
 				}
+				Consola.imprimirMensaje("Finalizo tu turno!");
+				turnoActual.terminarTurno();
+				historialTurnos.apilar(turnoActual);
+				existeGanador = existeGanador(casilleroDestino);
 			}
 			else
 			{
 				Consola.imprimirMensaje("Estas bloqueado por este turno :(");
+				Consola.imprimirMensaje("Finalizo tu turno!");
+				turnoActual.terminarTurno();
 			}
-			Consola.imprimirMensaje("Finalizo tu turno!");
-			turnoActual.terminarTurno();
 			filaDeTurnos.acolar(turnoActual);
-			historialTurnos.apilar(turnoActual);
-			existeGanador = existeGanador(casilleroDestino);
 		}
 		if(turnoActual != null)
 		{
