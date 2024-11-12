@@ -52,6 +52,27 @@ public abstract class Lista<T> {
 	 */
 	public abstract void agregar(T elemento, int posicion) throws Exception;
 
+	/**
+	 * pre: -
+	 * pos: agrega cada elemento no nulo del vector al final de la Lista, en la posición:
+	 *       contarElementos() + 1.
+	 */
+	public void agregar(Vector<T> vector) throws Exception
+	{
+		if(vector == null)
+		{
+			throw new Exception("El vector no puede ser null");
+		}
+
+		for(int i = 1; i < vector.getLongitud(); i++)
+		{
+			if(vector.obtener(i) != null)
+			{
+				agregar(vector.obtener(i));
+			}
+		}
+	};
+
 	/*
 	 * pre : posición pertenece al intervalo: [1, contarElementos()]
 	 * post: remueve de la Lista el elemento en la posición indicada.
