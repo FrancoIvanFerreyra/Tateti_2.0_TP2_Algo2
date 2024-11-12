@@ -18,6 +18,13 @@ public class Jugador {
 	}
 //METODOS DE CLASE ----------------------------------------------------------------------------------------
 //METODOS GENERALES ---------------------------------------------------------------------------------------
+
+	@Override
+	public String toString()
+	{
+		return "" + this.nombre;
+	}
+
 //METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
 	
 	public boolean tieneTodasLasFichasEnElTablero(Tablero<Ficha> tablero) throws Exception{
