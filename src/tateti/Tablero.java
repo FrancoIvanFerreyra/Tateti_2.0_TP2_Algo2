@@ -1,7 +1,10 @@
 package tateti;
 
+import java.awt.Color;
+
 import estructuras.Lista;
 import estructuras.ListaSimplementeEnlazada;
+import exportadores.ExportadorDeDatosAImagen;
 import interfaz.Consola;
 
 public class Tablero<T> {
@@ -9,6 +12,7 @@ public class Tablero<T> {
 //ATRIBUTOS -----------------------------------------------------------------------------------------------
 	
 	private Lista<RelacionDatoCasillero<T>> posicionDeLosDatos = null;
+	private Lista<RelacionDatoColor<T>> coloresDeLosDatos = null;
 	private Lista<Lista<Casillero<T>>> tablero = null;
 	private int ancho = 0;
 	private int alto = 0;
@@ -28,6 +32,7 @@ public class Tablero<T> {
 		this.alto = alto;
 		this.tablero = new ListaSimplementeEnlazada<Lista<Casillero<T>>>();
 		this.posicionDeLosDatos = new ListaSimplementeEnlazada<RelacionDatoCasillero<T>>();
+		this.coloresDeLosDatos = new ListaSimplementeEnlazada<RelacionDatoColor<T>>();
 
 		for( int i = 1; i <= ancho; i++) {
 			Lista<Casillero<T>> fila = new ListaSimplementeEnlazada<Casillero<T>>();
@@ -118,6 +123,19 @@ public class Tablero<T> {
 		}
 		throw new Exception("No se encontro la ficha");
 	}
+
+	public Color getColorDato(T dato)
+	{
+		this.coloresDeLosDatos.iniciarCursor();
+		while(this.coloresDeLosDatos.avanzarCursor())
+		{
+			if(this.coloresDeLosDatos.obtenerCursor().getDato().equals(dato))
+			{
+				return this.coloresDeLosDatos.obtenerCursor().getColor();
+			}
+		}
+		return null;
+	}
 	
 	public void mover(Casillero<T> casillero, Casillero<T> casilleroVecino, T dato) throws Exception{
 		casilleroVecino.setDato(dato);
@@ -172,10 +190,16 @@ public class Tablero<T> {
 		return false;
 	}
 
-	public void mostrar()
+	public void mostrar() throws Exception
 	{
 		Consola.limpiar();
 		Consola.imprimirMensaje(this.toString());
+		try {
+			ExportadorDeDatosAImagen.exportarTableroPorCapas(this, "./src/estadosTablero/");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 //METODOS DE CLASE ----------------------------------------------------------------------------------------
@@ -219,6 +243,11 @@ public String toString(){
 		return this.posicionDeLosDatos;
 	}
 
+	public Lista<RelacionDatoColor<T>> getColoresDeLosDatos()
+	{
+		return this.coloresDeLosDatos;
+	}
+
 	public void actualizarRelacionDatoCasillero(T dato, Casillero<T> casillero) throws Exception
 	{
 		if(dato == null)
@@ -240,6 +269,29 @@ public String toString(){
 			}
 		}
 		this.posicionDeLosDatos.agregar(new RelacionDatoCasillero<>(casillero, dato));
+	}
+
+	public void actualizarRelacionDatoColor(T dato, Color color) throws Exception
+	{
+		if(dato == null)
+		{
+			throw new Exception("El dato a buscar no puede ser null");
+		}
+		if(color == null)
+		{
+			throw new Exception("El dato a buscar no puede ser null");
+		}
+		getColoresDeLosDatos().iniciarCursor();
+		while(getColoresDeLosDatos().avanzarCursor())
+		{
+			RelacionDatoColor<T> relacionDatoColor = getColoresDeLosDatos().obtenerCursor();
+			if(relacionDatoColor.getDato().equals(dato))
+			{
+				relacionDatoColor.setColor(color);
+				break;
+			}
+		}
+		this.coloresDeLosDatos.agregar(new RelacionDatoColor<>(color, dato));
 	}
 
 //SETTERS SIMPLES -----------------------------------------------------------------------------------------	
