@@ -4,10 +4,13 @@ import cartas.Carta;
 import estructuras.Cola;
 import estructuras.Vector;
 import estructuras.Pila;
+import exportadores.ExportadorDeDatosAImagen;
 import jugadas.Jugada;
 import utiles.Utiles;
 
 import interfaz.Consola;
+import java.awt.Color;
+import javax.swing.tree.ExpandVetoException;
 
 import utiles.ValidacionesUtiles;
 
@@ -17,6 +20,7 @@ public class Tateti {
 
 	private Tablero<Ficha> tablero = null;
 	private Vector<Jugador> jugadores = null;
+	private Vector<Color> coloresDeFicha = null;
 	private Vector<Turno> turnos = null;
 	private Pila<Turno> historialTurnos = null;
 	private int cantidadDeFichasPorJugador;
@@ -33,6 +37,7 @@ public class Tateti {
 					 int cantidadDeFichasPorJugador) throws Exception {
 		this.tablero = new Tablero<Ficha>(anchoTablero, altoTablero);
 		this.jugadores = new Vector<Jugador>(cantidadJugadores, null);
+		this.coloresDeFicha = new Vector<Color>(cantidadJugadores, Color.black);
 		for(int i = 1; i <= this.jugadores.getLongitud(); i++)
 		{
 			String titulo = "Jugador " + i + ", por favor ingrese su nombre:";
@@ -41,7 +46,12 @@ public class Tateti {
 			{
 				nombreDelJugador = Consola.obtenerStringDelUsuario("Nombre inválido!\n" + titulo);
 			}
-			this.jugadores.agregar(new Jugador(nombreDelJugador, cantidadDeFichasPorJugador));
+			Color colorDelJugador = Utiles.generarColorAleatorio();
+			while(coloresDeFicha.contiene(colorDelJugador))
+			{
+				colorDelJugador = Utiles.generarColorAleatorio();
+			}
+			this.jugadores.agregar(new Jugador(nombreDelJugador, cantidadDeFichasPorJugador, colorDelJugador));
 		}
 		this.turnos = new Vector<Turno>(this.jugadores.getLongitud(), null);
 		for(int i = 0; i < this.turnos.getLongitud(); i++)
@@ -184,7 +194,8 @@ public class Tateti {
 	
 	public Casillero<Ficha> jugadaInicial(Tablero<Ficha> tablero, Turno turnoActual) throws Exception {
 		Jugador jugador = turnoActual.getJugador();
-		Ficha ficha = new Ficha(jugador.getNombre().charAt(0)); //crea
+		Ficha ficha = new Ficha(jugador.getNombre().charAt(0));
+		tablero.actualizarRelacionDatoColor(ficha, jugador.getColor()); //crea
 		int x = Consola.obtenerNumeroEnteroDelUsuario("Ingrese coordenada x de la nueva ficha:"); //pregunta la posicion
 		int y = Consola.obtenerNumeroEnteroDelUsuario("Ingrese coordenada y de la nueva ficha:");
 		Casillero<Ficha> casillero = tablero.getCasillero(x, y);
