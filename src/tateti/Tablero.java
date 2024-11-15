@@ -1,7 +1,10 @@
 package tateti;
 
+import java.awt.Color;
+
 import estructuras.Lista;
 import estructuras.ListaSimplementeEnlazada;
+import exportadores.ExportadorDeDatosAImagen;
 import interfaz.Consola;
 
 public class Tablero<T> {
@@ -9,9 +12,11 @@ public class Tablero<T> {
 //ATRIBUTOS -----------------------------------------------------------------------------------------------
 	
 	private Lista<RelacionDatoCasillero<T>> posicionDeLosDatos = null;
-	private Lista<Lista<Casillero<T>>> tablero = null;
+	private Lista<RelacionDatoColor<T>> coloresDeLosDatos = null;
+	private Lista<Lista<Lista<Casillero<T>>>> tablero = null;
 	private int ancho = 0;
 	private int alto = 0;
+	private int profundidad = 0;
 	
 //CONSTRUCTORES -------------------------------------------------------------------------------------------
 	
@@ -22,29 +27,48 @@ public class Tablero<T> {
 	 * @throws Exception 
 	 * post: crea un tablero de ancho 'ancho' contando de 1 a ancho inclusive
 	 */
-	public Tablero(int ancho, int alto) throws Exception {
+	public Tablero(int ancho, int alto, int profundidad) throws Exception {
 		//tarea validar > 0
 		this.ancho = ancho;
 		this.alto = alto;
-		this.tablero = new ListaSimplementeEnlazada<Lista<Casillero<T>>>();
+		this.tablero = new ListaSimplementeEnlazada<Lista<Lista<Casillero<T>>>>();
 		this.posicionDeLosDatos = new ListaSimplementeEnlazada<RelacionDatoCasillero<T>>();
+		this.coloresDeLosDatos = new ListaSimplementeEnlazada<RelacionDatoColor<T>>();
 
 		for( int i = 1; i <= ancho; i++) {
-			Lista<Casillero<T>> fila = new ListaSimplementeEnlazada<Casillero<T>>();
+			Lista<Lista<Casillero<T>>> fila = new ListaSimplementeEnlazada<Lista<Casillero<T>>>();
 			this.tablero.agregar(fila);
 			for(int j = 1; j <= alto; j++) {
-				Casillero<T> nuevoCasillero = new Casillero<T>(i, j);
-				fila.agregar(nuevoCasillero);
-				
-				//Estoy en (i, j), tengo que asignar (i-1, j + 0), (i-1, j-1), (i, j-1)
-				for(int k = -1; k <= 1; k++) {
-					if (this.existeElCasillero(i - 1, j + k)) {
-						relacionarCasillerosVecinos(this.getCasillero(i - 1, j + k), nuevoCasillero, -1, k);					
+				Lista<Casillero<T>> columna = new ListaSimplementeEnlazada<Casillero<T>>();
+				fila.agregar(columna);
+				for(int k = 1; k <= profundidad; k++)
+				{
+					Casillero<T> nuevoCasillero = new Casillero<T>(i, j, k);
+					columna.agregar(nuevoCasillero);
+					//Estoy en (i, j), tengo que asignar (i-1, j + 0), (i-1, j-1), (i, j-1)
+					for(int l = -1; l <= 1; l++) {
+						for(int m = -1; m <= 1; m++)
+						{
+							if (this.existeElCasillero(i - 1, j + l, k + m)) {
+								relacionarCasillerosVecinos(this.getCasillero(i - 1, j + l, k + m), nuevoCasillero, -1, l, m);					
+							}
+						}
+					}
+					for(int l = -1; l <= 0; l++)
+					{
+						if (this.existeElCasillero(i, j + l, -1)) {
+							relacionarCasillerosVecinos(this.getCasillero(i, j  + l, -1), nuevoCasillero, 0, l, -1);
+						}
+					}
+					for(int l = -1; l <= 0; l++)
+					{
+						if (l != 0 && this.existeElCasillero(i, j + l, 0)) {
+							relacionarCasillerosVecinos(this.getCasillero(i, j + l, 0), nuevoCasillero, 0, l, 0);
+						}
 					}
 				}
-				if (this.existeElCasillero(i, j - 1)) {
-					relacionarCasillerosVecinos(this.getCasillero(i, j - 1), nuevoCasillero, 0, -1);
-				}
+				
+
 			}
 		}
 	}
@@ -58,32 +82,34 @@ public class Tablero<T> {
 	 * post: relaciona los dos vecinos en sus matrices de vecinos, en el casillero1 como i y j, y en casillero2
 	 *       como el opuesto
 	 */
-	public void relacionarCasillerosVecinos(Casillero<T> casillero1, Casillero<T> casillero2, int i, int j) {
+	public void relacionarCasillerosVecinos(Casillero<T> casillero1, Casillero<T> casillero2, int i, int j, int k) {
 		//Validar
-		casillero2.setCasilleroVecino(casillero1, i, j);
-		casillero1.setCasilleroVecino(casillero2, Casillero.invertirCoordenadaDeVecino(i), Casillero.invertirCoordenadaDeVecino(j));
+		casillero2.setCasilleroVecino(casillero1, i, j, k);
+		casillero1.setCasilleroVecino(casillero2, Casillero.invertirCoordenadaDeVecino(i), Casillero.invertirCoordenadaDeVecino(j), Casillero.invertirCoordenadaDeVecino(k));
 	}
 
-	public boolean existeElCasillero(int i, int j) throws Exception {
+	public boolean existeElCasillero(int i, int j, int k) throws Exception {
 		if ((i < 1) ||
-		    (j < 1)) {
+		    (j < 1) ||
+			(k < 1)) {
 			   return false;
 		   }
 		if ((i > this.tablero.getTamanio()) ||
-			(j > this.tablero.obtener(i).getTamanio())) {
+			(j > this.tablero.obtener(i).getTamanio()) ||
+			(k > this.tablero.obtener(i).obtener(j).getTamanio())) {
 			return false;
 		}
 		return true;
 	}
 
-	public void agregar(int x, int y, T ficha) throws Exception {
-		Casillero<T> casillero = getCasillero(x, y);
+	public void agregar(int x, int y, int z,  T ficha) throws Exception {
+		Casillero<T> casillero = getCasillero(x, y, z);
 		casillero.setDato(ficha);
 	}
 
-	public Casillero<T> getCasillero(int x, int y) throws Exception {
+	public Casillero<T> getCasillero(int x, int y, int z) throws Exception {
 		//validar
-		return this.tablero.obtener(x).obtener(y);
+		return this.tablero.obtener(x).obtener(y).obtener(z);
 	}
 	
 	/**
@@ -94,8 +120,8 @@ public class Tablero<T> {
 	 * @throws Exception
 	 * post: devuelve el dato que hay en el casillero
 	 */
-	public T obtener(int x, int y) throws Exception {
-		return getCasillero(x, y).getDato();
+	public T obtener(int x, int y, int z) throws Exception {
+		return getCasillero(x, y, z).getDato();
 	}
 
 	/**
@@ -105,18 +131,27 @@ public class Tablero<T> {
 	 * @throws Exception
 	 */
 	public Casillero<T> getCasillero(T dato) throws Exception {
-		this.tablero.iniciarCursor();
-		while(this.tablero.avanzarCursor()) {
-			Lista<Casillero<T>> columna = this.tablero.obtenerCursor();
-			columna.iniciarCursor();
-			while (columna.avanzarCursor()) {
-				Casillero<T> casillero = columna.obtenerCursor();
-				if (casillero.tiene(dato)) {
-					return casillero;
-				}
+		this.posicionDeLosDatos.iniciarCursor();
+		while(this.posicionDeLosDatos.avanzarCursor()) {
+			Casillero<T> casillero = this.posicionDeLosDatos.obtenerCursor().getCasillero();
+			if (casillero.tiene(dato)) {
+				return casillero;
 			}
 		}
 		throw new Exception("No se encontro la ficha");
+	}
+
+	public Color getColorDato(T dato)
+	{
+		this.coloresDeLosDatos.iniciarCursor();
+		while(this.coloresDeLosDatos.avanzarCursor())
+		{
+			if(this.coloresDeLosDatos.obtenerCursor().getDato().equals(dato))
+			{
+				return this.coloresDeLosDatos.obtenerCursor().getColor();
+			}
+		}
+		return null;
 	}
 	
 	public void mover(Casillero<T> casillero, Casillero<T> casilleroVecino, T dato) throws Exception{
@@ -172,10 +207,16 @@ public class Tablero<T> {
 		return false;
 	}
 
-	public void mostrar()
+	public void mostrar() throws Exception
 	{
 		Consola.limpiar();
 		Consola.imprimirMensaje(this.toString());
+		try {
+			ExportadorDeDatosAImagen.exportarTableroPorCapas(this, "./src/estadosTablero/");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 //METODOS DE CLASE ----------------------------------------------------------------------------------------
@@ -184,20 +225,24 @@ public class Tablero<T> {
 
 public String toString(){
 	String resultado = "Posiciones tablero \n";
-	for(int j = getAlto(); j >= 1; j--)
+	for(int k = getProfundidad(); k >= 1; k--)
 	{
-		for(int i = 1; i <= getAncho(); i++)
+		for(int j = 1; j <= getAlto(); j++)
 		{
-			String dato;
-			try
+			for(int i = 1; i <= getAncho(); i++)
 			{
-				dato = obtener(i, j).toString();
+				String dato;
+				try
+				{
+					dato = obtener(i, j, k).toString();
+				}
+				catch(Exception e)
+				{
+					dato = "vacio";
+				}
+				resultado += "(" + i + ", " + j + ", " + k + "), " + dato + "\t";
 			}
-			catch(Exception e)
-			{
-				dato = "vacio";
-			}
-			resultado += "(" + i + ", " + j + "), " + dato + "\t";
+			resultado += "\n";
 		}
 		resultado += "\n";
 	}
@@ -208,15 +253,24 @@ public String toString(){
 
 
 	public int getAncho() {
-		return ancho;
+		return this.ancho;
 	}
 
 	public int getAlto() {
-		return alto;
+		return this.alto;
+	}
+
+	public int getProfundidad() {
+		return this.profundidad;
 	}
 	public Lista<RelacionDatoCasillero<T>> getPosicionDeLosDatos()
 	{
 		return this.posicionDeLosDatos;
+	}
+
+	public Lista<RelacionDatoColor<T>> getColoresDeLosDatos()
+	{
+		return this.coloresDeLosDatos;
 	}
 
 	public void actualizarRelacionDatoCasillero(T dato, Casillero<T> casillero) throws Exception
@@ -240,6 +294,29 @@ public String toString(){
 			}
 		}
 		this.posicionDeLosDatos.agregar(new RelacionDatoCasillero<>(casillero, dato));
+	}
+
+	public void actualizarRelacionDatoColor(T dato, Color color) throws Exception
+	{
+		if(dato == null)
+		{
+			throw new Exception("El dato a buscar no puede ser null");
+		}
+		if(color == null)
+		{
+			throw new Exception("El dato a buscar no puede ser null");
+		}
+		getColoresDeLosDatos().iniciarCursor();
+		while(getColoresDeLosDatos().avanzarCursor())
+		{
+			RelacionDatoColor<T> relacionDatoColor = getColoresDeLosDatos().obtenerCursor();
+			if(relacionDatoColor.getDato().equals(dato))
+			{
+				relacionDatoColor.setColor(color);
+				break;
+			}
+		}
+		this.coloresDeLosDatos.agregar(new RelacionDatoColor<>(color, dato));
 	}
 
 //SETTERS SIMPLES -----------------------------------------------------------------------------------------	
