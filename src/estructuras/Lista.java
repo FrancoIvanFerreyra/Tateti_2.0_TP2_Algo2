@@ -97,6 +97,19 @@ public abstract class Lista<T> {
 		this.getNodo(posicion).setDato(elemento);
 	}
 
+	// verifica si un objeto está en la lista.
+	public boolean contiene(T objeto) throws Exception {
+		this.iniciarCursor();
+	
+		while (this.avanzarCursor()) {
+			if (this.obtenerCursor().equals(objeto)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	/*
 	 * post: deja el cursor de la Lista preparado para hacer un nuevo
 	 *       recorrido sobre sus elementos.

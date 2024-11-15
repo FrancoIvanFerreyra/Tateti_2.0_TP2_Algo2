@@ -150,6 +150,20 @@ public class Vector<T extends Object> {
             return elementosFiltrados;
 	}
 
+    // verifica si un objeto está en el vector.
+	public boolean contiene(T objeto) throws Exception {
+		int i = 1;
+	
+		while (i <= this.getLongitud()) {
+			if (this.obtener(i).equals(objeto)) {
+				return true;
+			}
+            i++;
+		}
+
+		return false;
+	}
+
             
     //GETTERS SIMPLES -----------------------------------------------------------------------------------------
         
