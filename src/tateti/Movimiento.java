@@ -1,0 +1,12 @@
+package tateti;
+
+public enum Movimiento {
+	ARRIBA, 
+	ABAJO, 
+	IZQUIERDA, 
+	DERECHA,
+	IZQUIERDA_ARRIBA,
+	IZQUIERDA_ABAJO,
+	DERECHA_ARRIBA,
+	DERECHA_ABAJO
+}
