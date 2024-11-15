@@ -1,10 +1,15 @@
-import java.util.ArrayList;
-import java.util.List;
+package estructuras;
+
+import static org.junit.jupiter.api.Assertions.fail;
+
+import cartas.Carta;
+import utiles.ValidacionesUtiles;
+
 
 public class Jugador {
     //ATRIBUTOS -----------------------------------------------------------------------------------------------
     private int numero;
-    private List<Carta> cartas;
+    private ListaEnlazada<Carta> cartas;
     private Carta cartaActiva;
     private Estado estado;
     private int turnosAPerder;
@@ -25,7 +30,7 @@ public class Jugador {
             throw new Exception("El numero debe ser mayor a 0");
         }
         this.numero = numero;
-        this.cartas = new ArrayList<Carta>();
+        this.cartas = new ListaEnlazada<Carta>();
         this.cartaActiva = null;
         this.estado = new Estado();
         this.turnosAPerder = 0;
@@ -50,14 +55,24 @@ public class Jugador {
      * @return Una lista de cartas del jugador.
      * pos: Se retorna una copia de la lista de cartas sin modificar la original.
      */
-    public List<Carta> obtenerCartas()
+    public ListaEnlazada<Carta> obtenerCartas()
     {
-        List<Carta> cartas = new ArrayList<Carta>();
-        for(Carta carta : this.cartas){
-            cartas.add(carta);
+        ListaEnlazada<Carta> listaCartascopia = new ListaEnlazada<Carta>();
+
+        // Iteramos sobre la lista original y agregamos cada carta a la nueva lista
+        for (int i = 1; i <= cartas.getTamanio(); i++) {
+            try {
+                Carta carta = cartas.obtener(i); // Obtener la carta en la posición i
+                listaCartascopia.agregar(carta); // Agregar la carta a la nueva lista
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail("Excepción: " + e.getMessage());
+            }
         }
-        return cartas;
+    
+        return listaCartascopia;
     }
+
     /**
      * Obtiene la cantidad de cartas que posee el jugador.
      * pre: -
@@ -66,7 +81,7 @@ public class Jugador {
      */
     public int obtenerCantidadCartas()
     {
-        return this.cartas.size();
+        return this.cartas.getTamanio();
     }
 
     /**
@@ -117,7 +132,7 @@ public class Jugador {
         {
             throw new Exception("La carta no puede ser nula");
         }
-        this.cartas.add(carta);
+        this.cartas.agregar(carta);
     }
 
     /**
@@ -129,20 +144,19 @@ public class Jugador {
      */
     public void quitarCarta(Carta carta) throws Exception
     {
-        if(carta == null)
-        {
-            throw new Exception("La carta no puede ser nula");
-        }
+        ValidacionesUtiles.verificarObjetoValido(carta);
+
         if(obtenerCantidadCartas() == 0)
         {
             throw new Exception("El jugador no tiene cartas");
         }
-        if(!ValidacionesUtiles.estaEnLaLista(carta, obtenerCartas()))
+        if(!ValidacionesUtiles.estaEnLaListaEnlazada(carta, obtenerCartas()))
         {
             throw new Exception("El jugador no tiene esa carta");
         }
-        this.cartas.remove(carta);
+        this.cartas.remover(numero);
     }
+      
 
     /**
      * Asigna una carta como la carta activa del jugador.

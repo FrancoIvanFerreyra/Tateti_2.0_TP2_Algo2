@@ -1,3 +1,5 @@
+package estructuras;
+
 public class Ficha {
     //ATRIBUTOS -----------------------------------------------------------------------------------------------
     private Jugador jugador;
@@ -12,8 +14,7 @@ public class Ficha {
      * pos: Se crea una Ficha asociada al jugador especificado y con un estado por defecto (NORMAL).
      * @throws Exception Si el jugador es nulo.
      */
-    public Ficha(Jugador jugador) throws Exception
-    {
+    public Ficha(Jugador jugador) throws Exception {
         if(jugador == null)
         {
             throw new Exception("El jugador no puede ser nulo");

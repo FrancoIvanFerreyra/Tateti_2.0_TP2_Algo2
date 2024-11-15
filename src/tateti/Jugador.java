@@ -1,5 +1,6 @@
 package tateti;
 
+import java.awt.Color;
 import estructuras.Vector;
 import utiles.ValidacionesUtiles;
 
@@ -9,12 +10,14 @@ public class Jugador {
 //ATRIBUTOS -----------------------------------------------------------------------------------------------
 	private String nombre;
 	private Vector<Ficha> fichas;
+	private Color color;
 //CONSTRUCTORES -------------------------------------------------------------------------------------------
 
-	public Jugador(String nombre, int cantidadDeFichas) throws Exception
+	public Jugador(String nombre, int cantidadDeFichas, Color color) throws Exception
 	{
 		this.nombre = nombre;
 		this.fichas = new Vector<Ficha>(cantidadDeFichas, null);
+		this.color = color;
 	}
 //METODOS DE CLASE ----------------------------------------------------------------------------------------
 //METODOS GENERALES ---------------------------------------------------------------------------------------
@@ -77,6 +80,11 @@ public class Jugador {
 	public String getNombre()
 	{
 		return this.nombre;
+	}
+
+	public Color getColor()
+	{
+		return this.color;
 	}
 //SETTERS SIMPLES -----------------------------------------------------------------------------------------	
 }
