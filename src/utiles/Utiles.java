@@ -1,5 +1,6 @@
 package utiles;
 
+import java.awt.Color;
 import java.util.Random;
 import tateti.Movimiento;
 
@@ -32,6 +33,15 @@ public class Utiles {
         }
         
         return sb.toString();
+    }
+
+    public static Color generarColorAleatorio() {
+        Random random = new Random();
+        int rojo = random.nextInt(256);  // Valor entre 0 y 255
+        int verde = random.nextInt(256); 
+        int azul = random.nextInt(256); 
+        
+        return new Color(rojo, verde, azul);
     }
 
 }
