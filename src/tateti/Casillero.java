@@ -9,7 +9,7 @@ public class Casillero<T> {
 	private int x = 0;
 	private int y = 0;
 	private T dato = null;
-	private Casillero<T>[][] vecinos;
+	private Casillero<T>[][][] vecinos;
 	
 //CONSTRUCTORES -------------------------------------------------------------------------------------------
 	
@@ -20,22 +20,30 @@ public class Casillero<T> {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public Casillero(int x, int y) throws Exception {
+	public Casillero(int x, int y, int z) throws Exception {
 		if (x < 1) {
 			throw new Exception("X debe ser mayor a 0");
 		}
 		if (y < 1) {
 			throw new Exception("Y debe ser mayor a 0");
 		}
+
+		if (z < 1) {
+			throw new Exception("Z debe ser mayor a 0");
+		}
 		this.x = x;
 		this.y = y;
-		this.vecinos = new Casillero[CANTIDAD_DE_VECINOS][CANTIDAD_DE_VECINOS];
+		this.z = z;
+		this.vecinos = new Casillero[CANTIDAD_DE_VECINOS][CANTIDAD_DE_VECINOS][CANTIDAD_DE_VECINOS];
 		for(int i = 0; i < this.vecinos.length; i++) {
 			for(int j= 0; j < this.vecinos.length; j++) {
-				this.vecinos[i][j] = null;
+				for(int k = 0; k < this.vecinos.length; k++)
+				{
+					this.vecinos[i][j][k] = null;
+				}
 			}
 		}
-		this.vecinos[1][1] = this; //definirlo
+		this.vecinos[1][1][1] = this; //definirlo
 	}
 	
 //METODOS DE CLASE ----------------------------------------------------------------------------------------
@@ -48,7 +56,7 @@ public class Casillero<T> {
 	
 	@Override
 	public String toString() {	
-		return "Casillero (" + this.x + ", " + this.y + ")";
+		return "Casillero (" + this.x + ", " + this.y + ", " + this.z+ ")";
 	}
 	
 //METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
@@ -82,22 +90,84 @@ public class Casillero<T> {
 	 */
 	public boolean existeElVecino(Movimiento movimiento) {
 		switch (movimiento) {
-			case ABAJO:
-				return this.vecinos[1][0] != null;
-			case ARRIBA:
-				return this.vecinos[1][2] != null;
+			case ADELANTE:
+				return this.vecinos[1][2][1] != null;
+			
+			case ATRAS:
+				return this.vecinos[1][0][1] != null;
+			
+			case IZQUIERDA: 
+				return this.vecinos[0][1][1] != null;
+			
 			case DERECHA:
-				return this.vecinos[2][1] != null;
-			case IZQUIERDA:
-				return this.vecinos[0][1] != null;
-			case IZQUIERDA_ABAJO:
-				return this.vecinos[0][0] != null;
+				return this.vecinos[2][1][1] != null;
+			
+			case IZQUIERDA_ADELANTE:
+				return this.vecinos[0][2][1] != null;
+			
+			case IZQUIERDA_ATRAS:
+				return this.vecinos[0][0][1] != null;
+			
+			case DERECHA_ADELANTE:
+				return this.vecinos[2][2][1] != null;
+			
+			case DERECHA_ATRAS:
+				return this.vecinos[2][0][1] != null;
+			
+			case ARRIBA: 
+				return this.vecinos[1][1][2] != null;
+			
+			case ABAJO:
+				return this.vecinos[1][1][0] != null;
+			
+			case ADELANTE_ARRIBA:
+				return this.vecinos[1][2][2] != null;
+			
+			case ADELANTE_ABAJO:
+				return this.vecinos[1][2][0] != null;
+			
+			case ATRAS_ARRIBA:
+				return this.vecinos[1][0][2] != null;
+			
+			case ATRAS_ABAJO:
+				return this.vecinos[1][0][0] != null;
+			
 			case IZQUIERDA_ARRIBA:
-				return this.vecinos[0][2] != null;
-			case DERECHA_ABAJO:
-				return this.vecinos[2][0] != null;
+				return this.vecinos[0][0][2] != null;
+			
+			case IZQUIERDA_ABAJO:
+				return this.vecinos[0][1][0] != null;
+			
 			case DERECHA_ARRIBA:
-				return this.vecinos[2][2] != null;
+				return this.vecinos[2][1][2] != null;
+			
+			case DERECHA_ABAJO:
+				return this.vecinos[2][1][0] != null;
+			
+			case IZQUIERDA_ADELANTE_ARRIBA:
+				return this.vecinos[0][2][2] != null;
+			
+			case IZQUIERDA_ADELANTE_ABAJO:
+				return this.vecinos[0][2][0] != null;
+			
+			case DERECHA_ADELANTE_ARRIBA:
+				return this.vecinos[2][2][2] != null;
+			
+			case DERECHA_ADELANTE_ABAJO:
+				return this.vecinos[2][2][0] != null;
+			
+			case IZQUIERDA_ATRAS_ARRIBA:
+				return this.vecinos[0][0][2] != null;
+			
+			case IZQUIERDA_ATRAS_ABAJO:
+				return this.vecinos[0][0][0] != null;
+			
+			case DERECHA_ATRAS_ARRIBA:
+				return this.vecinos[2][0][2] != null;
+			
+			case DERECHA_ATRAS_ABAJO:
+				return this.vecinos[2][0][0] != null;
+			
 			default:
 				break;		
 		}
@@ -131,29 +201,94 @@ public class Casillero<T> {
 	 * @param y: -1 0 y 1, para indicar arriba centro o abajo respectivamente
 	 * @return devuelve el casilero
 	 */
-	public Casillero<T> getCasilleroVecino(int x, int y) {
+	public Casillero<T> getCasilleroVecino(int x, int y, int z) {
 		//validar rangos
-		return this.vecinos[x+1][y+1];
+		return this.vecinos[x + 1][y + 1][z + 1];
 	}
 	
 	public Casillero<T> getCasilleroVecino(Movimiento movimiento) throws Exception {
 		switch (movimiento) {
-			case ABAJO:
-				return this.vecinos[1][0];
-			case ARRIBA:
-				return this.vecinos[1][2];
+
+			case ADELANTE:
+				return this.vecinos[1][2][1];
+			
+			case ATRAS:
+				return this.vecinos[1][0][1];
+			
+			case IZQUIERDA: 
+				return this.vecinos[0][1][1];
+			
 			case DERECHA:
-				return this.vecinos[2][1];
-			case IZQUIERDA:
-				return this.vecinos[0][1];
-			case DERECHA_ABAJO:
-				return this.vecinos[2][0];
-			case DERECHA_ARRIBA:
-				return this.vecinos[2][2];
-			case IZQUIERDA_ABAJO:
-				return this.vecinos[0][0];
+				return this.vecinos[2][1][1];
+			
+			case IZQUIERDA_ADELANTE:
+				return this.vecinos[0][2][1];
+			
+			case IZQUIERDA_ATRAS:
+				return this.vecinos[0][0][1];
+			
+			case DERECHA_ADELANTE:
+				return this.vecinos[2][2][1];
+			
+			case DERECHA_ATRAS:
+				return this.vecinos[2][0][1];
+			
+			case ARRIBA: 
+				return this.vecinos[1][1][2];
+			
+			case ABAJO:
+				return this.vecinos[1][1][0];
+			
+			case ADELANTE_ARRIBA:
+				return this.vecinos[1][2][2];
+			
+			case ADELANTE_ABAJO:
+				return this.vecinos[1][2][0];
+			
+			case ATRAS_ARRIBA:
+				return this.vecinos[1][0][2];
+			
+			case ATRAS_ABAJO:
+				return this.vecinos[1][0][0];
+			
 			case IZQUIERDA_ARRIBA:
-				return this.vecinos[0][2];
+				return this.vecinos[0][0][2];
+			
+			case IZQUIERDA_ABAJO:
+				return this.vecinos[0][1][0];
+			
+			case DERECHA_ARRIBA:
+				return this.vecinos[2][1][2];
+			
+			case DERECHA_ABAJO:
+				return this.vecinos[2][1][0];
+			
+			case IZQUIERDA_ADELANTE_ARRIBA:
+				return this.vecinos[0][2][2];
+			
+			case IZQUIERDA_ADELANTE_ABAJO:
+				return this.vecinos[0][2][0];
+			
+			case DERECHA_ADELANTE_ARRIBA:
+				return this.vecinos[2][2][2];
+			
+			case DERECHA_ADELANTE_ABAJO:
+				return this.vecinos[2][2][0];
+			
+			case IZQUIERDA_ATRAS_ARRIBA:
+				return this.vecinos[0][0][2];
+			
+			case IZQUIERDA_ATRAS_ABAJO:
+				return this.vecinos[0][0][0];
+			
+			case DERECHA_ATRAS_ARRIBA:
+				return this.vecinos[2][0][2];
+			
+			case DERECHA_ATRAS_ABAJO:
+				return this.vecinos[2][0][0];
+			
+			default:
+				break;		
 		}
 		throw new Exception("No se encontro la posicion vecina");
 	}
@@ -163,11 +298,15 @@ public class Casillero<T> {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public Casillero<T>[][] getCasillerosVecinos() {
-		Casillero<T>[][] matriz = new Casillero[3][3];
+	public Casillero<T>[][][] getCasillerosVecinos() {
+		Casillero<T>[][][] matriz = new Casillero[3][3][3];
 		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
-				matriz[i][j] = this.vecinos[i][j];
+			for (int j = 0; j < 3; j++) 
+			{
+				for(int k = 0; k < 3; k++)
+				{
+					matriz[i][j][k] = this.vecinos[i][j][k];
+				}
 			}
 		}
 		return matriz;
@@ -184,9 +323,9 @@ public class Casillero<T> {
 	 * @param y: -1 0 y 1, para indicar arriba centro o abajo respectivamente
 	 * @return devuelve el casilero
 	 */
-	public void setCasilleroVecino(Casillero<T> casillero, int i, int j) {
+	public void setCasilleroVecino(Casillero<T> casillero, int i, int j, int k) {
 		//validar
-		this.vecinos[i+1][j+1] = casillero;
+		this.vecinos[i+1][j+1][k+1] = casillero;
 	}
 
 }
