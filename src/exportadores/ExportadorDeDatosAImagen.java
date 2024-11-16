@@ -12,11 +12,14 @@ import javax.imageio.ImageIO;
 import tateti.Casillero;
 import tateti.Tablero;
 import utiles.Coordenada;
+import utiles.ValidacionesUtiles;
 
 
 public class ExportadorDeDatosAImagen<T> {
 
     public static <T> void exportarTableroPorCapas(Tablero<T> tablero, String basePath) throws Exception {
+        
+        
         int grosorDeLinea = 10;
         int ancho = 1024;
         int alto = 1024;
@@ -24,57 +27,83 @@ public class ExportadorDeDatosAImagen<T> {
         // Calcular el desplazamiento necesario para centrar el tablero
         int xOffset = 0;
         int yOffset = 0;
-    
-        BufferedImage imagen = new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = imagen.createGraphics();
-    
-        // Rellenar el fondo de la imagen
-        g.setColor(Color.darkGray);
-        g.fillRect(0, 0, ancho, alto);
 
         Lista<Integer> indicesDeFilasADibujar = obtenerIndicesConDato(Coordenada.Y, tablero);
         Lista<Integer> indicesDeColumnasADibujar = obtenerIndicesConDato(Coordenada.X, tablero);
+        Lista<Integer> indicesDeCapasADibujar = obtenerIndicesConDato(Coordenada.Z, tablero);
+
         agregarIntervalosVacios(indicesDeFilasADibujar);
         agregarIntervalosVacios(indicesDeColumnasADibujar);
+        agregarIntervalosVacios(indicesDeCapasADibujar);
+
 
         int casilleroSizeX = 3 * ancho / (indicesDeFilasADibujar.getTamanio() + indicesDeColumnasADibujar.getTamanio() + 1) / 2;
         int casilleroSizeY = 3 * alto / (indicesDeColumnasADibujar.getTamanio() + indicesDeFilasADibujar.getTamanio() +  1) / 2;
         yOffset = (alto / 2);
 
 
-        indicesDeFilasADibujar.iniciarCursor();
-        indicesDeColumnasADibujar.iniciarCursor();
+        indicesDeCapasADibujar.iniciarCursor();
         
-        int y = 1;
-        dibujarString("X", grosorDeLinea, g, xOffset, yOffset, 2, -1, casilleroSizeX, casilleroSizeY);
-        dibujarString("Y", grosorDeLinea, g, xOffset, yOffset, -1, 2, casilleroSizeX, casilleroSizeY);
-
-        while(indicesDeFilasADibujar.avanzarCursor())
+        int numeroCapa = 1;
+        while(indicesDeCapasADibujar.avanzarCursor())
         {
-            indicesDeColumnasADibujar.iniciarCursor();
-            int x = 1;
-            int indiceFila = indicesDeFilasADibujar.obtenerCursor();
-            dibujarString((indiceFila == 0) ? "..." : Integer.toString(indiceFila), grosorDeLinea, g, xOffset, yOffset, x - 1,y, casilleroSizeX, casilleroSizeY);
-            while(indicesDeColumnasADibujar.avanzarCursor())
+            BufferedImage imagen = new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g = imagen.createGraphics();
+        
+            // Rellenar el fondo de la imagen
+            g.setColor(Color.darkGray);
+            g.fillRect(0, 0, ancho, alto);
+
+
+            indicesDeFilasADibujar.iniciarCursor();
+            int y = 1;
+            Integer indiceCapa = indicesDeCapasADibujar.obtenerCursor();
+
+            String rangoCapasIntervaloVacio = "";
+            if(estaEnIntervaloVacio(indiceCapa) && ValidacionesUtiles.estaEstrictamenteEntre(numeroCapa, 1, indicesDeCapasADibujar.getTamanio()))
             {
-                dibujarRombo(grosorDeLinea, g, xOffset, yOffset, x, y, casilleroSizeX, casilleroSizeY);
-                
-                int indiceColumna = indicesDeColumnasADibujar.obtenerCursor();
-                dibujarString((indiceColumna == 0) ? "..." : Integer.toString(indiceColumna), grosorDeLinea, g, xOffset, yOffset, x, 0, casilleroSizeX, casilleroSizeY);
-                if(!estaEnIntervaloVacio(indiceFila, indiceColumna))
-                {
-                    Casillero<T> casillero = tablero.getCasillero(indiceColumna,indiceFila);
-                    if (casillero.estaOcupado()) {
-                        Color colorCirculo = tablero.getColorDato(casillero.getDato());
-                        dibujarCirculo(grosorDeLinea, g, xOffset, yOffset, x, y, casilleroSizeX, casilleroSizeY, colorCirculo);
-                    }
-                }
-                x++;
+                rangoCapasIntervaloVacio = (indicesDeCapasADibujar.obtener(numeroCapa - 1) + 1) + "_a_" + (indicesDeCapasADibujar.obtener(numeroCapa + 1) - 1);
             }
-            y++;
+
+            dibujarString("X", grosorDeLinea, g, xOffset, yOffset, 2, -1, casilleroSizeX, casilleroSizeY);
+            dibujarString("Y", grosorDeLinea, g, xOffset, yOffset, -1, 2, casilleroSizeX, casilleroSizeY);    
+            dibujarString("Z = " + ((estaEnIntervaloVacio(indiceCapa)) ? rangoCapasIntervaloVacio : Integer.toString(indiceCapa)), grosorDeLinea, g, xOffset, yOffset, indicesDeColumnasADibujar.getTamanio() - 1, indicesDeFilasADibujar.getTamanio() + 1, casilleroSizeX, casilleroSizeY);    
+
+            while(indicesDeFilasADibujar.avanzarCursor())
+            {
+                indicesDeColumnasADibujar.iniciarCursor();
+                int x = 1;
+                Integer indiceFila = indicesDeFilasADibujar.obtenerCursor();
+                dibujarString((estaEnIntervaloVacio(indiceFila)) ? "..." : Integer.toString(indiceFila), grosorDeLinea, g, xOffset, yOffset, x - 1,y, casilleroSizeX, casilleroSizeY);
+                while(indicesDeColumnasADibujar.avanzarCursor())
+                {
+                    dibujarRombo(grosorDeLinea, g, xOffset, yOffset, x, y, casilleroSizeX, casilleroSizeY);
+                    
+                    Integer indiceColumna = indicesDeColumnasADibujar.obtenerCursor();
+                    dibujarString((estaEnIntervaloVacio(indiceColumna)) ? "..." : Integer.toString(indiceColumna), grosorDeLinea, g, xOffset, yOffset, x, 0, casilleroSizeX, casilleroSizeY);
+                    
+                    
+                    if(!estaEnIntervaloVacio(indiceFila) &&
+                    !estaEnIntervaloVacio(indiceColumna) &&
+                    !estaEnIntervaloVacio(indiceCapa))
+                    {
+                        Casillero<T> casillero = tablero.getCasillero(indiceColumna,indiceFila, indiceCapa);
+                        if (casillero.estaOcupado()) {
+                            Color colorCirculo = tablero.getColorDato(casillero.getDato());
+                            dibujarCirculo(grosorDeLinea, g, xOffset, yOffset, x, y, casilleroSizeX, casilleroSizeY, colorCirculo);
+                        }
+                    }
+                    
+                    x++;
+                }
+                
+                y++;
+            }
+            g.dispose();
+            ImageIO.write(imagen, "bmp", new File(basePath, "_capa_" + ((estaEnIntervaloVacio(indiceCapa)) ? rangoCapasIntervaloVacio : indiceCapa) + ".bmp"));
+            numeroCapa++;
         }
-        g.dispose();
-        ImageIO.write(imagen, "bmp", new File(basePath + "_capa_1" + ".bmp"));
+        
     }
                                     
     private static <T> Lista<Integer> obtenerIndicesConDato(Coordenada coordenada, Tablero<T> tablero) throws Exception
@@ -91,6 +120,7 @@ public class ExportadorDeDatosAImagen<T> {
                 limiteSuperior = tablero.getAlto();
             break;
             case Coordenada.Z:
+                limiteSuperior = tablero.getProfundidad();
                 break;
             default:
                 break;
@@ -113,8 +143,7 @@ public class ExportadorDeDatosAImagen<T> {
             {
                 case Coordenada.X -> indiceDeCapa = casillero.getX();
                 case Coordenada.Y -> indiceDeCapa = casillero.getY();
-                case Coordenada.Z -> {
-                }
+                case Coordenada.Z -> indiceDeCapa = casillero.getZ();
                 default -> {
                 }
             }
@@ -149,7 +178,7 @@ public class ExportadorDeDatosAImagen<T> {
         {
             if(elementos.obtener(i + 1) - elementos.obtener(i) > 2)
             {
-                elementos.agregar(0, i + 1);
+                elementos.agregar(null, i + 1);
                 i++;
             }
             i++;
@@ -157,9 +186,9 @@ public class ExportadorDeDatosAImagen<T> {
         return elementos;
     }
     
-    private static boolean estaEnIntervaloVacio(int indiceFila, int indiceColumna)
+    private static boolean estaEnIntervaloVacio(Integer indice)
     {
-        return indiceFila == 0 || indiceColumna == 0;
+        return indice == null;
     }
 
     public static int obtenerCoordenadaIsometricaX(int coordenadaX, int coordenadaY,int xOffset, int casilleroSize)
