@@ -3,6 +3,7 @@ package jugadas;
 import cartas.Carta;
 import estructuras.Lista;
 import estructuras.ListaSimplementeEnlazada;
+import tateti.Casillero;
 import tateti.Jugador;
 import tateti.Tateti;
 import tateti.Turno;
@@ -15,6 +16,7 @@ public abstract class Jugada {
 	private Carta carta = null;
 	private Jugador jugador;
 	private Lista<Jugador> jugadoresAfectados;
+	private Lista<Casillero> casillerosAfectados;
 	
 //CONSTRUCTORES -------------------------------------------------------------------------------------------
 	
@@ -22,6 +24,7 @@ public abstract class Jugada {
 		this.carta = carta;
 		this.jugador = null;
 		this.jugadoresAfectados = new ListaSimplementeEnlazada<>();
+		this.casillerosAfectados = new ListaSimplementeEnlazada<>();
 	}
 	
 //METODOS DE CLASE ----------------------------------------------------------------------------------------
@@ -43,6 +46,10 @@ public abstract class Jugada {
 	}
 	public Lista<Jugador> getJugadoresAfectados() {
 		return this.jugadoresAfectados;
+	}
+
+	public Lista<Casillero> getCasillerosAfectados() {
+		return this.casillerosAfectados;
 	}
 	
 //SETTERS SIMPLES -----------------------------------------------------------------------------------------	
