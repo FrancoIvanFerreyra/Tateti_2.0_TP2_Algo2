@@ -31,6 +31,7 @@ public class Tablero<T> {
 		//tarea validar > 0
 		this.ancho = ancho;
 		this.alto = alto;
+		this.profundidad = profundidad;
 		this.tablero = new ListaSimplementeEnlazada<Lista<Lista<Casillero<T>>>>();
 		this.posicionDeLosDatos = new ListaSimplementeEnlazada<RelacionDatoCasillero<T>>();
 		this.coloresDeLosDatos = new ListaSimplementeEnlazada<RelacionDatoColor<T>>();
