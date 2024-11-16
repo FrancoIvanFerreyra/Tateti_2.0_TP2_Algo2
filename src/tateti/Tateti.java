@@ -2,9 +2,11 @@ package tateti;
 
 import cartas.Carta;
 import estructuras.Cola;
+import estructuras.Lista;
+import estructuras.ListaSimplementeEnlazada;
 import estructuras.Vector;
 import estructuras.Pila;
-import exportadores.ExportadorDeDatosAImagen;
+//import exportadores.ExportadorDeDatosAImagen;
 import jugadas.Jugada;
 import utiles.Utiles;
 
@@ -30,12 +32,12 @@ public class Tateti {
 	//CONSTRUCTORES -------------------------------------------------------------------------------------------
 
 	public Tateti() throws Exception {
-		this(3, 3, 2, 3);
+		this(3, 3,3,  2, 3);
 	}
 
-	public Tateti(int anchoTablero, int altoTablero, int cantidadJugadores,
+	public Tateti(int anchoTablero, int altoTablero, int profundidadTablero, int cantidadJugadores,
 					 int cantidadDeFichasPorJugador) throws Exception {
-		this.tablero = new Tablero<Ficha>(anchoTablero, altoTablero);
+		this.tablero = new Tablero<Ficha>(anchoTablero, altoTablero, profundidadTablero);
 		this.jugadores = new Vector<Jugador>(cantidadJugadores, null);
 		this.coloresDeFicha = new Vector<Color>(cantidadJugadores, Color.black);
 		for(int i = 1; i <= this.jugadores.getLongitud(); i++)
@@ -90,33 +92,19 @@ public class Tateti {
 		//validar
 		int cantidadFichas = 3; //longitud del tateti
 
+		Lista<Movimiento> movimientosAChequear = Utiles.obtenerMovimientosAChequear();
+		movimientosAChequear.iniciarCursor();
 
-		//suponemos direccion horizontal                           // casillero de la izquierda                                                                //casillero de la derecha
-		int cantidadDeFichasSeguidas = contarFichasSeguidas(casillero, Movimiento.ARRIBA, casillero.getDato()) + 
-										contarFichasSeguidas(casillero, Movimiento.ABAJO, casillero.getDato());
-		if(cantidadDeFichasSeguidas - 1 >= cantidadFichas) {
-			//hay ganador
-			return true;
-		}
-
-		cantidadDeFichasSeguidas = contarFichasSeguidas(casillero, Movimiento.IZQUIERDA, casillero.getDato()) + 
-									contarFichasSeguidas(casillero, Movimiento.DERECHA, casillero.getDato());
-		if(cantidadDeFichasSeguidas - 1 >= cantidadFichas) {
-			//hay ganador
-			return true;
-		}
-
-		cantidadDeFichasSeguidas = contarFichasSeguidas(casillero, Movimiento.IZQUIERDA_ARRIBA, casillero.getDato()) + 
-									contarFichasSeguidas(casillero, Movimiento.DERECHA_ABAJO, casillero.getDato());
-		if(cantidadDeFichasSeguidas - 1 >= cantidadFichas) {
-			//hay ganador
-			return true;
-		}
-		cantidadDeFichasSeguidas = contarFichasSeguidas(casillero, Movimiento.IZQUIERDA_ABAJO, casillero.getDato()) + 
-									contarFichasSeguidas(casillero, Movimiento.DERECHA_ARRIBA, casillero.getDato());
-		if(cantidadDeFichasSeguidas - 1 >= cantidadFichas) {
-			//	hay ganador
-			return true;
+		while(movimientosAChequear.avanzarCursor())
+		{
+			Movimiento movimiento = movimientosAChequear.obtenerCursor();                                                                //casillero de la derecha
+			int cantidadDeFichasSeguidas = contarFichasSeguidas(casillero, movimiento, casillero.getDato()) + 
+			contarFichasSeguidas(casillero, Utiles.movimientoOpuesto(movimiento), casillero.getDato());
+			if(cantidadDeFichasSeguidas - 1 >= cantidadFichas)
+			{
+				//hay ganador
+				return true;
+			}
 		}
 		return false;
 	}
@@ -198,12 +186,15 @@ public class Tateti {
 		tablero.actualizarRelacionDatoColor(ficha, jugador.getColor()); //crea
 		int x = Consola.obtenerNumeroEnteroDelUsuario("Ingrese coordenada x de la nueva ficha:"); //pregunta la posicion
 		int y = Consola.obtenerNumeroEnteroDelUsuario("Ingrese coordenada y de la nueva ficha:");
-		Casillero<Ficha> casillero = tablero.getCasillero(x, y);
+		int z = Consola.obtenerNumeroEnteroDelUsuario("Ingrese coordenada z de la nueva ficha:");
+
+		Casillero<Ficha> casillero = tablero.getCasillero(x, y, z);
 		while (casillero.estaOcupado()) {
-			Consola.imprimirMensaje("El casillero (" + x + ", " + y + ") ya esta ocupado por otra ficha!");
+			Consola.imprimirMensaje("El casillero (" + x + ", " + y + ", " + z + ") ya esta ocupado por otra ficha!");
 			x = Consola.obtenerNumeroEnteroDelUsuario("Ingrese coordenada x de la nueva ficha:"); //pregunta la posicion
 			y = Consola.obtenerNumeroEnteroDelUsuario("Ingrese coordenada y de la nueva ficha:");
-			casillero = tablero.getCasillero(x, y);
+			z = Consola.obtenerNumeroEnteroDelUsuario("Ingrese coordenada z de la nueva ficha:");
+			casillero = tablero.getCasillero(x, y, z);
 		}
 		casillero.setDato(ficha);
 		jugador.agregarFicha(ficha);
