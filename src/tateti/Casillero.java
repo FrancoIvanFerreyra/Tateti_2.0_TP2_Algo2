@@ -1,6 +1,8 @@
 package tateti;
 
-public class Casillero<T> {
+import interfaces.Bloqueable;
+
+public class Casillero<T> implements Bloqueable{
 //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
 	public static int CANTIDAD_DE_VECINOS = 3;
 	
@@ -11,6 +13,7 @@ public class Casillero<T> {
 	private int z = 0;
 	private T dato = null;
 	private Casillero<T>[][][] vecinos;
+	private int bloqueosRestantes = 0;
 	
 //CONSTRUCTORES -------------------------------------------------------------------------------------------
 	
@@ -182,6 +185,34 @@ public class Casillero<T> {
 	public void vaciar() {
 		this.setDato(null);		
 	}
+
+
+	@Override
+	public void incrementarBloqueosRestantes(int cantidadDeBloqueos) throws Exception{
+		if(cantidadDeBloqueos < 1)
+		{
+			throw new Exception("Cantidad de bloqueos debe ser mayor a 0");
+		}
+		this.bloqueosRestantes += cantidadDeBloqueos;
+	}
+
+	@Override
+	public void reducirBloqueosRestantes(int cantidadDeBloqueos) throws Exception {
+		if(cantidadDeBloqueos <= 0)
+		{
+			throw new Exception("La cantidad de bloqueos debe ser mayor a 0");
+		}
+		if(this.bloqueosRestantes - cantidadDeBloqueos < 0)
+		{
+			throw new Exception("No se pueden quitar " + cantidadDeBloqueos + "bloqueos, quedan " + this.bloqueosRestantes);
+		}
+		this.bloqueosRestantes -= cantidadDeBloqueos;
+	}
+
+	@Override
+	public boolean estaBloqueado() {
+		return this.bloqueosRestantes > 0;
+	}
 	
 //GETTERS SIMPLES -----------------------------------------------------------------------------------------
 	
@@ -316,6 +347,11 @@ public class Casillero<T> {
 		}
 		return matriz;
 	}
+
+	public int getBloqueosRestantes()
+	{
+		return this.bloqueosRestantes;
+	}
 		
 //SETTERS SIMPLES -----------------------------------------------------------------------------------------	
 	public void setDato(T dato) {
@@ -332,5 +368,4 @@ public class Casillero<T> {
 		//validar
 		this.vecinos[i+1][j+1][k+1] = casillero;
 	}
-
 }
