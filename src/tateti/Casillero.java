@@ -8,6 +8,7 @@ public class Casillero<T> {
 	
 	private int x = 0;
 	private int y = 0;
+	private int z = 0;
 	private T dato = null;
 	private Casillero<T>[][][] vecinos;
 	
