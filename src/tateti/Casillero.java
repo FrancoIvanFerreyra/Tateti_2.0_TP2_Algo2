@@ -192,6 +192,10 @@ public class Casillero<T> {
 		return y;
 	}
 
+	public int getZ() {
+		return z;
+	}
+
 	public T getDato() {
 		return this.dato;
 	}
