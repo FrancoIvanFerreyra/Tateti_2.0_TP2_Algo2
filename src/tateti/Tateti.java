@@ -6,13 +6,17 @@ import estructuras.Lista;
 import estructuras.ListaSimplementeEnlazada;
 import estructuras.Vector;
 import estructuras.Pila;
+import exportadores.ExportadorDeDatosAImagen;
 //import exportadores.ExportadorDeDatosAImagen;
 import jugadas.Jugada;
 import utiles.Utiles;
 
 import interfaz.Consola;
 import java.awt.Color;
+import java.io.File;
+
 import javax.swing.tree.ExpandVetoException;
+import utiles.AdministradorDeArchivos;
 
 import utiles.ValidacionesUtiles;
 
@@ -32,7 +36,7 @@ public class Tateti {
 	//CONSTRUCTORES -------------------------------------------------------------------------------------------
 
 	public Tateti() throws Exception {
-		this(3, 3,3,  2, 3);
+		this(5, 3,10,  2, 3);
 	}
 
 	public Tateti(int anchoTablero, int altoTablero, int profundidadTablero, int cantidadJugadores,
@@ -130,9 +134,9 @@ public class Tateti {
 		filaDeTurnos.acolar(turnos);
 		Turno turnoActual = null;
 		boolean existeGanador = false;
+		int numeroDeTurno = 1;
 		while(!existeGanador)
 		{
-			tablero.mostrar();
 			//while x turno
 			//Levantar la carta
 			
@@ -171,6 +175,8 @@ public class Tateti {
 				turnoActual.terminarTurno();
 			}
 			filaDeTurnos.acolar(turnoActual);
+			exportarEstadoDelTablero(tablero, "./src/estadosTablero/", numeroDeTurno);
+			numeroDeTurno++;
 		}
 		if(turnoActual != null)
 		{
@@ -278,6 +284,17 @@ public class Tateti {
 
 			cantidadDeTurnos--;
 		}
+	}
+
+	public <T> void exportarEstadoDelTablero(Tablero<T> tablero, String directorioBase, int numeroDeTurno) throws Exception
+	{
+		File directorio = AdministradorDeArchivos.crearDirectorio("./", directorioBase);
+		if(numeroDeTurno == 1)
+		{
+			AdministradorDeArchivos.vaciarDirectorio(directorio);
+		}
+		File directorioTurno = AdministradorDeArchivos.crearDirectorio(directorio, "turno" + numeroDeTurno);
+        ExportadorDeDatosAImagen.exportarTableroPorCapas(tablero, directorioTurno.getPath());
 	}
 
 	//GETTERS SIMPLES -----------------------------------------------------------------------------------------
