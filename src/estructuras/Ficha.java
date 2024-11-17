@@ -1,6 +1,8 @@
 package estructuras;
 
-public class Ficha {
+import interfaces.Bloqueable;
+
+public class Ficha implements Bloqueable{
     //ATRIBUTOS -----------------------------------------------------------------------------------------------
     private Jugador jugador;
     private Estado estado;
@@ -43,5 +45,25 @@ public class Ficha {
      */
     public Estado obtenerEstado(){
         return this.estado;
+    }
+
+    @Override
+    public void incrementarBloqueosRestantes(int cantidadDeBloqueos) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void reducirBloqueosRestantes(int cantidadDeBloqueos) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean estaBloqueado() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public int getBloqueosRestantes() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
