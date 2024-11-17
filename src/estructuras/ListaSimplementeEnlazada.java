@@ -46,6 +46,17 @@ public class ListaSimplementeEnlazada<T> extends Lista<T> {
 		}
 		this.disminuirTamanio();
 	}
+
+	@Override
+	public void intercambiar(int posicion1, int posicion2) throws Exception
+	{
+		validarPosicion(posicion1);
+		validarPosicion(posicion2);
+
+		T auxiliar = this.obtener(posicion1);
+		this.cambiar(this.obtener(posicion2), posicion1);
+		this.cambiar(auxiliar, posicion2);
+	}
 	
 //GETTERS SIMPLES -----------------------------------------------------------------------------------------
 //SETTERS SIMPLES -----------------------------------------------------------------------------------------	

@@ -97,6 +97,8 @@ public abstract class Lista<T> {
 		this.getNodo(posicion).setDato(elemento);
 	}
 
+	public abstract void intercambiar(int posicion1, int posicion2) throws Exception;
+
 	// verifica si un objeto está en la lista.
 	public boolean contiene(T objeto) throws Exception {
 		this.iniciarCursor();
