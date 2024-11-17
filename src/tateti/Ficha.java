@@ -1,10 +1,13 @@
 package tateti;
 
-public class Ficha {
+import interfaces.Bloqueable;
+
+public class Ficha implements Bloqueable{
 //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
 //ATRIBUTOS -----------------------------------------------------------------------------------------------
 		
 	private char simbolo;
+	private int bloqueosRestantes = 0;
 	
 //CONSTRUCTORES -------------------------------------------------------------------------------------------
 	
@@ -26,12 +29,50 @@ public class Ficha {
 	}
 	
 //METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
+
+	@Override
+	public void incrementarBloqueosRestantes(int cantidadDeBloqueos) throws Exception{
+		if(cantidadDeBloqueos < 1)
+		{
+			throw new Exception("Cantidad de bloqueos debe ser mayor a 0");
+		}
+		this.bloqueosRestantes += cantidadDeBloqueos;
+	}
+
+	@Override
+	public void reducirBloqueosRestantes(int cantidadDeBloqueos) throws Exception {
+		if(cantidadDeBloqueos <= 0)
+		{
+			throw new Exception("La cantidad de bloqueos debe ser mayor a 0");
+		}
+		if(this.bloqueosRestantes - cantidadDeBloqueos < 0)
+		{
+			throw new Exception("No se pueden quitar " + cantidadDeBloqueos + "bloqueos, quedan " + this.bloqueosRestantes);
+		}
+		this.bloqueosRestantes -= cantidadDeBloqueos;
+	}
+
+	@Override
+	public boolean estaBloqueado() {
+		return this.bloqueosRestantes > 0;
+	}
+
+
 //GETTERS SIMPLES -----------------------------------------------------------------------------------------
 	
 	public char getSimbolo() {
 		return simbolo;
 	}
+
+	@Override
+    public int getBloqueosRestantes() {
+        return this.bloqueosRestantes;
+    }
 	
 //SETTERS SIMPLES -----------------------------------------------------------------------------------------	
+
+
+
+
 	
 }
