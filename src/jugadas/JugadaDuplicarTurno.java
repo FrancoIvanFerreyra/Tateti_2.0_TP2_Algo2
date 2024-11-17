@@ -18,9 +18,10 @@ public class JugadaDuplicarTurno extends Jugada {
 //METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
 	
 	@Override
-	public void jugar(Tateti tateti, 
+	public boolean jugar(Tateti tateti, 
 						Turno turnoActual) throws Exception {
 		turnoActual.agregarSubturno();
+		return true;
 	}
 
 	@Override

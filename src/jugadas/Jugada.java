@@ -31,7 +31,7 @@ public abstract class Jugada {
 //METODOS GENERALES ---------------------------------------------------------------------------------------
 //METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
 	
-	public abstract void jugar(Tateti tateti, 
+	public abstract boolean jugar(Tateti tateti, 
 								Turno turnoActual) throws Exception;
 
 	public abstract void deshacer(Tateti tateti) throws Exception;

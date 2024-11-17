@@ -5,7 +5,6 @@ import interfaz.Consola;
 import tateti.Casillero;
 import tateti.Tateti;
 import tateti.Turno;
-import estructuras.Lista;
 
 public class JugadaAnularCasillero extends Jugada{
 //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
@@ -21,7 +20,7 @@ public JugadaAnularCasillero(Carta carta) {
 //METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
 
 @Override
-public void jugar(Tateti tateti, Turno turnoActual) throws Exception {
+public boolean jugar(Tateti tateti, Turno turnoActual) throws Exception {
     int x, y, z;
     Casillero casilleroAAnular;
     String mensajeError = "";
@@ -58,6 +57,7 @@ public void jugar(Tateti tateti, Turno turnoActual) throws Exception {
     casilleroAAnular.incrementarBloqueosRestantes(1);
 
     getCasillerosAfectados().agregar(casilleroAAnular);
+    return true;
 
 }
 

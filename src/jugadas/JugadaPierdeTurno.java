@@ -1,6 +1,7 @@
 package jugadas;
 
 import cartas.Carta;
+import interfaz.Consola;
 import tateti.Jugador;
 import tateti.Tateti;
 import tateti.Turno;
@@ -22,12 +23,21 @@ public class JugadaPierdeTurno extends Jugada {
 //METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
 	
 	@Override
-	public void jugar(Tateti tateti, 
+	public boolean jugar(Tateti tateti, 
 						Turno turnoActual) throws Exception {
 		//Preguntar jugador
-		Jugador jugador = null; //del tateti tateti.getJugadores(); //pregunto alguno
-		Turno turno = null; //le pregunto al tateti el proximo turno del jugador
+		Jugador jugadorABloquear = Consola.consultarOpcionAlUsuario(tateti.getJugadores().filtrar(
+			jugador -> {
+				return jugador != turnoActual.getJugador();
+			}
+		), "A que jugador desea bloquear 1 turno?", true);
+		if(jugadorABloquear == null)
+		{
+			return false;
+		} 
+		Turno turno = tateti.obtenerTurno(jugadorABloquear); //le pregunto al tateti el proximo turno del jugador
 		turno.incrementarBloqueosRestantes(1);
+		return true;
 	}
 
 	@Override
