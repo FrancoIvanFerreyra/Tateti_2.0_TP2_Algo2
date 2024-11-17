@@ -1,6 +1,8 @@
 package tateti;
 
 import cartas.Carta;
+import cartas.CartaAnularCasillero;
+import cartas.CartaBloquearFicha;
 import estructuras.Cola;
 import estructuras.Lista;
 import estructuras.ListaSimplementeEnlazada;
@@ -25,6 +27,7 @@ public class Tateti {
 	//ATRIBUTOS -----------------------------------------------------------------------------------------------
 
 	private Tablero<Ficha> tablero = null;
+	private Mazo mazoDeCartas = null;
 	private Vector<Jugador> jugadores = null;
 	private Vector<Color> coloresDeFicha = null;
 	private Vector<Turno> turnos = null;
@@ -36,14 +39,15 @@ public class Tateti {
 	//CONSTRUCTORES -------------------------------------------------------------------------------------------
 
 	public Tateti() throws Exception {
-		this(5, 3,10,  2, 3);
+		this(5, 5,5,  2, 3, 5);
 	}
 
 	public Tateti(int anchoTablero, int altoTablero, int profundidadTablero, int cantidadJugadores,
-					 int cantidadDeFichasPorJugador) throws Exception {
+					 int cantidadDeFichasPorJugador, int cantidadDeCartasPorJugador) throws Exception {
 		this.tablero = new Tablero<Ficha>(anchoTablero, altoTablero, profundidadTablero);
 		this.jugadores = new Vector<Jugador>(cantidadJugadores, null);
 		this.coloresDeFicha = new Vector<Color>(cantidadJugadores, Color.black);
+		this.mazoDeCartas = new Mazo((cantidadDeCartasPorJugador + 2) * cantidadJugadores);
 		for(int i = 1; i <= this.jugadores.getLongitud(); i++)
 		{
 			String titulo = "Jugador " + i + ", por favor ingrese su nombre:";
@@ -57,7 +61,7 @@ public class Tateti {
 			{
 				colorDelJugador = Utiles.generarColorAleatorio();
 			}
-			this.jugadores.agregar(new Jugador(nombreDelJugador, cantidadDeFichasPorJugador, colorDelJugador));
+			this.jugadores.agregar(new Jugador(nombreDelJugador, cantidadDeFichasPorJugador, colorDelJugador, cantidadDeCartasPorJugador));
 		}
 		this.turnos = new Vector<Turno>(this.jugadores.getLongitud(), null);
 		for(int i = 0; i < this.turnos.getLongitud(); i++)
@@ -139,6 +143,7 @@ public class Tateti {
 		{
 			//while x turno
 			//Levantar la carta
+
 			
 			turnoActual = filaDeTurnos.desacolar();
 			Consola.imprimirMensaje("Turno de jugar para " + turnoActual.getJugador().getNombre());
@@ -147,21 +152,63 @@ public class Tateti {
 
 			if (!turnoActual.estaBloqueado()) {
 				turnoActual.iniciarTurno();
+				
+				int dado = 3;
+				for(int i = 0; i < dado; i++)
+				{
+					Carta nuevaCarta = mazoDeCartas.levantarCarta();
+					try {
+						turnoActual.getJugador().agregarCarta(nuevaCarta);
+					} catch (IllegalStateException e) {
+						mazoDeCartas.devolverCarta(nuevaCarta);
+					}
+				}
+
 				while (turnoActual.haySubturnos()) {
 					turnoActual.utilizarSubturno();
-					if (!turnoActual.getJugador().tieneTodasLasFichasEnElTablero(this.tablero)) {
+					if (!turnoActual.getJugador().tieneTodasLasFichasEnElTablero()) {
 						casilleroDestino = jugadaInicial(this.tablero, turnoActual);
 					} else {
 						casilleroDestino = mover(this.tablero, turnoActual);
 					}
-					
-					//Si juega una carta
-					Carta cartaActual = null; //preguntar la carta del jugador
-					if (cartaActual != null) {
-						Jugada jugada = cartaActual.getJugada();	
-						jugada.jugar(this, turnoActual);
-						turnoActual.setJugadaEjecutada(jugada);
-					}				
+
+					boolean cartaJugada = false;
+					while(!cartaJugada)
+					{
+						if(Consola.obtenerConfirmacionDelUsuario("Desea jugar una carta?"))
+						{
+							//Si juega una carta
+							while(!cartaJugada)
+							{
+	
+								Carta cartaActual = Consola.consultarOpcionAlUsuario(
+									turnoActual.getJugador().getCartas().filtrar(
+										carta ->
+										{
+											return carta != null;
+										}
+									), "Seleccione una carta para jugar", true); //preguntar la carta del jugador
+								if(cartaActual == null)
+								{
+									break;
+								}
+
+								Jugada jugada = cartaActual.getJugada();
+								if(!jugada.jugar(this, turnoActual))
+								{
+									continue;
+								}	
+								turnoActual.setJugadaEjecutada(jugada);
+								cartaJugada = true;	
+								turnoActual.getJugador().quitarCarta(cartaActual);		
+							}						
+						}
+						else
+						{
+							cartaJugada = true;
+						}
+					}
+
 				}
 				Consola.imprimirMensaje("Finalizo tu turno!");
 				turnoActual.terminarTurno();
@@ -190,17 +237,32 @@ public class Tateti {
 		Jugador jugador = turnoActual.getJugador();
 		Ficha ficha = new Ficha(jugador.getNombre().charAt(0));
 		tablero.actualizarRelacionDatoColor(ficha, jugador.getColor()); //crea
-		int x = Consola.obtenerNumeroEnteroDelUsuario("Ingrese coordenada x de la nueva ficha:"); //pregunta la posicion
-		int y = Consola.obtenerNumeroEnteroDelUsuario("Ingrese coordenada y de la nueva ficha:");
-		int z = Consola.obtenerNumeroEnteroDelUsuario("Ingrese coordenada z de la nueva ficha:");
+		int x = Consola.obtenerNumeroEnteroEnRangoDelUsuario("Ingrese coordenada x de la nueva ficha (entre 1 y " + tablero.getAncho() + "):", 1, tablero.getAncho()); //pregunta la posicion
+		int y = Consola.obtenerNumeroEnteroEnRangoDelUsuario("Ingrese coordenada y de la nueva ficha: (entre 1 y " + tablero.getAlto() + "):", 1, tablero.getAlto());
+		int z = Consola.obtenerNumeroEnteroEnRangoDelUsuario("Ingrese coordenada z de la nueva ficha: (entre 1 y " + tablero.getProfundidad() + "):", 1, tablero.getProfundidad());
 
 		Casillero<Ficha> casillero = tablero.getCasillero(x, y, z);
-		while (casillero.estaOcupado()) {
-			Consola.imprimirMensaje("El casillero (" + x + ", " + y + ", " + z + ") ya esta ocupado por otra ficha!");
-			x = Consola.obtenerNumeroEnteroDelUsuario("Ingrese coordenada x de la nueva ficha:"); //pregunta la posicion
-			y = Consola.obtenerNumeroEnteroDelUsuario("Ingrese coordenada y de la nueva ficha:");
-			z = Consola.obtenerNumeroEnteroDelUsuario("Ingrese coordenada z de la nueva ficha:");
-			casillero = tablero.getCasillero(x, y, z);
+		while (casillero == null || casillero.estaOcupado() || casillero.estaBloqueado()) {
+			if(casillero.estaBloqueado())
+			{
+				Consola.imprimirMensaje("El casillero (" + x + ", " + y + ", " + z + ") esta bloqueado!");
+			}
+			if(casillero.estaOcupado())
+			{
+				Consola.imprimirMensaje("El casillero (" + x + ", " + y + ", " + z + ") ya esta ocupado por otra ficha!");
+			}
+			x = Consola.obtenerNumeroEnteroEnRangoDelUsuario("Ingrese coordenada x de la nueva ficha (entre 1 y " + tablero.getAncho() + "):", 1, tablero.getAncho()); //pregunta la posicion
+			y = Consola.obtenerNumeroEnteroEnRangoDelUsuario("Ingrese coordenada y de la nueva ficha: (entre 1 y " + tablero.getAlto() + "):", 1, tablero.getAlto());
+			z = Consola.obtenerNumeroEnteroEnRangoDelUsuario("Ingrese coordenada z de la nueva ficha: (entre 1 y " + tablero.getProfundidad() + "):", 1, tablero.getProfundidad());
+			
+			if(tablero.existeElCasillero(x, y, z))
+			{
+				casillero = tablero.getCasillero(x, y, z);
+			}
+			else
+			{
+				casillero = null;
+			}
 		}
 		casillero.setDato(ficha);
 		jugador.agregarFicha(ficha);
@@ -212,26 +274,34 @@ public class Tateti {
 	public Casillero<Ficha> mover(Tablero<Ficha> tablero, 
 									Turno turnoActual) throws Exception {
 		Jugador jugador = turnoActual.getJugador();
-		Ficha ficha = null;
-		ficha = Consola.consultarOpcionAlUsuario(jugador.getFichas().filtrar(f -> 
-											{
-												try 
-												{
-													return tablero.tieneMovimientosPosibles(f);
-												} 
-												catch (Exception e) 
-												{
-													return false;
-												}
-											}),
-			"Seleccione una ficha para mover"); //Preguntar la ficha al usuario
-		
+		Ficha fichaAMover = null;
+		Movimiento movimiento = null;
+		while(movimiento == null)
+		{
+			try {
+				fichaAMover = Consola.consultarOpcionAlUsuario(jugador.getFichas().filtrar(ficha -> 
+				{
+					try 
+					{
+						return !ficha.estaBloqueado() &&
+						tablero.tieneMovimientosPosibles(ficha);
+					} 
+					catch (Exception e) 
+					{
+						return false;
+					}
+				}),
+	"Seleccione una ficha para mover", false); //Preguntar la ficha al usuario
+	
+			} catch (Exception e) {
+				Consola.imprimirMensaje("No puede mover ninguna de sus fichas");
+				return getTablero().getCasillero(1,1,1);
+			}
+			movimiento = Consola.consultarOpcionAlUsuario(tablero.obtenerMovimientosPosibles(fichaAMover),
+									 "A que direccion desea mover la ficha?", true); //Pregunta al usuario
+		}
 
-
-		Movimiento movimiento = Consola.consultarOpcionAlUsuario(
-								tablero.obtenerMovimientosPosibles(ficha),
-								 "A que direccion desea mover la ficha?"); //Pregunta al usuario
-		return mover(tablero, turnoActual, ficha, movimiento);
+		return mover(tablero, turnoActual, fichaAMover, movimiento);
 	}
 
 	public Casillero<Ficha> mover(Tablero<Ficha> tablero, Turno turnoActual, 
