@@ -155,7 +155,9 @@ public class Vector<T extends Object> {
 		int i = 1;
 	
 		while (i <= this.getLongitud()) {
-			if (this.obtener(i).equals(objeto)) {
+
+			if (this.obtener(i) != null &&
+                this.obtener(i).equals(objeto)) {
 				return true;
 			}
             i++;
@@ -171,12 +173,20 @@ public class Vector<T extends Object> {
             return this.datos.length;
         }
 
-        public int contarElementos() throws Exception
+        public int contarElementos()
         {
             int cantidadDeElementos = 0;
-            for(int i = 1; i < this.getLongitud(); i++)
+            for(int i = 1; i <= this.getLongitud(); i++)
             {
-                if(this.obtener(i) != this.datoInicial)
+                T elemento = null;
+                try 
+                {
+                    elemento = this.obtener(i);
+
+                } catch (Exception e) {
+                    continue;
+                }
+                if(elemento != this.datoInicial)
                 {
                     cantidadDeElementos++;
                 }
