@@ -3,8 +3,8 @@ package interfaz;
 import estructuras.Lista;
 import estructuras.ListaSimplementeEnlazada;
 import estructuras.Vector;
-
 import java.lang.reflect.Method;
+import utiles.ValidacionesUtiles;
 public class Consola {
 
     public static void imprimirMensaje(String mensaje)
@@ -12,7 +12,7 @@ public class Consola {
         System.out.println(mensaje);
     }
 
-   public static <T> String imprimirMenuDeOpciones(Lista<T> opciones, String titulo) throws Exception{
+   public static <T> String imprimirMenuDeOpciones(Lista<T> opciones, String titulo, boolean tieneOpcionParaVolver) throws Exception{
         String resultado = titulo + "\n";
        for (int i = 1; i <= opciones.getTamanio(); i++) 
        {
@@ -23,22 +23,30 @@ public class Consola {
                resultado += i + "- " + opcion.toString() + "\n";  // Si tiene, imprime la cadena
            }
        }
+       if(tieneOpcionParaVolver)
+       {
+        resultado += "0- Volver atras\n";
+        }
        System.out.println(resultado);
        return resultado;
    }
 
-   public static <T> T consultarOpcionAlUsuario(Lista<T> opciones, String titulo) throws Exception
+   public static <T> T consultarOpcionAlUsuario(Lista<T> opciones, String titulo, boolean tieneOpcionParaVolver) throws Exception
    {
-        imprimirMenuDeOpciones(opciones, titulo);
+        if(opciones.estaVacia())
+        {
+            throw new Exception("Debe existir al menos una opcion");
+        }
+        imprimirMenuDeOpciones(opciones, titulo, tieneOpcionParaVolver);
         int indiceElegido = obtenerNumeroEnteroDelUsuario("Opcion seleccionada:");
-        return opciones.obtener(indiceElegido);
+        return (indiceElegido == 0) ? null : opciones.obtener(indiceElegido);
    }
 
-   public static <T> T consultarOpcionAlUsuario(Vector<T> opciones, String titulo) throws Exception
+   public static <T> T consultarOpcionAlUsuario(Vector<T> opciones, String titulo, boolean tieneOpcionParaVolver) throws Exception
    {
         Lista<T> lista = new ListaSimplementeEnlazada<T>();
         lista.agregar(opciones);
-        return consultarOpcionAlUsuario(lista, titulo);
+        return consultarOpcionAlUsuario(lista, titulo, tieneOpcionParaVolver);
    }
 
    
@@ -61,6 +69,26 @@ public class Consola {
     {
         System.out.println(titulo + "\t");
         return Teclado.leerEntero();
+    }
+
+    public static boolean obtenerConfirmacionDelUsuario(String titulo) throws Exception
+    {
+        Lista<String> opciones = new ListaSimplementeEnlazada<String>();
+        opciones.agregar("SI");
+        opciones.agregar("NO");
+        return "SI".equals(consultarOpcionAlUsuario(opciones, titulo, false));
+    }
+
+    public static int obtenerNumeroEnteroEnRangoDelUsuario(String titulo, int minimoValido, int maximoValido)
+    {
+        System.out.println(titulo + "\t");
+        int numero = Teclado.leerEntero();
+        while(!ValidacionesUtiles.estaEntre(numero, minimoValido, maximoValido))
+        {
+            imprimirMensaje("Por favor ingrese un numero entre " + minimoValido + " y " + maximoValido + "\t");
+            numero = Teclado.leerEntero();
+        }
+        return numero;
     }
 
     public static void limpiar() {
