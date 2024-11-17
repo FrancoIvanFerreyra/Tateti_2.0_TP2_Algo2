@@ -200,7 +200,8 @@ public class Tablero<T> {
 		for(Movimiento movimiento : Movimiento.values())
 		{
 			if (casillero.existeElVecino(movimiento)
-			 && !casillero.getCasilleroVecino(movimiento).estaOcupado())
+			 && !casillero.getCasilleroVecino(movimiento).estaOcupado()
+			 && !casillero.getCasilleroVecino(movimiento).estaBloqueado())
 			 {
 				return true;
 			 }
