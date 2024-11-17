@@ -3,6 +3,7 @@ package tateti;
 import java.awt.Color;
 import estructuras.Vector;
 import utiles.ValidacionesUtiles;
+import cartas.Carta;
 
 public class Jugador {
 
@@ -10,14 +11,16 @@ public class Jugador {
 //ATRIBUTOS -----------------------------------------------------------------------------------------------
 	private String nombre;
 	private Vector<Ficha> fichas;
+	private Vector<Carta> cartas;
 	private Color color;
 //CONSTRUCTORES -------------------------------------------------------------------------------------------
 
-	public Jugador(String nombre, int cantidadDeFichas, Color color) throws Exception
+	public Jugador(String nombre, int cantidadDeFichas, Color color, int cantidadDeCartas) throws Exception
 	{
 		this.nombre = nombre;
 		this.fichas = new Vector<Ficha>(cantidadDeFichas, null);
 		this.color = color;
+		this.cartas = new Vector<Carta>(cantidadDeCartas, null);
 	}
 //METODOS DE CLASE ----------------------------------------------------------------------------------------
 //METODOS GENERALES ---------------------------------------------------------------------------------------
@@ -30,18 +33,13 @@ public class Jugador {
 
 //METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
 	
-	public boolean tieneTodasLasFichasEnElTablero(Tablero<Ficha> tablero) throws Exception{
-		boolean resultado = true;
-		int i = 1;
-		while(resultado && i <= fichas.getLongitud())
-		{
-			if(fichas.obtener(i) == null)
-			{
-				return false;
-			}
-			i++;
-		}
-		return true;
+	public boolean tieneTodasLasFichasEnElTablero(){
+		return this.fichas.contarElementos() == this.fichas.getLongitud();
+	}
+
+	public boolean tieneAlgunaFichaEnElTablero()
+	{
+		return this.fichas.contarElementos() > 0;
 	}
 
 	public void agregarFicha(Ficha ficha) throws Exception
@@ -55,6 +53,54 @@ public class Jugador {
 			throw new Exception("Se agrego el maximo de fichas (" + this.fichas.getLongitud() + ")");
 		}
 		this.fichas.agregar(ficha);
+	}
+
+	public void agregarCarta(Carta carta) throws Exception
+	{
+		if(carta == null)
+		{
+			throw new Exception("La carta no puede ser null");
+		}
+		if(this.cartas.contarElementos() >= this.cartas.getLongitud())
+		{
+			throw new IllegalStateException("Se agrego el maximo de cartas (" + this.cartas.getLongitud() + ")");
+		}
+		this.cartas.agregar(carta);	
+	}
+
+	public void quitarCarta(int posicion) throws Exception
+	{
+		if(!ValidacionesUtiles.estaEntre(posicion, 1, this.cartas.getLongitud()))
+		{
+			throw new Exception("La posicion debe estar entre 1 y " + this.cartas.getLongitud());
+		}
+		if(this.cartas.obtener(posicion) == null)
+		{
+			throw new Exception("No existe una carta en esa posicion");
+		}
+		this.cartas.remover(posicion);
+	}
+
+	public void quitarCarta(Carta carta) throws Exception
+	{
+		if(carta == null)
+		{
+			throw new Exception("La carta no puede ser null");
+		}
+		if(!this.cartas.contiene(carta))
+		{
+			throw new Exception("El jugador no posee esa carta");
+		}
+		int i = 1;
+		while(i <= this.cartas.getLongitud())
+		{
+			if(this.cartas.obtener(i) == carta)
+			{
+				this.quitarCarta(i);
+				return;
+			}
+			i++;
+		}
 	}
 	
 //GETTERS SIMPLES -----------------------------------------------------------------------------------------
@@ -75,6 +121,15 @@ public class Jugador {
 			resultado.agregar(this.fichas.obtener(i));
 		}
 		return resultado;
+	}
+
+	public Vector<Carta> getCartas() throws Exception
+	{
+		Vector<Carta> resultado = new Vector<Carta>(this.cartas.getLongitud(), null);
+		for (int i = 1; i <= this.cartas.getLongitud(); i++) {
+			resultado.agregar(this.cartas.obtener(i));
+		}
+		return resultado;		
 	}
 
 	public String getNombre()
