@@ -42,8 +42,7 @@ public class JugadaCambiarColorFicha extends Jugada {
 
                 try {
                     // Seleccionar ficha a cambiar
-                    fichaACambiarColor = Consola.consultarOpcionAlUsuario(jugadorAfectado.getFichas().filtrar(
-                        ficha -> {
+                    fichaACambiarColor = Consola.consultarOpcionAlUsuario(jugadorAfectado.getFichas().filtrar( ficha -> {
                             try{
                                 return tateti.getTablero().contiene(ficha) && !ficha.estaBloqueado();
                             } catch (Exception e){
