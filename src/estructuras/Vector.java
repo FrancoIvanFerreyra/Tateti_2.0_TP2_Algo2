@@ -66,7 +66,7 @@ public class Vector<T extends Object> {
             validarPosicion(posicion);
             this.datos[posicion - 1] = this.datoInicial;
         }
-    
+
         /**
          * pre: 
          * @param dato: valor a guardar
@@ -165,6 +165,17 @@ public class Vector<T extends Object> {
 
 		return false;
 	}
+    public int obtenerPosicion(T objeto) throws Exception{
+        int i = 0;
+        while(i <= this.getLongitud()){
+            if(this.obtener(i)!= null && this.obtener(i).equals(objeto)){
+                return i;
+            }
+            i++;
+        }
+        i = -1;
+        return i;
+    }
 
             
     //GETTERS SIMPLES -----------------------------------------------------------------------------------------
