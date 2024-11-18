@@ -4,6 +4,7 @@ import static org.junit.Assert.fail;
 
 
 import estructuras.Lista;
+import estructuras.ListaOrdenableSimplementeEnlazada;
 import estructuras.ListaSimplementeEnlazada;
 import java.awt.Color;
 import java.util.Random;
@@ -87,5 +88,59 @@ public class Utiles {
         
         return new Color(rojo, verde, azul);
     }
+
+    public static boolean esColorOscuro(Color color) {
+        // Convertir los componentes RGB a escala [0, 1]
+        double r = color.getRed() / 255.0;
+        double g = color.getGreen() / 255.0;
+        double b = color.getBlue() / 255.0;
+    
+        // Ajustar los valores RGB según la fórmula de luminancia relativa
+        r = (r <= 0.03928) ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4);
+        g = (g <= 0.03928) ? g / 12.92 : Math.pow((g + 0.055) / 1.055, 2.4);
+        b = (b <= 0.03928) ? b / 12.92 : Math.pow((b + 0.055) / 1.055, 2.4);
+    
+        // Calcular la luminancia relativa
+        double luminancia = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    
+        // Determinar si es oscuro
+        return luminancia < 0.5; // Umbral común para considerar un color "oscuro"
+    }
+    
+
+    public static int agregarOrdenadoSinRepetir(int numero, ListaOrdenableSimplementeEnlazada<Integer> lista) throws Exception
+    {
+        if(lista.contiene(numero))
+        {
+            return -1;
+        }
+        if(lista.estaVacia())
+        {
+            lista.agregar(numero);
+            return 1;
+        }
+        return lista.insertarOrdenado(numero);
+    }
+
+    public static void rellenarExacto(Lista<Integer> lista, int rango) throws Exception {
+        if (lista == null || lista.getTamanio() < 2 || rango < 1) {
+            throw new IllegalArgumentException("La lista debe contener al menos 2 elementos y el rango debe ser mayor a 0.");
+        }
+    
+        int indice = 2; 
+        while (indice <= lista.getTamanio()) {
+            int elementoInferior = (lista.obtener(indice) - lista.obtener(indice - 1) > 0) ? lista.obtener(indice - 1) : lista.obtener(indice);
+            int elementoSuperior = (lista.obtener(indice) - lista.obtener(indice - 1) > 0) ? lista.obtener(indice) : lista.obtener(indice - 1);
+    
+            if (elementoSuperior - elementoInferior == rango + 1) {
+                lista.agregar(elementoInferior + rango, indice); 
+                indice++; 
+            }
+            indice++;
+        }
+    }
+    
+    
+
 
 }
