@@ -1,98 +1,80 @@
 package pruebas;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
-
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import estructuras.Estado;
-import estructuras.Ficha;
-import estructuras.Jugador;
-import estructuras.TipoEstado;
-
+import tateti.Ficha;
 
 public class PruebaDeFicha {
-    private Jugador jugadorPrueba;
-    private Estado estadoPrueba;
+    private Ficha ficha;
 
     @BeforeEach
-    public void crearInstanciasDePrueba() {
-        try {
-            jugadorPrueba = new Jugador(1);
-            estadoPrueba = new Estado();
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Excepción: " + e.getMessage());
-        }
+    public void setUp() {
+        ficha = new Ficha('X');
     }
 
     @Test
-    public void testJugadorNoNulo() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Ficha(null);
+    public void testConstructorFicha() {
+        Assertions.assertEquals('X', ficha.getSimbolo(), "El símbolo de la ficha debe ser X.");
+    }
+
+    @Test
+    public void testEsElMismoSimbolo() {
+        Ficha otraFicha = new Ficha('X');
+        Assertions.assertTrue(ficha.esElMismoSimbolo(otraFicha), "Las fichas deberían tener el mismo símbolo.");
+
+        otraFicha = new Ficha('O');
+        Assertions.assertFalse(ficha.esElMismoSimbolo(otraFicha), "Las fichas no deberían tener el mismo símbolo.");
+    }
+
+    @Test
+    public void testToString() {
+        Assertions.assertEquals("X", ficha.toString(), "El método toString debería devolver el símbolo de la ficha como cadena.");
+    }
+
+    @Test
+    public void testIncrementarBloqueosRestantes() throws Exception {
+        ficha.incrementarBloqueosRestantes(3);
+        Assertions.assertEquals(3, ficha.getBloqueosRestantes(), "El número de bloqueos restantes debería ser 3.");
+
+        Exception exception = Assertions.assertThrows(Exception.class, () -> {
+            ficha.incrementarBloqueosRestantes(-1);
         });
-        assertEquals("El jugador no puede ser nulo", exception.getMessage());
-    }
-
-
-    @Test
-    public void testAsignacionCorrectaDeJugador() {
-        try {
-            Ficha ficha = new Ficha(jugadorPrueba);
-            assertEquals(jugadorPrueba, ficha.obtenerJugador());
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Excepción: " + e.getMessage());
-        }
+        Assertions.assertEquals("Cantidad de bloqueos debe ser mayor a 0", exception.getMessage());
     }
 
     @Test
-    public void testAsignacionCorrectaDeEstado() {
-        try {
-            Ficha ficha = new Ficha(jugadorPrueba);
-            assertNotNull(ficha.obtenerEstado());
-            assertEquals(estadoPrueba.obtenerTipoEstado(), ficha.obtenerEstado().obtenerTipoEstado());
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Excepción: " + e.getMessage());
-        }
+    public void testReducirBloqueosRestantes() throws Exception {
+        ficha.incrementarBloqueosRestantes(5);
+        ficha.reducirBloqueosRestantes(2);
+        Assertions.assertEquals(3, ficha.getBloqueosRestantes(), "Los bloqueos restantes deberían ser 3 después de reducir 2.");
+
+        Exception exception = Assertions.assertThrows(Exception.class, () -> {
+            ficha.reducirBloqueosRestantes(0);
+        });
+        Assertions.assertEquals("La cantidad de bloqueos debe ser mayor a 0", exception.getMessage());
+
+        exception = Assertions.assertThrows(Exception.class, () -> {
+            ficha.reducirBloqueosRestantes(10);
+        });
+        Assertions.assertEquals("No se pueden quitar 10bloqueos, quedan 3", exception.getMessage());
     }
 
     @Test
-    public void testObtenerJugador() {
-        try {
-            Ficha ficha = new Ficha(jugadorPrueba);
-            assertEquals(jugadorPrueba, ficha.obtenerJugador());
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Excepción: " + e.getMessage());
-        }
+    public void testEstaBloqueado() throws Exception {
+        Assertions.assertFalse(ficha.estaBloqueado(), "La ficha no debería estar bloqueada inicialmente.");
+
+        ficha.incrementarBloqueosRestantes(2);
+        Assertions.assertTrue(ficha.estaBloqueado(), "La ficha debería estar bloqueada después de incrementar bloqueos.");
+
+        ficha.reducirBloqueosRestantes(2);
+        Assertions.assertFalse(ficha.estaBloqueado(), "La ficha no debería estar bloqueada después de reducir los bloqueos.");
     }
 
     @Test
-    public void testObtenerEstado() {
-        try {
-            Ficha ficha = new Ficha(jugadorPrueba);
-            assertEquals(estadoPrueba.obtenerTipoEstado(), ficha.obtenerEstado().obtenerTipoEstado());
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Excepción: " + e.getMessage());
-        }
-    }
-
-    @Test
-    public void testCambiarEstado() {
-        try {
-            Ficha ficha = new Ficha(jugadorPrueba);
-            ficha.obtenerEstado().bloquear();
-            assertEquals(TipoEstado.BLOQUEADO, ficha.obtenerEstado().obtenerTipoEstado());
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Excepción: " + e.getMessage());
-        }
+    public void testCambiarColor() {
+        ficha.cambiarColor('O');
+        Assertions.assertEquals('O', ficha.getSimbolo(), "El símbolo de la ficha debería ser O después de cambiarlo.");
     }
 }
