@@ -33,6 +33,7 @@ public class Tateti {
 	private Vector<Turno> turnos = null;
 	private Pila<Turno> historialTurnos = null;
 	private int cantidadDeFichasPorJugador;
+	private Pila<EstadoJuego> hitorialEstado = null;
 	
 	//demas cosas, jugadores, cartas, etc
 
@@ -43,11 +44,12 @@ public class Tateti {
 	}
 
 	public Tateti(int anchoTablero, int altoTablero, int profundidadTablero, int cantidadJugadores,
-					 int cantidadDeFichasPorJugador, int cantidadDeCartasPorJugador) throws Exception {
+					int cantidadDeFichasPorJugador, int cantidadDeCartasPorJugador) throws Exception {
 		this.tablero = new Tablero<Ficha>(anchoTablero, altoTablero, profundidadTablero);
 		this.jugadores = new Vector<Jugador>(cantidadJugadores, null);
 		this.coloresDeFicha = new Vector<Color>(cantidadJugadores, Color.black);
 		this.mazoDeCartas = new Mazo((cantidadDeCartasPorJugador + 2) * cantidadJugadores);
+		this.hitorialEstado = new Pila<>();
 		for(int i = 1; i <= this.jugadores.getLongitud(); i++)
 		{
 			String titulo = "Jugador " + i + ", por favor ingrese su nombre:";
@@ -366,7 +368,15 @@ public class Tateti {
 		File directorioTurno = AdministradorDeArchivos.crearDirectorio(directorio, "turno" + numeroDeTurno);
         ExportadorDeDatosAImagen.exportarTableroPorCapas(tablero, directorioTurno.getPath());
 	}
-
+	public EstadoJuego obtenerEstadoJuego(){
+		return new EstadoJuego(getTablero(), getJugadores(), getTurnos());
+	}
+	public void restaurarEstado(EstadoJuego estado) {
+        this.tablero = estado.getTablero();
+        this.jugadores = estado.getJugadores();
+        this.turnos = estado.getTurno();
+    }
+	
 	//GETTERS SIMPLES -----------------------------------------------------------------------------------------
 	
 	public Tablero<Ficha> getTablero() {
@@ -381,6 +391,11 @@ public class Tateti {
 	{
 		return this.historialTurnos;
 	}
-	
+	public Vector<Turno> getTurnos(){
+		return this.turnos;
+	}
+	public Pila<EstadoJuego> getHistorialDeEstado(){
+		return this.hitorialEstado;
+	}
 	//SETTERS SIMPLES -----------------------------------------------------------------------------------------	
 }
