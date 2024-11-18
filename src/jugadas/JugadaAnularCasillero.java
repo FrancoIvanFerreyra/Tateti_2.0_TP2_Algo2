@@ -55,8 +55,9 @@ public boolean jugar(Tateti tateti, Turno turnoActual) throws Exception {
             casilleroAAnular.estaBloqueado());
 
     casilleroAAnular.incrementarBloqueosRestantes(1);
-
+    tateti.getTablero().getCasillerosBloqueados().agregar(casilleroAAnular);
     getCasillerosAfectados().agregar(casilleroAAnular);
+    
     return true;
 
 }
@@ -70,6 +71,18 @@ public void deshacer(Tateti tateti) throws Exception {
         if(casilleroAfectado.estaBloqueado())
         {
             casilleroAfectado.reducirBloqueosRestantes(1);
+            tateti.getTablero().getCasillerosBloqueados().iniciarCursor();
+            int i = 1;
+            while(tateti.getTablero().getCasillerosBloqueados().avanzarCursor())
+            {
+                if(tateti.getTablero().getCasillerosBloqueados().obtenerCursor().equals(casilleroAfectado))
+                {
+                    tateti.getTablero().getCasillerosBloqueados().remover(i);
+                    break;
+                }
+                i++;
+            }
+
         }
     }
 }
