@@ -154,14 +154,41 @@ public class Tateti {
 				turnoActual.iniciarTurno();
 				
 				int dado = 3;
+				Consola.imprimirMensaje("-----------------------------CARTAS-------------------------------");
 				for(int i = 0; i < dado; i++)
 				{
-					Carta nuevaCarta = mazoDeCartas.levantarCarta();
+					Carta nuevaCarta;
+					try{
+						Consola.imprimirMensaje("Levantando del mazo la carta " + (i + 1) + " de " + dado + "...");
+						nuevaCarta = mazoDeCartas.levantarCarta();
+					}
+					catch(Exception e)
+					{
+						try
+						{
+							Consola.imprimirMensaje("No hay cartas que levantar. Mezclando las ya usadas...");
+							mazoDeCartas.mezclar();
+						}
+						catch(Exception ex)
+						{
+							Consola.imprimirMensaje("No hay cartas que mezclar. Todas estan en juego!");
+							break;
+						}
+						Consola.imprimirMensaje("Cartas mezcladas!");
+						Consola.imprimirMensaje("Levantando del mazo la carta " + (i + 1) + " de " + dado + "...");
+						nuevaCarta = mazoDeCartas.levantarCarta();
+					}
 					try {
+						Consola.imprimirMensaje("Guardando la carta...");
 						turnoActual.getJugador().agregarCarta(nuevaCarta);
 					} catch (IllegalStateException e) {
+						Consola.imprimirMensaje("No podes tener mas cartas. Devolviendo la carta levantada al mazo...");
 						mazoDeCartas.devolverCarta(nuevaCarta);
+						continue;
 					}
+					Consola.imprimirMensaje("Se guardo la carta " + nuevaCarta.getTitulo());
+					Consola.imprimirMensaje("------------------------------------------------------------------");
+
 				}
 
 				while (turnoActual.haySubturnos()) {
@@ -200,7 +227,8 @@ public class Tateti {
 								}	
 								turnoActual.setJugadaEjecutada(jugada);
 								cartaJugada = true;	
-								turnoActual.getJugador().quitarCarta(cartaActual);		
+								turnoActual.getJugador().quitarCarta(cartaActual);
+								mazoDeCartas.descartarCarta(cartaActual);		
 							}						
 						}
 						else
