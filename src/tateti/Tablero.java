@@ -13,6 +13,7 @@ public class Tablero<T> {
 	
 	private Lista<RelacionDatoCasillero<T>> posicionDeLosDatos = null;
 	private Lista<RelacionDatoColor<T>> coloresDeLosDatos = null;
+	private Lista<Casillero<T>> casillerosBloqueados = null;
 	private Lista<Lista<Lista<Casillero<T>>>> tablero = null;
 	private int ancho = 0;
 	private int alto = 0;
@@ -35,6 +36,7 @@ public class Tablero<T> {
 		this.tablero = new ListaSimplementeEnlazada<Lista<Lista<Casillero<T>>>>();
 		this.posicionDeLosDatos = new ListaSimplementeEnlazada<RelacionDatoCasillero<T>>();
 		this.coloresDeLosDatos = new ListaSimplementeEnlazada<RelacionDatoColor<T>>();
+		this.casillerosBloqueados = new ListaSimplementeEnlazada<Casillero<T>>();
 
 		for( int i = 1; i <= ancho; i++) {
 			Lista<Lista<Casillero<T>>> fila = new ListaSimplementeEnlazada<Lista<Casillero<T>>>();
@@ -273,6 +275,11 @@ public String toString(){
 	public Lista<RelacionDatoColor<T>> getColoresDeLosDatos()
 	{
 		return this.coloresDeLosDatos;
+	}
+
+	public Lista<Casillero<T>> getCasillerosBloqueados()
+	{
+		return this.casillerosBloqueados;
 	}
 
 	public void actualizarRelacionDatoCasillero(T dato, Casillero<T> casillero) throws Exception
