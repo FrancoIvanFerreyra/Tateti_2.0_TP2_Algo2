@@ -1,7 +1,6 @@
 package tateti;
 
 import interfaces.Bloqueable;
-import java.awt.Color;
 
 public class Ficha implements Bloqueable{
 //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
@@ -9,14 +8,12 @@ public class Ficha implements Bloqueable{
 		
 	private char simbolo;
 	private int bloqueosRestantes = 0;
-	private Color color = null;
 	
 //CONSTRUCTORES -------------------------------------------------------------------------------------------
 	
-	public Ficha(char simbolo, Color color) {
+	public Ficha(char simbolo) {
 		//validar
 		this.simbolo = simbolo;
-		this.color = color;
 	}
 	
 //METODOS DE CLASE ----------------------------------------------------------------------------------------
@@ -71,12 +68,7 @@ public class Ficha implements Bloqueable{
     public int getBloqueosRestantes() {
         return this.bloqueosRestantes;
     }
-	public Color getColor() {
-        return color;  // Método para obtener el color de la ficha
-    }
-	public void setColor(Color color){
-		this.color = color;
-	}
+
 //SETTERS SIMPLES -----------------------------------------------------------------------------------------	
 
 

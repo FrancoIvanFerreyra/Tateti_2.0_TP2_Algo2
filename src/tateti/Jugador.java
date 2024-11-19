@@ -52,7 +52,6 @@ public class Jugador {
 		{
 			throw new Exception("Se agrego el maximo de fichas (" + this.fichas.getLongitud() + ")");
 		}
-		ficha.setColor(this.color);
 		this.fichas.agregar(ficha);
 	}
 
