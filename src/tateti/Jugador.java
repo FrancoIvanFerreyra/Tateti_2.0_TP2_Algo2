@@ -56,6 +56,41 @@ public class Jugador {
 		this.fichas.agregar(ficha);
 	}
 
+	public void quitarFicha(Ficha ficha) throws Exception
+	{
+		if(ficha == null)
+		{
+			throw new Exception("La Ficha no puede ser null");
+		}
+		if(!this.fichas.contiene(ficha))
+		{
+			throw new Exception("El jugador no posee esa Ficha");
+		}
+		int i = 1;
+		while(i <= this.fichas.getLongitud())
+		{
+			if(this.fichas.obtener(i) == ficha)
+			{
+				this.quitarFicha(i);
+				return;
+			}
+			i++;
+		}
+	}
+
+	public void quitarFicha(int posicion) throws Exception
+	{
+		if(!ValidacionesUtiles.estaEntre(posicion, 1, this.fichas.getLongitud()))
+		{
+			throw new Exception("La posicion debe estar entre 1 y " + this.fichas.getLongitud());
+		}
+		if(this.fichas.obtener(posicion) == null)
+		{
+			throw new Exception("No existe una ficha en esa posicion");
+		}
+		this.fichas.remover(posicion);
+	}
+
 	public void agregarCarta(Carta carta) throws Exception
 	{
 		if(carta == null)
