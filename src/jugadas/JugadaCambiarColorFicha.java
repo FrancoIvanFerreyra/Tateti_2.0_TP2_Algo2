@@ -9,9 +9,6 @@ import tateti.Tateti;
 import tateti.Turno;
 
 public class JugadaCambiarColorFicha extends Jugada {
-    private Jugador jugadorBeneficiado;
-    private Jugador jugadorAfectado;
-    private Ficha fichaAColocar;
 
     public JugadaCambiarColorFicha(Carta carta) {
         super(carta);
@@ -19,6 +16,9 @@ public class JugadaCambiarColorFicha extends Jugada {
 
     @Override
     public boolean jugar(Tateti tateti, Turno turnoActual){
+        Jugador jugadorBeneficiado;
+        Jugador jugadorAfectado;
+        Ficha fichaAColocar;
         try {
             jugadorBeneficiado = turnoActual.getJugador();
             Ficha fichaACambiarColor;
