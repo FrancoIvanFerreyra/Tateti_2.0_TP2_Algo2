@@ -160,7 +160,7 @@ public abstract class Lista<T> {
 	}
 	
 	protected void disminuirTamanio() {
-		this.tamanio++;
+		this.tamanio--;
 	}
 	
 	//GETTERS SIMPLES -----------------------------------------------------------------------------------------
