@@ -59,11 +59,12 @@ public class Tateti {
 				nombreDelJugador = Consola.obtenerStringDelUsuario("Nombre inválido!\n" + titulo);
 			}
 			Color colorDelJugador = Utiles.generarColorAleatorio();
-			while(coloresDeFicha.contiene(colorDelJugador))
+			while(Utiles.esColorDistinto(colorDelJugador, this.coloresDeFicha))
 			{
 				colorDelJugador = Utiles.generarColorAleatorio();
 			}
 			this.jugadores.agregar(new Jugador(nombreDelJugador, cantidadDeFichasPorJugador, colorDelJugador, cantidadDeCartasPorJugador));
+			this.coloresDeFicha.agregar(colorDelJugador);
 		}
 		this.turnos = new Vector<Turno>(this.jugadores.getLongitud(), null);
 		for(int i = 0; i < this.turnos.getLongitud(); i++)
