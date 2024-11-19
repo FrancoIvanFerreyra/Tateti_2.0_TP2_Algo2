@@ -299,10 +299,32 @@ public String toString(){
 			if(relacionDatoCasillero.getDato().equals(dato))
 			{
 				relacionDatoCasillero.setCasillero(casillero);
-				break;
+				return;
 			}
 		}
 		this.posicionDeLosDatos.agregar(new RelacionDatoCasillero<>(casillero, dato));
+	}
+
+	public void eliminarRelacionDatoCasillero(T dato) throws Exception
+	{
+		if(dato == null)
+		{
+			throw new Exception("El dato a buscar no puede ser null");
+		}
+
+		getPosicionDeLosDatos().iniciarCursor();
+		int i = 1;
+		while(getPosicionDeLosDatos().avanzarCursor())
+		{
+			RelacionDatoCasillero<T> relacionDatoCasillero = getPosicionDeLosDatos().obtenerCursor();
+			if(relacionDatoCasillero.getDato().equals(dato))
+			{
+				getPosicionDeLosDatos().remover(i);
+				return;
+			}
+			i++;
+		}
+		throw new Exception("No existe relacion datoCasillero para este dato");
 	}
 
 	public void actualizarRelacionDatoColor(T dato, Color color) throws Exception
@@ -326,6 +348,28 @@ public String toString(){
 			}
 		}
 		this.coloresDeLosDatos.agregar(new RelacionDatoColor<>(color, dato));
+	}
+
+	public void eliminarRelacionDatoColor(T dato) throws Exception
+	{
+		if(dato == null)
+		{
+			throw new Exception("El dato a buscar no puede ser null");
+		}
+
+		getColoresDeLosDatos().iniciarCursor();
+		int i = 1;
+		while(getColoresDeLosDatos().avanzarCursor())
+		{
+			RelacionDatoColor<T> relacionDatoColor = getColoresDeLosDatos().obtenerCursor();
+			if(relacionDatoColor.getDato().equals(dato))
+			{
+				getColoresDeLosDatos().remover(i);;
+				return;
+			}
+			i++;
+		}
+		throw new Exception("No existe relacion datoColor para este dato");
 	}
 
 //SETTERS SIMPLES -----------------------------------------------------------------------------------------	
