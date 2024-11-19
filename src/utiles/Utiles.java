@@ -1,11 +1,10 @@
 package utiles;
 
-import static org.junit.Assert.fail;
-
-
 import estructuras.Lista;
 import estructuras.ListaOrdenableSimplementeEnlazada;
 import estructuras.ListaSimplementeEnlazada;
+import estructuras.Vector;
+
 import java.awt.Color;
 import java.util.Random;
 import tateti.Movimiento;
@@ -105,6 +104,29 @@ public class Utiles {
     
         // Determinar si es oscuro
         return luminancia < 0.5; // Umbral común para considerar un color "oscuro"
+    }
+
+    public static boolean esColorDistinto(Color nuevoColor, Vector<Color> coloresGenerados) {
+        int UMBRAL_DISTINCION = 500;
+        for (int i = 1; i <= coloresGenerados.getLongitud(); i++) {
+            Color colorGenerado;
+            try {
+                colorGenerado = coloresGenerados.obtener(i);
+            } catch (Exception e) {
+                continue;
+            }
+            if (calcularDistanciaColor(nuevoColor, colorGenerado) < UMBRAL_DISTINCION) {
+                return false; // El color es demasiado similar a uno existente
+            }
+        }
+        return true; // El color es suficientemente distinto
+    }
+
+    private static double calcularDistanciaColor(Color c1, Color c2) {
+        int deltaRojo = c1.getRed() - c2.getRed();
+        int deltaVerde = c1.getGreen() - c2.getGreen();
+        int deltaAzul = c1.getBlue() - c2.getBlue();
+        return Math.sqrt(deltaRojo * deltaRojo + deltaVerde * deltaVerde + deltaAzul * deltaAzul);
     }
     
 
