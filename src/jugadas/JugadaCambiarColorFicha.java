@@ -2,6 +2,7 @@ package jugadas;
 
 import cartas.Carta;
 import interfaz.Consola;
+import tateti.Casillero;
 import tateti.Ficha;
 import tateti.Jugador;
 import tateti.Tateti;
@@ -10,9 +11,7 @@ import tateti.Turno;
 public class JugadaCambiarColorFicha extends Jugada {
     private Jugador jugadorBeneficiado;
     private Jugador jugadorAfectado;
-    private Ficha fichaApropiada;
-    private Ficha fichaNuevaAfectado;
-    private Ficha fichaRemovidaBeneficiado;
+    private Ficha fichaAColocar;
 
     public JugadaCambiarColorFicha(Carta carta) {
         super(carta);
@@ -23,6 +22,12 @@ public class JugadaCambiarColorFicha extends Jugada {
         try {
             jugadorBeneficiado = turnoActual.getJugador();
             Ficha fichaACambiarColor;
+
+            if(jugadorBeneficiado.tieneTodasLasFichasEnElTablero())
+            {
+                Consola.imprimirMensaje("No tenes fichas disponibles para intercambiar. Todas estan en el tablero!");
+                return false;
+            }
 
             do {
                 try {
@@ -56,28 +61,22 @@ public class JugadaCambiarColorFicha extends Jugada {
                 }
             } while (fichaACambiarColor == null);
 
-            // Validar fichas del beneficiado
-            if (jugadorBeneficiado.getFichas().getLongitud() > 0) {
-                fichaRemovidaBeneficiado = jugadorBeneficiado.getFichas().obtener(0);
-            } else {
-                Consola.imprimirMensaje("El jugador beneficiado no tiene fichas disponibles para remover.");
-                return false;
-            }
+            fichaAColocar = new Ficha(jugadorBeneficiado.getNombre().charAt(0));
 
-            // Crear una nueva ficha para el jugador afectado
-            fichaNuevaAfectado = new Ficha(
-                jugadorAfectado.getFicha(0).getSimbolo(),
-                jugadorAfectado.getFicha(0).getColor()
-            );
+            Casillero<Ficha> casillero = tateti.getTablero().getCasillero(fichaACambiarColor);
+            tateti.getTablero().eliminarRelacionDatoCasillero(fichaACambiarColor);
+            tateti.getTablero().eliminarRelacionDatoColor(fichaACambiarColor);
+            jugadorAfectado.quitarFicha(fichaACambiarColor);
 
-            // Cambiar color y actualizar vectores
-            fichaACambiarColor.setColor(jugadorBeneficiado.getColor());
-            jugadorAfectado.getFichas().remover(jugadorAfectado.getFichas().obtenerPosicion(fichaACambiarColor));
-            jugadorAfectado.agregarFicha(fichaNuevaAfectado);
-            jugadorBeneficiado.getFichas().remover(0);
-            jugadorBeneficiado.getFichas().agregar(fichaACambiarColor);
+            casillero.setDato(fichaAColocar);
+            tateti.getTablero().actualizarRelacionDatoCasillero(fichaAColocar, casillero);
+            tateti.getTablero().actualizarRelacionDatoColor(fichaAColocar, jugadorBeneficiado.getColor());
 
-            fichaApropiada = fichaACambiarColor;
+            jugadorBeneficiado.agregarFicha(fichaAColocar);
+
+            setJugador(jugadorBeneficiado);
+            getJugadoresAfectados().agregar(jugadorAfectado);
+            getCasillerosAfectados().agregar(casillero);
             return true;
 
         } catch (Exception e) {
@@ -89,23 +88,33 @@ public class JugadaCambiarColorFicha extends Jugada {
     @Override
     public void deshacer(Tateti tateti) {
         try {
-            if (fichaApropiada == null || fichaRemovidaBeneficiado == null || fichaNuevaAfectado == null) {
+            if (getJugadoresAfectados().estaVacia() || getCasillerosAfectados().estaVacia()) {
                 Consola.imprimirMensaje("No hay información suficiente para deshacer la jugada.");
                 return;
             }
 
-            // Restaurar el color original de la ficha apropiada
-            fichaApropiada.setColor(jugadorAfectado.getColor());
+            getJugadoresAfectados().iniciarCursor();
+            while(getJugadoresAfectados().avanzarCursor())
+            {
+                Jugador jugadorAfectado = getJugadoresAfectados().obtenerCursor();
+                getCasillerosAfectados().iniciarCursor();
+                while(getCasillerosAfectados().avanzarCursor())
+                {
+                    @SuppressWarnings("unchecked")
+                    Casillero<Ficha> casillero = getCasillerosAfectados().obtenerCursor();
+                    Ficha fichaAEliminar = casillero.getDato();
+                    tateti.getTablero().eliminarRelacionDatoCasillero(fichaAEliminar);
+                    tateti.getTablero().eliminarRelacionDatoColor(fichaAEliminar);
+                    getJugador().quitarFicha(fichaAEliminar);
 
-            // Quitar la ficha del jugador beneficiado
-            jugadorBeneficiado.getFichas().remover(jugadorBeneficiado.getFichas().obtenerPosicion(fichaApropiada));
+                    Ficha fichaAReponer = new Ficha(jugadorAfectado.getNombre().charAt(0));
+                    casillero.setDato(fichaAReponer);
+                    tateti.getTablero().actualizarRelacionDatoCasillero(fichaAReponer, casillero);
+                    tateti.getTablero().actualizarRelacionDatoColor(fichaAReponer, jugadorAfectado.getColor());
+                    jugadorAfectado.agregarFicha(fichaAReponer);    
+                }
 
-            // Devolver la ficha al jugador afectado
-            jugadorAfectado.getFichas().remover(jugadorAfectado.getFichas().obtenerPosicion(fichaNuevaAfectado));
-            jugadorAfectado.getFichas().agregar(fichaApropiada);
-
-            // Restaurar la ficha removida al jugador beneficiado
-            jugadorBeneficiado.getFichas().agregar(fichaRemovidaBeneficiado);
+            }
 
             Consola.imprimirMensaje("La jugada fue deshecha exitosamente.");
         } catch (Exception e) {
