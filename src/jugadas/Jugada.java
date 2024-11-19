@@ -53,4 +53,14 @@ public abstract class Jugada {
 	}
 	
 //SETTERS SIMPLES -----------------------------------------------------------------------------------------	
+
+	protected void setJugador(Jugador jugador) throws Exception
+	{
+		if(jugador == null)
+		{
+			throw new Exception("El jugador no puede ser null");
+		}
+		this.jugador = jugador;
+	}
+
 }
