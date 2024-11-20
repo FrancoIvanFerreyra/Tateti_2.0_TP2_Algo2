@@ -6,12 +6,12 @@ public class Ficha implements Bloqueable{
 //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
 //ATRIBUTOS -----------------------------------------------------------------------------------------------
 		
-	private char simbolo;
+	private String simbolo;
 	private int bloqueosRestantes = 0;
 	
 //CONSTRUCTORES -------------------------------------------------------------------------------------------
 	
-	public Ficha(char simbolo) {
+	public Ficha(String simbolo) {
 		//validar
 		this.simbolo = simbolo;
 	}
@@ -25,7 +25,7 @@ public class Ficha implements Bloqueable{
 	}
 	
 	public boolean esElMismoSimbolo(Ficha ficha) {
-		return getSimbolo() == ficha.getSimbolo();
+		return getSimbolo().equals(ficha.getSimbolo());
 	}
 	
 //METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
@@ -60,8 +60,8 @@ public class Ficha implements Bloqueable{
 
 //GETTERS SIMPLES -----------------------------------------------------------------------------------------
 	
-	public char getSimbolo() {
-		return simbolo;
+	public String getSimbolo() {
+		return this.simbolo;
 	}
 
 	@Override
