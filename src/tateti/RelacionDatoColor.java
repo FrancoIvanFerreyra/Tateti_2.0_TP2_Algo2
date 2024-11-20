@@ -9,12 +9,15 @@ public class RelacionDatoColor<T> {
 	
 //CONSTRUCTORES -------------------------------------------------------------------------------------------
 	
-	/*
-	pre: color no puede ser null, dato no puede ser null
-	pos: crea una instancia intermedia que vincula a un dato con el color
-		 que representa
-	*/	
-	public RelacionDatoColor(Color color, T dato) {
+	/**
+	 * Crea una relacion dato-color
+	 * @param color no puede ser null
+	 * @param dato no puede ser null
+	 * @throws Exception si dato o color son null
+	 */	
+	public RelacionDatoColor(Color color, T dato) throws Exception{
+		ValidacionesUtiles.validarNoNull(dato, "dato");
+		ValidacionesUtiles.validarNoNull(color, "color");
 		this.color = color;
 		this.dato = dato;
 	}
@@ -24,16 +27,16 @@ public class RelacionDatoColor<T> {
 //METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
 //GETTERS SIMPLES -----------------------------------------------------------------------------------------
 
-	/*
-	 * pre: -
-	 * pos: devuelve el dato
+	/**
+	 * 
+	 * @return devuelve el dato de la relacion
 	 */
 	public T getDato() {
 		return this.dato;
 	}
-	/*
-	 * pre: -
-	 * pos: devuelve el color
+	/**
+	 * 
+	 * @return devuelve el color de la relacion
 	 */
 	public Color getColor() {
 		return this.color;
@@ -41,17 +44,19 @@ public class RelacionDatoColor<T> {
 	
 //SETTERS SIMPLES -----------------------------------------------------------------------------------------	
 
-	/*
-	 * pre: dato no púede ser null
-	 * pos: actualiza el dato que representa el color
+	/**
+	 * Actualiza el dato de la relacion
+	 * @param dato no puede ser null
+	 * @throws Exception si el dato es null
 	 */
     public void setDato(T dato) throws Exception {
 		ValidacionesUtiles.validarNoNull(dato, "dato");
         this.dato = dato;
     }
-	/*
-	 * pre: color no púede ser null
-	 * pos: actualiza el color representado por el dato
+	/**
+	 * Actualiza el color de la relacion
+	 * @param color no puede ser null
+	 * @throws Exception si color es null
 	 */
     public void setColor(Color color) throws Exception{
 		ValidacionesUtiles.validarNoNull(color, "color");
