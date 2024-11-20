@@ -6,7 +6,6 @@ import tateti.Tateti;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        System.out.println("Hello, World!");
         int anchoTablero, altoTablero, profundidadTablero;
         int cantidadJugadores, cantidadCartasPorJugador, cantidadDeFichasPorJugador;
         int cantidadFichasSeguidasParaGanar;
