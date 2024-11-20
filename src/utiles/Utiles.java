@@ -162,7 +162,20 @@ public class Utiles {
         }
     }
 
+    public static int obtenerEnteroAleatorio(int minimo, int maximo)
+    {
+        Random random = new Random();
+        return random.nextInt(maximo - minimo) + minimo;
+    }
 
+    public static void esperar(int milisegundos) {
+        try {
+            Thread.sleep(milisegundos);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); // Restablecer el estado de interrupción del hilo
+            System.out.println("Se interrumpió la espera.");
+        }
+    }
     
     
 
