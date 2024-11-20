@@ -1,30 +1,7 @@
 package utiles;
-import java.util.List;
-
 import estructuras.ListaEnlazada;
 
 public class ValidacionesUtiles {
-
-    public static <T> boolean estaEnLaLista(T objeto, List<?> lista) throws Exception
-    {
-        if(objeto == null)
-        {
-            throw new Exception("El objeto no puede ser nulo");
-        }
-        if(lista == null)
-        {
-            throw new Exception("La lista no puede ser nula");
-        }
-        if(lista.isEmpty())
-        {
-            return false;
-        }
-        else if(lista.get(0).getClass().isInstance(objeto))
-        {
-            throw new Exception("La lista no es del tipo de dato del objeto");
-        }
-        return lista.contains(objeto);
-    }
     
     public static <T> void verificarObjetoValido(T objeto) throws Exception {
         if (objeto == null) {
@@ -67,5 +44,35 @@ public class ValidacionesUtiles {
     public static boolean esNombreValido(String nombre)
     {
         return nombre != null && nombre.matches("^[a-zA-Z][a-zA-Z0-9]*$");  
+    }
+
+    public static void validarEnteroMinimo(int entero, int minimo, String nombre) throws Exception
+    {
+        if(!esMayorOIgualQue(entero, minimo))
+        {
+            throw new Exception(nombre + "debe ser mayor o igual a " + minimo);
+        }
+    }
+
+    public static void validarEnteroMaximo(int entero, int maximo, String nombre) throws Exception
+    {
+        if(!esMenorOIgualQue(entero, maximo))
+        {
+            throw new Exception(nombre + "debe ser menor o igual a " + maximo);
+        }
+    }
+
+    public static void validarEnteroEnRango(int entero, int minimo, int maximo, String nombre) throws Exception
+    {
+        validarEnteroMinimo(entero, minimo, nombre);
+        validarEnteroMaximo(entero, maximo, nombre);
+    }
+
+    public static <T> void validarNoNull(T objeto, String nombre) throws Exception
+    {
+        if(objeto == null)
+        {
+            throw new Exception(nombre + "no puede ser null");
+        }
     }
 }
