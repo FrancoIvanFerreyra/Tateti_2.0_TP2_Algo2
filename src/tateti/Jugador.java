@@ -8,8 +8,12 @@ import cartas.Carta;
 public class Jugador {
 
 //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
+
+	private static int idDeJugadorActual = 1;
+
 //ATRIBUTOS -----------------------------------------------------------------------------------------------
 	private String nombre;
+	private int id;
 	private Vector<Ficha> fichas;
 	private Vector<Carta> cartas;
 	private Color color;
@@ -18,6 +22,8 @@ public class Jugador {
 	public Jugador(String nombre, int cantidadDeFichas, Color color, int cantidadDeCartas) throws Exception
 	{
 		this.nombre = nombre;
+		this.id = idDeJugadorActual;
+		idDeJugadorActual++;
 		this.fichas = new Vector<Ficha>(cantidadDeFichas, null);
 		this.color = color;
 		this.cartas = new Vector<Carta>(cantidadDeCartas, null);
@@ -175,6 +181,11 @@ public class Jugador {
 	public Color getColor()
 	{
 		return this.color;
+	}
+
+	public int getId()
+	{
+		return this.id;
 	}
 //SETTERS SIMPLES -----------------------------------------------------------------------------------------	
 }
