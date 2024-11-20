@@ -75,8 +75,11 @@ public class ExportadorDeDatosAImagen<T> {
         while(indicesTablero.avanzarCursor())
         {
             Lista<Integer> lista = indicesTablero.obtenerCursor();
-            Utiles.rellenarExacto(lista, 1);
-            agregarIntervalosVacios(lista);
+            if(lista.getTamanio() >= 2)
+            {
+                Utiles.rellenarExacto(lista, 1);
+                agregarIntervalosVacios(lista);
+            }
         }
 
         int casilleroSizeX = 3 * ancho / (indicesDeFilasADibujar.getTamanio() + indicesDeColumnasADibujar.getTamanio() + 1) / 2;
