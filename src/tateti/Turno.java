@@ -32,14 +32,14 @@ public class Turno {
 		this.bloqueosRestantes += cantidadDeBloqueos;
 	}
 
-	public void reducirBloqueosRestantes(int cantidadDeBloqueos) throws Exception{
+	public void reducirBloqueosRestantes(int cantidadDeBloqueos) throws Exception, IllegalArgumentException{
 		if(cantidadDeBloqueos < 0)
 		{
 			throw new Exception("La cantidad de bloqueos debe ser mayor a 0");
 		}
 		if(this.bloqueosRestantes - cantidadDeBloqueos < 0)
 		{
-			throw new Exception("No se pueden quitar " + cantidadDeBloqueos + "bloqueos, quedan " + this.bloqueosRestantes);
+			throw new IllegalArgumentException("No se pueden quitar " + cantidadDeBloqueos + "bloqueos, quedan " + this.bloqueosRestantes);
 		}
 		this.bloqueosRestantes -= cantidadDeBloqueos;
 	}
