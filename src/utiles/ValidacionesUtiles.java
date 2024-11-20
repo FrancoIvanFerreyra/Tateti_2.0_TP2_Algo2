@@ -1,5 +1,4 @@
 package utiles;
-import estructuras.ListaEnlazada;
 
 public class ValidacionesUtiles {
     
@@ -8,13 +7,6 @@ public class ValidacionesUtiles {
             throw new Exception("El objeto no puede ser nulo");
         }
     }
-    
-    public static <T> void verificarListaValida(ListaEnlazada<T> lista) throws Exception {
-        if (lista == null) {
-            throw new Exception("La lista no puede ser nula");
-        }
-    }
-
 
     public static boolean esMayorQue(int numero, int minimo)
     {
