@@ -4,6 +4,7 @@ import estructuras.Lista;
 import estructuras.ListaSimplementeEnlazada;
 import estructuras.Vector;
 import java.lang.reflect.Method;
+import java.util.InputMismatchException;
 import utiles.ValidacionesUtiles;
 public class Consola {
 
@@ -79,6 +80,19 @@ public class Consola {
         return "SI".equals(consultarOpcionAlUsuario(opciones, titulo, false));
     }
 
+    public static Boolean obtenerConfirmacionORetornoDelUsuario(String titulo) throws Exception
+    {
+        Lista<String> opciones = new ListaSimplementeEnlazada<String>();
+        opciones.agregar("SI");
+        opciones.agregar("NO");
+        String resultado = consultarOpcionAlUsuario(opciones, titulo, true);
+        if(resultado == null)
+        {
+            return null;
+        }
+        return "SI".equals(resultado);
+    }
+
     public static int obtenerNumeroEnteroEnRangoDelUsuario(String titulo, int minimoValido, int maximoValido)
     {
         System.out.println(titulo + "\t");
@@ -88,6 +102,46 @@ public class Consola {
             imprimirMensaje("Por favor ingrese un numero entre " + minimoValido + " y " + maximoValido + "\t");
             numero = Teclado.leerEntero();
         }
+        return numero;
+    }
+
+    public static int obtenerNumeroEnteroEnRangoMinimoDelUsuario(String titulo, int minimoValido)
+    {
+        System.out.println(titulo + "\t");
+        int numero;
+        do { 
+            try {
+                numero = Teclado.leerEntero();
+            } catch (InputMismatchException e) {
+                imprimirMensaje("Debe ingresar un numero");
+                numero = minimoValido - 1;
+                continue;
+            }
+            if(!ValidacionesUtiles.esMayorOIgualQue(numero, minimoValido))
+            {
+                imprimirMensaje("Por favor ingrese un numero mayor o igual que " + minimoValido + "\t");
+            }
+        } while (!ValidacionesUtiles.esMayorOIgualQue(numero, minimoValido));
+        return numero;
+    }
+
+    public static int obtenerNumeroEnteroEnRangoMaximoDelUsuario(String titulo, int maximoValido)
+    {
+        System.out.println(titulo + "\t");
+        int numero;
+        do { 
+            try {
+                numero = Teclado.leerEntero();
+            } catch (InputMismatchException e) {
+                imprimirMensaje("Debe ingresar un numero");
+                numero = maximoValido - 1;
+                continue;
+            }
+            if(!ValidacionesUtiles.esMenorOIgualQue(numero, maximoValido))
+            {
+                imprimirMensaje("Por favor ingrese un numero menor o igual que " + maximoValido + "\t");
+            }
+        } while (!ValidacionesUtiles.esMenorOIgualQue(numero, maximoValido));
         return numero;
     }
 
