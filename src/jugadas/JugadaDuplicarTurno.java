@@ -26,7 +26,7 @@ public class JugadaDuplicarTurno extends Jugada {
 
 	@Override
     public void deshacer(Tateti tateti) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //No se puede deshacer;
     }
 	
 //GETTERS SIMPLES -----------------------------------------------------------------------------------------

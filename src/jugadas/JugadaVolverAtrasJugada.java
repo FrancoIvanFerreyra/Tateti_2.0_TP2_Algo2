@@ -17,7 +17,7 @@ public class JugadaVolverAtrasJugada extends Jugada {
         String mensajeError = "";
 
         // Verifica si el historial de turnos está vacío
-        if (tateti.getHistorialTurnos().contarElementos() == 0) {
+        if (tateti.getHistorialTurnos().estaVacia()) {
             mensajeError = "No hay turnos por retroceder.";
             Consola.imprimirMensaje(mensajeError);
             return false;
