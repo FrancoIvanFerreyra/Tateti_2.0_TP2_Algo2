@@ -8,9 +8,8 @@ import exportadores.ExportadorDeDatosAImagen;
 import interfaz.Consola;
 
 public class Tablero<T> {
-//ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
-//ATRIBUTOS -----------------------------------------------------------------------------------------------
-	
+	//ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
+	//ATRIBUTOS -----------------------------------------------------------------------------------------------
 	private Lista<RelacionDatoCasillero<T>> posicionDeLosDatos = null;
 	private Lista<RelacionDatoColor<T>> coloresDeLosDatos = null;
 	private Lista<Lista<Lista<Casillero<T>>>> tablero = null;
@@ -18,14 +17,17 @@ public class Tablero<T> {
 	private int alto = 0;
 	private int profundidad = 0;
 	
-//CONSTRUCTORES -------------------------------------------------------------------------------------------
-	
+	//CONSTRUCTORES -------------------------------------------------------------------------------------------
 	/**
-	 * 
+	 * pre: 
+	 * - Los parámetros `ancho`, `alto` y `profundidad` deben ser mayores a 0.
 	 * @param ancho
 	 * @param alto
-	 * @throws Exception 
-	 * post: crea un tablero de ancho 'ancho' contando de 1 a ancho inclusive
+	 * @throws Exception si `ancho`, `alto` o `profundidad` son menores o iguales a 0.
+	 * post:
+	 * - Crea un tablero tridimensional con las dimensiones especificadas.
+	 * - Inicializa las listas de datos, colores y casilleros.
+	 * - Relaciona los casilleros vecinos según las reglas establecidas.
 	 */
 	public Tablero(int ancho, int alto, int profundidad) throws Exception {
 		//tarea validar > 0
@@ -141,7 +143,16 @@ public class Tablero<T> {
 		}
 		throw new Exception("No se encontro la ficha");
 	}
-
+	
+	/**
+	 * pre:
+	 * - @param dato no debe ser nulo.
+	 * post:
+	 * - Devuelve el color asociado al dato especificado.
+	 * - Devuelve null si el dato no tiene un color asignado.
+	 * @throws Exception
+	 * - si dato es nulo.
+	 */
 	public Color getColorDato(T dato)
 	{
 		this.coloresDeLosDatos.iniciarCursor();
@@ -154,13 +165,34 @@ public class Tablero<T> {
 		}
 		return null;
 	}
-	
+
+	/**
+	 * pre:
+	 * - @param casillero debe existir y no ser nulo
+	 * - @param casilleroVecino debe existir y no ser nulo
+	 * - @param dato debe estar contenido en el casillero original.
+	 * post:
+	 * - Mueve el dato desde 'casillero' a 'casilleroVecino'.
+	 * - Actualiza la relación del dato con el nuevo casillero.
+	 * @throws Exception
+	 * - si 'casillero', 'casilleroVecino' o 'dato' son nulos.
+	 * - si dato no está en el casillero original.
+	 */
 	public void mover(Casillero<T> casillero, Casillero<T> casilleroVecino, T dato) throws Exception{
 		casilleroVecino.setDato(dato);
 		casillero.vaciar();
 		actualizarRelacionDatoCasillero(dato, casilleroVecino);
 	}
 
+	/**
+	 * pre:
+	 * - @param dato no debe ser nulo.
+	 * post:
+	 * - Devuelve true si el dato está contenido en algún casillero del tablero.
+	 * - Devuelve false en caso contrario.
+	 * @throws Exception
+	 * -  si 'dato' es nulo.
+	 */
 	public boolean contiene(T dato) throws Exception
 	{
 		if(dato == null)
@@ -179,6 +211,17 @@ public class Tablero<T> {
 		return false;
 	}
 
+	/**
+	 * pre:
+	 * - @param dato no debe ser nulo.
+	 * - El dato debe estar en un casillero del tablero.
+	 * post:
+	 * - Devuelve una lista de movimientos posibles para el casillero que contiene el dato.
+	 * - Los movimientos posibles consideran vecinos libres y no bloqueados.
+	 * @throws Exception
+	 * -  si 'dato' es nulo.
+	 * -  si el dato no está en un casillero del tablero.
+	 */
 	public Lista<Movimiento> obtenerMovimientosPosibles(T dato) throws Exception
 	{
 		Casillero<T> casillero = this.getCasillero(dato);
@@ -194,6 +237,17 @@ public class Tablero<T> {
 		return movimientosPosibles;
 	}
 
+	/**
+	 * pre:
+	 * - @param dato no debe ser nulo.
+	 * - El dato debe estar en un casillero del tablero.
+	 * post:
+	 * - Devuelve true si el casillero que contiene el dato tiene movimientos posibles.
+	 * - Devuelve false en caso contrario.
+	 * @throws Exception
+	 * - si 'dato' es nulo.
+	 * - si el dato no está en un casillero del tablero.
+	 */
 	public boolean tieneMovimientosPosibles(T dato) throws Exception
 	{
 		Casillero<T> casillero = this.getCasillero(dato);
@@ -209,6 +263,13 @@ public class Tablero<T> {
 		return false;
 	}
 
+	/**
+	 * pre: El tablero debe haber sido inicializado.
+	 * post:
+	 * - Muestra una representación del tablero en consola.
+	 * - Exporta la representación del tablero en capas como imágenes.
+	 * @throws Exception si el tablero no ha sido inicializado correctamente.
+	 */
 	public void mostrar() throws Exception
 	{
 		Consola.limpiar();
@@ -221,38 +282,36 @@ public class Tablero<T> {
 		}
 	}
 	
-//METODOS DE CLASE ----------------------------------------------------------------------------------------
-//METODOS GENERALES ---------------------------------------------------------------------------------------
-
-
-public String toString(){
-	String resultado = "Posiciones tablero \n";
-	for(int k = getProfundidad(); k >= 1; k--)
-	{
-		for(int j = 1; j <= getAlto(); j++)
+	//METODOS DE CLASE ----------------------------------------------------------------------------------------
+	//METODOS GENERALES ---------------------------------------------------------------------------------------
+	public String toString(){
+		String resultado = "Posiciones tablero \n";
+		for(int k = getProfundidad(); k >= 1; k--)
 		{
-			for(int i = 1; i <= getAncho(); i++)
+			for(int j = 1; j <= getAlto(); j++)
 			{
-				String dato;
-				try
+				for(int i = 1; i <= getAncho(); i++)
 				{
-					dato = obtener(i, j, k).toString();
+					String dato;
+					try
+					{
+						dato = obtener(i, j, k).toString();
+					}
+					catch(Exception e)
+					{
+						dato = "vacio";
+					}
+					resultado += "(" + i + ", " + j + ", " + k + "), " + dato + "\t";
 				}
-				catch(Exception e)
-				{
-					dato = "vacio";
-				}
-				resultado += "(" + i + ", " + j + ", " + k + "), " + dato + "\t";
+				resultado += "\n";
 			}
 			resultado += "\n";
 		}
-		resultado += "\n";
+		return resultado;
 	}
-	return resultado;
-}
-//METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
-//GETTERS SIMPLES -----------------------------------------------------------------------------------------
 
+	//METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
+	//GETTERS SIMPLES -----------------------------------------------------------------------------------------
 
 	public int getAncho() {
 		return this.ancho;
@@ -275,6 +334,13 @@ public String toString(){
 		return this.coloresDeLosDatos;
 	}
 
+	/**
+	 * pre:
+	 * @param dato no debe ser nulo.
+	 * @param casillero no debe ser nulo.
+	 * post: Actualiza o agrega la relación entre el dato y el casillero especificado.
+	 * @throws Exception si 'dato' o 'casillero' son nulos.
+	 */
 	public void actualizarRelacionDatoCasillero(T dato, Casillero<T> casillero) throws Exception
 	{
 		if(dato == null)
@@ -298,6 +364,13 @@ public String toString(){
 		this.posicionDeLosDatos.agregar(new RelacionDatoCasillero<>(casillero, dato));
 	}
 
+	/**
+	 * pre: 
+	 * @param dato no debe ser nulo.
+	 * @param color no debe ser nulo.
+	 * post: Actualiza o agrega la relación entre el dato y el color especificado.
+	 * @throws Exception si 'dato' o 'color' son nulos.
+	 */
 	public void actualizarRelacionDatoColor(T dato, Color color) throws Exception
 	{
 		if(dato == null)
@@ -321,5 +394,5 @@ public String toString(){
 		this.coloresDeLosDatos.agregar(new RelacionDatoColor<>(color, dato));
 	}
 
-//SETTERS SIMPLES -----------------------------------------------------------------------------------------	
+	//SETTERS SIMPLES -----------------------------------------------------------------------------------------	
 }
