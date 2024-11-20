@@ -69,6 +69,8 @@ public boolean jugar(Tateti tateti, Turno turnoActual) throws Exception {
 
     casilleroFichaABloquear.getDato().incrementarBloqueosRestantes(1);
     getCasillerosAfectados().agregar(casilleroFichaABloquear);
+    Consola.imprimirMensaje("Se bloqueo correctamente la ficha ubicada en " +
+                             casilleroFichaABloquear.toString() + "!");
     return true;
 
 }
@@ -84,6 +86,8 @@ public void deshacer(Tateti tateti) throws Exception {
         if(ficha.estaBloqueado())
         {
             ficha.reducirBloqueosRestantes(1);
+            Consola.imprimirMensaje("Se quito 1 bloqueo correctamente a la ficha ubicada en " +
+                                    casilleroAfectado.toString() + "!");
         }
     }
 }

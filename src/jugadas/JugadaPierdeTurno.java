@@ -2,6 +2,7 @@ package jugadas;
 
 import cartas.Carta;
 import estructuras.Vector;
+import interfaz.Consola;
 import tateti.Jugador;
 import tateti.Tateti;
 import tateti.Turno;
@@ -40,6 +41,7 @@ public class JugadaPierdeTurno extends Jugada {
 		Turno turno = tateti.obtenerTurno(jugadorABloquear); //le pregunto al tateti el proximo turno del jugador
 		turno.incrementarBloqueosRestantes(1);
 		getJugadoresAfectados().agregar(jugadorABloquear);
+		Consola.imprimirMensaje("Se bloqueo correctamente 1 turno a " + jugadorABloquear.toString() + "!");
 		return true;
 	}
 
@@ -50,7 +52,15 @@ public class JugadaPierdeTurno extends Jugada {
 		{
 			Jugador jugadorAfectado = getJugadoresAfectados().obtenerCursor();
 			Turno turno = tateti.obtenerTurno(jugadorAfectado);
-			turno.reducirBloqueosRestantes(1);	
+			try {
+				turno.reducirBloqueosRestantes(1);
+			} catch (IllegalArgumentException e) {
+				Consola.imprimirMensaje(jugadorAfectado.getNombre() +
+										"ya cumplio con su bloqueo, imposible deshacer");
+				return;
+			}
+			Consola.imprimirMensaje("Se quito correctamente 1 bloqueo a " + 
+									jugadorAfectado.getNombre());		
 		}
 	}
 	

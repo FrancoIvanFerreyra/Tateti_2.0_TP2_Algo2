@@ -16,6 +16,7 @@ public class JugadaRetrocederUnaJugada extends Jugada{
         try
         {
             tateti.retrocederTurnos(1);
+            Consola.imprimirMensaje("Se retrocedio correctamente una jugada!");
         }
         catch(Exception e)
         {
@@ -28,6 +29,7 @@ public class JugadaRetrocederUnaJugada extends Jugada{
     @Override
     public void deshacer(Tateti tateti) throws Exception {
         //No se puede deshacer
+        Consola.imprimirMensaje("No se puede deshacer el retroceso de jugadas");
     }
 
 }

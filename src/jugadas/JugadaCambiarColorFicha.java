@@ -83,6 +83,8 @@ public class JugadaCambiarColorFicha extends Jugada {
             setJugador(jugadorBeneficiado);
             getJugadoresAfectados().agregar(jugadorAfectado);
             getCasillerosAfectados().agregar(casilleroFichaACambiarColor);
+            Consola.imprimirMensaje("Se cambio correctamente el color de la ficha ubicada en " + 
+                                     casilleroFichaACambiarColor.toString() + "!");      
             return true;
 
         } catch (Exception e) {
@@ -117,12 +119,13 @@ public class JugadaCambiarColorFicha extends Jugada {
                     casillero.setDato(fichaAReponer);
                     tateti.getTablero().actualizarRelacionDatoCasillero(fichaAReponer, casillero);
                     tateti.getTablero().actualizarRelacionDatoColor(fichaAReponer, jugadorAfectado.getColor());
-                    jugadorAfectado.agregarFicha(fichaAReponer);    
+                    jugadorAfectado.agregarFicha(fichaAReponer);
+                    
+                    Consola.imprimirMensaje("La ficha ubicada en " + 
+                                            casillero.toString() + "volvio a su color anterior!");              
                 }
 
             }
-
-            Consola.imprimirMensaje("La jugada fue deshecha exitosamente.");
         } catch (Exception e) {
             Consola.imprimirMensaje("Error al deshacer la jugada: " + e.getMessage());
         }

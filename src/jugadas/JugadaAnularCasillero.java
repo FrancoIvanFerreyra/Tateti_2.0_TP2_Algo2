@@ -31,6 +31,7 @@ public boolean jugar(Tateti tateti, Turno turnoActual) throws Exception {
     casilleroAAnular.incrementarBloqueosRestantes(1);
     tateti.getTablero().getCasillerosBloqueados().agregar(casilleroAAnular);
     getCasillerosAfectados().agregar(casilleroAAnular);
+    Consola.imprimirMensaje("Se anulo correctamente el " + casilleroAAnular.toString() + "!");
     
     return true;
 
@@ -48,6 +49,7 @@ public void deshacer(Tateti tateti) throws Exception {
             casilleroAfectado.reducirBloqueosRestantes(1);
             try {
                 tateti.getTablero().getCasillerosBloqueados().removerPrimeraAparicion(casilleroAfectado);
+                Consola.imprimirMensaje("Se libero correctamente el " + casilleroAfectado.toString() + "!");
             } catch (Exception e) {
                 Consola.imprimirMensaje("No se pudo deshacer la jugada correctamente" + e.getMessage());
             }

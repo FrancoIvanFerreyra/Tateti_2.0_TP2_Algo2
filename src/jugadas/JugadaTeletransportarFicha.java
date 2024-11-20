@@ -2,6 +2,7 @@ package jugadas;
 
 import cartas.Carta;
 import estructuras.Vector;
+import interfaz.Consola;
 import tateti.Casillero;
 import tateti.Ficha;
 import tateti.Jugador;
@@ -55,6 +56,9 @@ public class JugadaTeletransportarFicha extends Jugada{
         setJugador(jugadorActual);
         getCasillerosAfectados().agregar(casilleroDestino);
         getCasillerosAfectados().agregar(casilleroOrigen);
+        Consola.imprimirMensaje("Se teletransporto correctamente la ficha ubicada en " + 
+                                casilleroOrigen.toString() + " a " +
+                                casilleroDestino.toString() + "!");                      
         return true;
 
     }
@@ -74,5 +78,9 @@ public class JugadaTeletransportarFicha extends Jugada{
         casilleroOrigen.setDato(casilleroDestino.getDato());
         casilleroDestino.vaciar();
         tateti.getTablero().actualizarRelacionDatoCasillero(casilleroOrigen.getDato(), casilleroOrigen);
+
+        Consola.imprimirMensaje("La ficha teletransportada a " + 
+                                casilleroDestino.toString() + "volvio a ubicarse en " + 
+                                casilleroOrigen.toString() + "!");  
     }
 }
