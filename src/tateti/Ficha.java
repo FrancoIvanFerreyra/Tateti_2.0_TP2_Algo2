@@ -1,6 +1,7 @@
 package tateti;
 
 import interfaces.Bloqueable;
+import utiles.ValidacionesUtiles;
 
 public class Ficha implements Bloqueable{
 //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
@@ -11,8 +12,13 @@ public class Ficha implements Bloqueable{
 	
 //CONSTRUCTORES -------------------------------------------------------------------------------------------
 	
-	public Ficha(String simbolo) {
-		//validar
+	/*
+	 * pre: simbolo no debe ser null
+	 * post: crea una ficha con su simbolo
+	 */
+
+	public Ficha(String simbolo) throws Exception {
+		ValidacionesUtiles.validarNoNull(simbolo, "simbolo");
 		this.simbolo = simbolo;
 	}
 	
@@ -31,10 +37,10 @@ public class Ficha implements Bloqueable{
 //METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
 
 	@Override
-	public void incrementarBloqueosRestantes(int cantidadDeBloqueos) throws Exception{
+	public void incrementarBloqueosRestantes(int cantidadDeBloqueos) throws IllegalArgumentException{
 		if(cantidadDeBloqueos < 1)
 		{
-			throw new Exception("Cantidad de bloqueos debe ser mayor a 0");
+			throw new IllegalArgumentException("Cantidad de bloqueos debe ser mayor a 0");
 		}
 		this.bloqueosRestantes += cantidadDeBloqueos;
 	}
