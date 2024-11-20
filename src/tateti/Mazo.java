@@ -42,7 +42,7 @@ public class Mazo {
             tiposDeCarta.agregar(CartaDuplicarTurno.class);
             tiposDeCarta.agregar(CartaBloquearFicha.class);
             tiposDeCarta.agregar(CartaAnularCasillero.class);
-            tiposDeCarta.agregar(CartaVolverAtrasJugada.class);
+            tiposDeCarta.agregar(CartaRetrocederUnaJugada.class);
             tiposDeCarta.agregar(CartaTeletransportarFicha.class);
             tiposDeCarta.agregar(CartaCambiarColorFicha.class);
         }
