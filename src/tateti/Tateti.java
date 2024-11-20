@@ -81,7 +81,6 @@ public class Tateti {
 		this.turnos = new Vector<Turno>(this.jugadores.getLongitud(), null);
 		for(int i = 0; i < this.turnos.getLongitud(); i++)
 		{
-			System.out.println("Turno agregado");
 			this.turnos.agregar(new Turno(this.jugadores.obtener(i + 1)));
 		}
 		this.historialTurnos = new Pila<Turno>();
@@ -161,19 +160,25 @@ public class Tateti {
 			
 			turnoActual = filaDeTurnos.desacolar();
 			Consola.imprimirMensaje("Turno de jugar para " + turnoActual.getJugador().getNombre());
+			Utiles.esperar(2000);
 			turnoActual.limpiar();
 			Casillero<Ficha> casilleroDestino = null;
 
 			if (!turnoActual.estaBloqueado()) {
 				turnoActual.iniciarTurno();
 				
-				int dado = 3;
+				Consola.imprimirMensaje("Tirando el dado...");
+				Utiles.esperar(2000);
+				int cantidadDeCartasASacar = tirarDado();
+				Consola.imprimirMensaje("Salio el numero " + cantidadDeCartasASacar + "!");
+				Utiles.esperar(1500);
 				Consola.imprimirMensaje("-----------------------------CARTAS-------------------------------");
-				for(int i = 0; i < dado; i++)
+				for(int i = 0; i < cantidadDeCartasASacar; i++)
 				{
 					Carta nuevaCarta;
 					try{
-						Consola.imprimirMensaje("Levantando del mazo la carta " + (i + 1) + " de " + dado + "...");
+						Consola.imprimirMensaje("Levantando del mazo la carta " + (i + 1) + " de " + cantidadDeCartasASacar + "...");
+						Utiles.esperar(1500);
 						nuevaCarta = mazoDeCartas.levantarCarta();
 					}
 					catch(Exception e)
@@ -181,26 +186,34 @@ public class Tateti {
 						try
 						{
 							Consola.imprimirMensaje("No hay cartas que levantar. Mezclando las ya usadas...");
+							Utiles.esperar(1500);
 							mazoDeCartas.mezclar();
 						}
 						catch(Exception ex)
 						{
 							Consola.imprimirMensaje("No hay cartas que mezclar. Todas estan en juego!");
+							Utiles.esperar(1500);
 							break;
 						}
 						Consola.imprimirMensaje("Cartas mezcladas!");
-						Consola.imprimirMensaje("Levantando del mazo la carta " + (i + 1) + " de " + dado + "...");
+						Utiles.esperar(1500);
+						Consola.imprimirMensaje("Levantando del mazo la carta " + (i + 1) + " de " + cantidadDeCartasASacar + "...");
+						Utiles.esperar(1500);
 						nuevaCarta = mazoDeCartas.levantarCarta();
 					}
 					try {
 						Consola.imprimirMensaje("Guardando la carta...");
+						Utiles.esperar(1500);
 						turnoActual.getJugador().agregarCarta(nuevaCarta);
 					} catch (IllegalStateException e) {
 						Consola.imprimirMensaje("No podes tener mas cartas. Devolviendo la carta levantada al mazo...");
+						Utiles.esperar(1500);
 						mazoDeCartas.devolverCarta(nuevaCarta);
+						Consola.imprimirMensaje("------------------------------------------------------------------");
 						continue;
 					}
 					Consola.imprimirMensaje("Se guardo la carta " + nuevaCarta.getTitulo());
+					Utiles.esperar(1500);
 					Consola.imprimirMensaje("------------------------------------------------------------------");
 
 				}
@@ -212,6 +225,8 @@ public class Tateti {
 					} else {
 						casilleroDestino = mover(this.tablero, turnoActual);
 					}
+					
+					Utiles.esperar(1500);
 
 					boolean cartaJugada = false;
 					while(!cartaJugada)
@@ -242,7 +257,8 @@ public class Tateti {
 								turnoActual.setJugadaEjecutada(jugada);
 								cartaJugada = true;	
 								turnoActual.getJugador().quitarCarta(cartaActual);
-								mazoDeCartas.descartarCarta(cartaActual);		
+								mazoDeCartas.descartarCarta(cartaActual);
+								Utiles.esperar(2000);		
 							}						
 						}
 						else
@@ -250,9 +266,11 @@ public class Tateti {
 							cartaJugada = true;
 						}
 					}
+					
 
 				}
 				Consola.imprimirMensaje("Finalizo tu turno!");
+				Utiles.esperar(2000);
 				turnoActual.terminarTurno();
 				historialTurnos.apilar(turnoActual);
 				existeGanador = existeGanador(casilleroDestino);
@@ -260,7 +278,9 @@ public class Tateti {
 			else
 			{
 				Consola.imprimirMensaje("Estas bloqueado por este turno :(");
+				Utiles.esperar(1500);
 				Consola.imprimirMensaje("Finalizo tu turno!");
+				Utiles.esperar(2000);
 				turnoActual.terminarTurno();
 			}
 			filaDeTurnos.acolar(turnoActual);
@@ -273,6 +293,11 @@ public class Tateti {
 		}
 
 	}
+
+	public int tirarDado()
+	{
+		return Utiles.obtenerEnteroAleatorio(1, 6);
+	}
 	
 	
 	public Casillero<Ficha> jugadaInicial(Tablero<Ficha> tablero, Turno turnoActual) throws Exception {
@@ -284,6 +309,7 @@ public class Tateti {
 		jugador.agregarFicha(ficha);
 		tablero.actualizarRelacionDatoCasillero(ficha, casillero);
 		turnoActual.setFichaUtilizada(ficha);
+		Consola.imprimirMensaje("Ficha colocada correctamente en " + casillero.toString() + "!");
 		return casillero;
 	}
 
@@ -334,6 +360,9 @@ public class Tateti {
 
 		turnoActual.setFichaUtilizada(ficha);
 		turnoActual.setMovimientoAplicado(movimiento);
+
+		Consola.imprimirMensaje("Ficha movida correctamente a " +
+								 casillero.getCasilleroVecino(movimiento).toString() + "!");
 
 		return casillero.getCasilleroVecino(movimiento);
 	}
