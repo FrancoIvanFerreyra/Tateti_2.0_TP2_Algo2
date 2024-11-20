@@ -1,15 +1,12 @@
 package tateti;
 
 import cartas.Carta;
-import cartas.CartaAnularCasillero;
-import cartas.CartaBloquearFicha;
 import estructuras.Cola;
 import estructuras.Lista;
 import estructuras.ListaSimplementeEnlazada;
 import estructuras.Vector;
 import estructuras.Pila;
 import exportadores.ExportadorDeDatosAImagen;
-//import exportadores.ExportadorDeDatosAImagen;
 import jugadas.Jugada;
 import utiles.Utiles;
 
@@ -17,7 +14,6 @@ import interfaz.Consola;
 import java.awt.Color;
 import java.io.File;
 
-import javax.swing.tree.ExpandVetoException;
 import utiles.AdministradorDeArchivos;
 
 import utiles.ValidacionesUtiles;
@@ -32,8 +28,6 @@ public class Tateti {
 	private Vector<Color> coloresDeFicha = null;
 	private Vector<Turno> turnos = null;
 	private Pila<Turno> historialTurnos = null;
-	private int cantidadDeFichasPorJugador;
-	private Pila<EstadoJuego> hitorialEstado = null;
 	private int cantidadDeFichasSeguidasParaGanar;
 	
 	//demas cosas, jugadores, cartas, etc
@@ -60,7 +54,6 @@ public class Tateti {
 		this.jugadores = new Vector<Jugador>(cantidadJugadores, null);
 		this.coloresDeFicha = new Vector<Color>(cantidadJugadores, Color.black);
 		this.mazoDeCartas = new Mazo((cantidadDeCartasPorJugador + 2) * cantidadJugadores);
-		this.hitorialEstado = new Pila<>();
 		this.cantidadDeFichasSeguidasParaGanar = cantidadDeFichasSeguidasParaGanar;
 		for(int i = 1; i <= this.jugadores.getLongitud(); i++)
 		{
@@ -415,14 +408,6 @@ public class Tateti {
 		File directorioTurno = AdministradorDeArchivos.crearDirectorio(directorio, "turno" + numeroDeTurno);
         ExportadorDeDatosAImagen.exportarTableroPorCapas(tablero, directorioTurno.getPath());
 	}
-	public EstadoJuego obtenerEstadoJuego(){
-		return new EstadoJuego(getTablero(), getJugadores(), getTurnos());
-	}
-	public void restaurarEstado(EstadoJuego estado) {
-        this.tablero = estado.getTablero();
-        this.jugadores = estado.getJugadores();
-        this.turnos = estado.getTurno();
-    }
 
 	public Jugador obtenerJugadorDelUsuario(Vector<Jugador> jugadores, String mensaje) throws Exception
 	{
@@ -566,9 +551,6 @@ public class Tateti {
 	}
 	public Vector<Turno> getTurnos(){
 		return this.turnos;
-	}
-	public Pila<EstadoJuego> getHistorialDeEstado(){
-		return this.hitorialEstado;
 	}
 	//SETTERS SIMPLES -----------------------------------------------------------------------------------------	
 }
