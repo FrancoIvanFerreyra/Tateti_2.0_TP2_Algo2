@@ -59,14 +59,14 @@ public class Tablero<T> {
 					}
 					for(int l = -1; l <= 0; l++)
 					{
-						if (this.existeElCasillero(i, j + l, -1)) {
-							relacionarCasillerosVecinos(this.getCasillero(i, j  + l, -1), nuevoCasillero, 0, l, -1);
+						if (this.existeElCasillero(i, j + l, k-1)) {
+							relacionarCasillerosVecinos(this.getCasillero(i, j  + l, k - 1), nuevoCasillero, 0, l, -1);
 						}
 					}
 					for(int l = -1; l <= 0; l++)
 					{
-						if (l != 0 && this.existeElCasillero(i, j + l, 0)) {
-							relacionarCasillerosVecinos(this.getCasillero(i, j + l, 0), nuevoCasillero, 0, l, 0);
+						if (l != 0 && this.existeElCasillero(i, j + l, k)) {
+							relacionarCasillerosVecinos(this.getCasillero(i, j + l, k), nuevoCasillero, 0, l, 0);
 						}
 					}
 				}
@@ -188,7 +188,8 @@ public class Tablero<T> {
 		for(Movimiento movimiento : Movimiento.values())
 		{
 			if (casillero.existeElVecino(movimiento)
-			 && !casillero.getCasilleroVecino(movimiento).estaOcupado())
+			 && !casillero.getCasilleroVecino(movimiento).estaOcupado()
+			 && !casillero.getCasilleroVecino(movimiento).estaBloqueado())
 			 {
 				movimientosPosibles.agregar(movimiento);
 			 }
