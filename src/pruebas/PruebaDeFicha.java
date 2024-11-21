@@ -31,7 +31,7 @@ public class PruebaDeFicha {
 
     @Test
     public void testConstructorFicha() {
-        Assertions.assertEquals("X", ficha.getSimbolo(), "El símbolo de la ficha debe ser X.");
+        Assertions.assertEquals("1", ficha.getSimbolo(), "El símbolo de la ficha debe ser 1.");
     }
 
     @Test
@@ -84,12 +84,12 @@ public class PruebaDeFicha {
 
             () -> {ficha.incrementarBloqueosRestantes(-1);},
             "La ficha no lanzo excepcion al intentar agregarle bloqueos negativos"); 
-=======
+    }
 
 
     @Test
     public void testToString() {
-        Assertions.assertEquals("X", ficha.toString(), "El método toString debería devolver el símbolo de la ficha como cadena.");
+        Assertions.assertEquals("1", ficha.toString(), "El método toString debería devolver el símbolo de la ficha como cadena.");
     }
 
 
@@ -99,7 +99,7 @@ public class PruebaDeFicha {
         ficha.reducirBloqueosRestantes(2);
         Assertions.assertEquals(3, ficha.getBloqueosRestantes(), "Los bloqueos restantes deberían ser 3 después de reducir 2.");
 
-        exception = Assertions.assertThrows(Exception.class, () -> {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
             ficha.reducirBloqueosRestantes(10);
         }, "La ficha no lanzo excepcion al intentar reducirle mas bloqueos de los que posee");
     }

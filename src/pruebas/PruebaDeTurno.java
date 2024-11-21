@@ -1,5 +1,6 @@
 package pruebas;
 
+import java.awt.Color;
 import jugadas.JugadaPierdeTurno;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,12 +16,12 @@ public class PruebaDeTurno {
     public void pruebaDeTurno() throws Exception {
 
         //Pruebo crear un turno con jugador nulo
-        Assertions.assertThrows(Exception.class, () ->{
+        Assertions.assertThrows(NullPointerException.class, () ->{
             Turno turno = new Turno(null);
         }, "El turno no devolvio excepcion al intentar crearlo con un jugador nulo");
         
         //Creo el turno
-        Turno turno = new Turno(new Jugador("Tomas", 3));
+        Turno turno = new Turno(new Jugador("Tomas", 3, Color.red, 2));
 
         //Pruebo si se creo sin subturnos
         Assertions.assertTrue(!turno.haySubturnos(), "El turno se inicializo con subturnos");
@@ -44,17 +45,17 @@ public class PruebaDeTurno {
         Assertions.assertTrue(!turno.estaBloqueado(), "El turno no libero el bloqueo como se esperaba");
 
         //Pruebo quitar bloqueos negativos
-        Assertions.assertThrows(Exception.class, () ->{
+        Assertions.assertThrows(IllegalArgumentException.class, () ->{
             turno.reducirBloqueosRestantes(-2);
         }, "El turno no devolvio excepcion al intentar reducir un numero negativo de bloqueos");
         
         //Pruebo quitar mas bloqueos de los que tiene
-        Assertions.assertThrows(Exception.class, () ->{
+        Assertions.assertThrows(IllegalArgumentException.class, () ->{
             turno.reducirBloqueosRestantes(2);
         }, "El turno no devolvio excepcion al intentar reducir mas bloqueos de los que posee");
 
         //Pruebo si se los datos del turno se asignan correctamente
-        Ficha fichaUtilizada = new Ficha('X');
+        Ficha fichaUtilizada = new Ficha("X");
         turno.setFichaUtilizada(fichaUtilizada);
         Assertions.assertEquals(fichaUtilizada, turno.getFichaUtilizada(), "La ficha utilizada no se guardo correctamente");
 
