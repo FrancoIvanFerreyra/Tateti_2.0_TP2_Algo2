@@ -9,11 +9,18 @@ import tateti.Jugador;
 import tateti.Tateti;
 import tateti.Turno;
 
+/**
+ * El jugador decide que ficha del trablero quiere mover a un caisllero en especifico 
+ */
 public class JugadaBloquearFicha extends Jugada{
 //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
 //ATRIBUTOS -----------------------------------------------------------------------------------------------
 //CONSTRUCTORES -------------------------------------------------------------------------------------------
 	
+/**
+ * pre: recibe la carta que se quiere utilizar como base para almancenar la jugada 
+ * pos: se incializa una carta con la jugada que bloquea una ficha a otro jugador
+ */
 public JugadaBloquearFicha(Carta carta) {
     super(carta);
 }
@@ -22,6 +29,11 @@ public JugadaBloquearFicha(Carta carta) {
 //METODOS GENERALES ---------------------------------------------------------------------------------------
 //METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
 
+/*
+ * pre: recibe el estado del tateti y el turno acutual del jugador 
+ * pos: bloquea una ficha de un jugador oponente, mediante un contador de bloqueos propio de la ficha, lo que le impide realizar cualquier moviemiento. Si el
+ *      bloquoe se raliza con exito se retonra true, en caso contrario false (si el jugador no tiene fichas en el tablero o ya esta bloqueada)
+ */
 @Override
 public boolean jugar(Tateti tateti, Turno turnoActual) throws Exception {
     Jugador jugadorAAfectar;
@@ -75,6 +87,11 @@ public boolean jugar(Tateti tateti, Turno turnoActual) throws Exception {
 
 }
 
+/**
+ * pre: reciebe el estado del tablero
+ * pos: se recorre la lista de casillero afecatados en busca del casillero que contiene a la ficha bloqueda, en caso de que se encuentra se le reduce el contador
+ *      de bloqueos
+ */
 @Override
 public void deshacer(Tateti tateti) throws Exception {
     getCasillerosAfectados().iniciarCursor();
