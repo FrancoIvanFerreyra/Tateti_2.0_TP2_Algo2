@@ -1,5 +1,8 @@
 package estructuras;
 
+import java.util.NoSuchElementException;
+import utiles.ValidacionesUtiles;
+
 public abstract class Lista<T> {
 	//ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
 	//ATRIBUTOS -----------------------------------------------------------------------------------------------
@@ -42,7 +45,7 @@ public abstract class Lista<T> {
 	 * pos: agrega el elemento al final de la Lista, en la posición:
 	 *       contarElementos() + 1.
 	 */
-	public void agregar(T elemento) throws Exception {
+	public void agregar(T elemento) {
 		this.agregar(elemento, this.getTamanio() + 1);
 	}
 
@@ -50,19 +53,16 @@ public abstract class Lista<T> {
 	 * pre: posición pertenece al intervalo: [1, contarElementos() + 1]
 	 * pos: agrega el elemento en la posición indicada.
 	 */
-	public abstract void agregar(T elemento, int posicion) throws Exception;
+	public abstract void agregar(T elemento, int posicion) throws IllegalArgumentException;
 
 	/**
 	 * pre: -
 	 * pos: agrega cada elemento no nulo del vector al final de la Lista, en la posición:
 	 *       contarElementos() + 1.
 	 */
-	public void agregar(Vector<T> vector) throws Exception
+	public void agregar(Vector<T> vector) throws NullPointerException
 	{
-		if(vector == null)
-		{
-			throw new Exception("El vector no puede ser null");
-		}
+		ValidacionesUtiles.validarNoNull(vector, "vector");
 
 		for(int i = 1; i <= vector.getLongitud(); i++)
 		{
@@ -77,20 +77,20 @@ public abstract class Lista<T> {
 	 * pre : posición pertenece al intervalo: [1, contarElementos()]
 	 * post: remueve de la Lista el elemento en la posición indicada.
 	 */
-	public abstract void remover(int posicion) throws Exception;
+	public abstract void remover(int posicion) throws IllegalArgumentException;
 
 		/*
 	 * pre : elemento no es null y lista contiene a elemento
 	 * post: remueve de la Lista la primera aparicion del elemento en la lista
 	 * (en el indice mas bajo).
 	 */
-	public abstract void removerPrimeraAparicion(T elemento) throws Exception;
+	public abstract void removerPrimeraAparicion(T elemento) throws NoSuchElementException;
 
 	/**
 	 * pre : posición pertenece al intervalo: [1, contarElementos()]
 	 * pos: devuelve el dato de la posicion
 	 */
-	public T obtener(int posicion) throws Exception {
+	public T obtener(int posicion) throws IllegalArgumentException {
 		validarPosicion(posicion);
 		return this.getNodo(posicion).getDato();
 	}
@@ -99,15 +99,16 @@ public abstract class Lista<T> {
 	 * pre : posición pertenece al intervalo: [1, contarElementos()]
 	 * pos: cambia el elemento de la posicion
 	 */
-	public void cambiar(T elemento, int posicion) throws Exception {
+	public void cambiar(T elemento, int posicion) throws IllegalArgumentException {
 		validarPosicion(posicion);
 		this.getNodo(posicion).setDato(elemento);
 	}
 
-	public abstract void intercambiar(int posicion1, int posicion2) throws Exception;
+	public abstract void intercambiar(int posicion1, int posicion2) throws IllegalArgumentException;
 
 	// verifica si un objeto está en la lista.
-	public boolean contiene(T objeto) throws Exception {
+	public boolean contiene(T objeto) throws NullPointerException {
+		ValidacionesUtiles.validarNoNull(objeto, "null");
 		this.iniciarCursor();
 	
 		while (this.avanzarCursor()) {
@@ -183,7 +184,7 @@ public abstract class Lista<T> {
 	 * pre : posición pertenece al intervalo: [1, contarElementos()]
 	 * post: devuelve el nodo en la posición indicada.
 	 */
-	protected Nodo<T> getNodo(int posicion) throws Exception {
+	protected Nodo<T> getNodo(int posicion) throws IllegalArgumentException {
 		validarPosicion(posicion);
 		Nodo<T> actual = this.primero;
 		for(int i = 1; i < posicion; i++) {
@@ -192,10 +193,10 @@ public abstract class Lista<T> {
 		return actual;
 	}
 
-	protected void validarPosicion(int posicion) throws Exception {
+	protected void validarPosicion(int posicion) throws IllegalArgumentException {
 		if ((posicion < 1) ||
 				(posicion > this.tamanio + 1)) {
-			throw new Exception("La posicion debe estar entre 1 y tamaño + 1");
+			throw new IllegalArgumentException("La posicion debe estar entre 1 y tamaño + 1");
 		}
 	}
 

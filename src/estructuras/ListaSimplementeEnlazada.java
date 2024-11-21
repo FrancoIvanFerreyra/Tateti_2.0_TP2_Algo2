@@ -1,6 +1,6 @@
 package estructuras;
 
-import utiles.ValidacionesUtiles;
+import java.util.NoSuchElementException;
 
 public class ListaSimplementeEnlazada<T> extends Lista<T> {
 //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
@@ -15,7 +15,7 @@ public class ListaSimplementeEnlazada<T> extends Lista<T> {
 	 * pos: agrega el elemento en la posición indicada.
 	 */
 	@Override
-	public void agregar(T elemento, int posicion) throws Exception {
+	public void agregar(T elemento, int posicion) throws IllegalArgumentException {
 		validarPosicion(posicion);
 		Nodo<T> nuevo = new Nodo<>(elemento);
 		if (posicion == 1) {
@@ -34,7 +34,7 @@ public class ListaSimplementeEnlazada<T> extends Lista<T> {
 	 * post: remueve de la Lista el elemento en la posición indicada.
 	 */
 	@Override
-	public void remover(int posicion) throws Exception {
+	public void remover(int posicion) throws IllegalArgumentException {
 		validarPosicion(posicion);
 		this.iniciarCursor();
 		Nodo<T> removido = null;
@@ -50,12 +50,11 @@ public class ListaSimplementeEnlazada<T> extends Lista<T> {
 	}
 
 	@Override
-	public void removerPrimeraAparicion(T elemento) throws Exception
+	public void removerPrimeraAparicion(T elemento) throws  NoSuchElementException
 	{
-		ValidacionesUtiles.validarNoNull(elemento, "elemento");
 		if(!this.contiene(elemento))
 		{
-			throw new Exception("La lista no contiene este elemento");
+			throw new NoSuchElementException("La lista no contiene este elemento");
 		}
 		int i = 1;
 		this.iniciarCursor();
@@ -72,7 +71,7 @@ public class ListaSimplementeEnlazada<T> extends Lista<T> {
 	}
 
 	@Override
-	public void intercambiar(int posicion1, int posicion2) throws Exception
+	public void intercambiar(int posicion1, int posicion2) throws IllegalArgumentException
 	{
 		validarPosicion(posicion1);
 		validarPosicion(posicion2);
