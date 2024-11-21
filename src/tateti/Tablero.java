@@ -6,9 +6,8 @@ import java.awt.Color;
 import utiles.ValidacionesUtiles;
 
 public class Tablero<T> {
-//ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
-//ATRIBUTOS -----------------------------------------------------------------------------------------------
-	
+	//ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
+	//ATRIBUTOS -----------------------------------------------------------------------------------------------
 	private Lista<RelacionDatoCasillero<T>> posicionDeLosDatos = null;
 	private Lista<RelacionDatoColor<T>> coloresDeLosDatos = null;
 	private Lista<Casillero<T>> casillerosBloqueados = null;
@@ -17,9 +16,9 @@ public class Tablero<T> {
 	private int alto = 0;
 	private int profundidad = 0;
 	
-//CONSTRUCTORES -------------------------------------------------------------------------------------------
-	
+	//CONSTRUCTORES -------------------------------------------------------------------------------------------
 	/**
+<<<<<<< HEAD
 	 * 
 	 * 
 	 * Crea un tablero de dimensiones ancho x alto x profundidad
@@ -32,6 +31,17 @@ public class Tablero<T> {
 	 * @param alto mayor o igual a 1
 	 * @param profundidad mayor o igual a 1
 	 * @throws Exception si alguna dimension es menor a 1
+=======
+	 * pre: 
+	 * - Los parámetros `ancho`, `alto` y `profundidad` deben ser mayores a 0.
+	 * @param ancho
+	 * @param alto
+	 * @throws Exception si `ancho`, `alto` o `profundidad` son menores o iguales a 0.
+	 * post:
+	 * - Crea un tablero tridimensional con las dimensiones especificadas.
+	 * - Inicializa las listas de datos, colores y casilleros.
+	 * - Relaciona los casilleros vecinos según las reglas establecidas.
+>>>>>>> origin/caracteristica/pruebas-de-tdas
 	 */
 	public Tablero(int ancho, int alto, int profundidad) throws Exception {
 		ValidacionesUtiles.validarEnteroMinimo(ancho, 1, "ancho");
@@ -208,6 +218,7 @@ public class Tablero<T> {
 		}
 		throw new Exception("No se encontro el dato");
 	}
+<<<<<<< HEAD
 
 	/**
 	 * @param dato no puede ser null
@@ -215,6 +226,19 @@ public class Tablero<T> {
 	 * @throws Exception si el dato es null o si no se encontro el dato en el tablero
 	 */
 	public Color getColorDato(T dato) throws Exception
+=======
+	
+	/**
+	 * pre:
+	 * - @param dato no debe ser nulo.
+	 * post:
+	 * - Devuelve el color asociado al dato especificado.
+	 * - Devuelve null si el dato no tiene un color asignado.
+	 * @throws Exception
+	 * - si dato es nulo.
+	 */
+	public Color getColorDato(T dato)
+>>>>>>> origin/caracteristica/pruebas-de-tdas
 	{
 		ValidacionesUtiles.validarNoNull(dato, "dato");
 		this.coloresDeLosDatos.iniciarCursor();
@@ -227,6 +251,7 @@ public class Tablero<T> {
 		}
 		throw new Exception("No se encontro el dato en el tablero");
 	}
+<<<<<<< HEAD
 	
 	/**
 	 * @param casillero no puede ser null y debe tener un dato
@@ -247,16 +272,42 @@ public class Tablero<T> {
 			throw new Exception("El casillero vecino esta ocupado");
 		}
 		T dato = casillero.getDato();
+=======
+
+	/**
+	 * pre:
+	 * - @param casillero debe existir y no ser nulo
+	 * - @param casilleroVecino debe existir y no ser nulo
+	 * - @param dato debe estar contenido en el casillero original.
+	 * post:
+	 * - Mueve el dato desde 'casillero' a 'casilleroVecino'.
+	 * - Actualiza la relación del dato con el nuevo casillero.
+	 * @throws Exception
+	 * - si 'casillero', 'casilleroVecino' o 'dato' son nulos.
+	 * - si dato no está en el casillero original.
+	 */
+	public void mover(Casillero<T> casillero, Casillero<T> casilleroVecino, T dato) throws Exception{
+>>>>>>> origin/caracteristica/pruebas-de-tdas
 		casilleroVecino.setDato(dato);
 		casillero.vaciar();
 		actualizarRelacionDatoCasillero(dato, casilleroVecino);
 	}
 
 	/**
+<<<<<<< HEAD
 	 * 
 	 * @param dato no puede ser null
 	 * @return verdadero si el tablero contiene al dato en algun casillero
 	 * @throws Exception si dato es null
+=======
+	 * pre:
+	 * - @param dato no debe ser nulo.
+	 * post:
+	 * - Devuelve true si el dato está contenido en algún casillero del tablero.
+	 * - Devuelve false en caso contrario.
+	 * @throws Exception
+	 * -  si 'dato' es nulo.
+>>>>>>> origin/caracteristica/pruebas-de-tdas
 	 */
 	public boolean contiene(T dato) throws Exception
 	{
@@ -274,11 +325,23 @@ public class Tablero<T> {
 	}
 
 	/**
+<<<<<<< HEAD
 	 * 
 	 * @param dato no puede ser null y debe estar en el tablero
 	 * @return una lista de movimientos posibles del dato, desde su casillero hacia los vecinos.
 	 * 		   Si no tiene movimientos devuelve una lista vacia
 	 * @throws Exception si dato es null o si no esta en el tablero
+=======
+	 * pre:
+	 * - @param dato no debe ser nulo.
+	 * - El dato debe estar en un casillero del tablero.
+	 * post:
+	 * - Devuelve una lista de movimientos posibles para el casillero que contiene el dato.
+	 * - Los movimientos posibles consideran vecinos libres y no bloqueados.
+	 * @throws Exception
+	 * -  si 'dato' es nulo.
+	 * -  si el dato no está en un casillero del tablero.
+>>>>>>> origin/caracteristica/pruebas-de-tdas
 	 */
 	public Lista<Movimiento> obtenerMovimientosPosibles(T dato) throws Exception
 	{
@@ -302,11 +365,23 @@ public class Tablero<T> {
 	}
 
 	/**
+<<<<<<< HEAD
 	 * 
 	 * @param dato no puede ser null y debe estar en el tablero
 	 * @return verdadero si el dato tiene al menos un movimiento disponible
 	 * 		   desde su casillero hacia algun vecino
 	 * @throws Exception si dato es null o si no esta en el tablero
+=======
+	 * pre:
+	 * - @param dato no debe ser nulo.
+	 * - El dato debe estar en un casillero del tablero.
+	 * post:
+	 * - Devuelve true si el casillero que contiene el dato tiene movimientos posibles.
+	 * - Devuelve false en caso contrario.
+	 * @throws Exception
+	 * - si 'dato' es nulo.
+	 * - si el dato no está en un casillero del tablero.
+>>>>>>> origin/caracteristica/pruebas-de-tdas
 	 */
 	public boolean tieneMovimientosPosibles(T dato) throws Exception
 	{
@@ -327,6 +402,7 @@ public class Tablero<T> {
 		}
 		return false;
 	}
+<<<<<<< HEAD
 	
 //METODOS DE CLASE ----------------------------------------------------------------------------------------
 //METODOS GENERALES ---------------------------------------------------------------------------------------
@@ -339,7 +415,58 @@ public String toString(){
 }
 //METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
 //GETTERS SIMPLES -----------------------------------------------------------------------------------------
+=======
 
+	/**
+	 * pre: El tablero debe haber sido inicializado.
+	 * post:
+	 * - Muestra una representación del tablero en consola.
+	 * - Exporta la representación del tablero en capas como imágenes.
+	 * @throws Exception si el tablero no ha sido inicializado correctamente.
+	 */
+	public void mostrar() throws Exception
+	{
+		Consola.limpiar();
+		Consola.imprimirMensaje(this.toString());
+		try {
+			ExportadorDeDatosAImagen.exportarTableroPorCapas(this, "./src/estadosTablero/");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	//METODOS DE CLASE ----------------------------------------------------------------------------------------
+	//METODOS GENERALES ---------------------------------------------------------------------------------------
+	public String toString(){
+		String resultado = "Posiciones tablero \n";
+		for(int k = getProfundidad(); k >= 1; k--)
+		{
+			for(int j = 1; j <= getAlto(); j++)
+			{
+				for(int i = 1; i <= getAncho(); i++)
+				{
+					String dato;
+					try
+					{
+						dato = obtener(i, j, k).toString();
+					}
+					catch(Exception e)
+					{
+						dato = "vacio";
+					}
+					resultado += "(" + i + ", " + j + ", " + k + "), " + dato + "\t";
+				}
+				resultado += "\n";
+			}
+			resultado += "\n";
+		}
+		return resultado;
+	}
+>>>>>>> origin/caracteristica/pruebas-de-tdas
+
+	//METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
+	//GETTERS SIMPLES -----------------------------------------------------------------------------------------
 
 	/**
  	* 
@@ -384,6 +511,7 @@ public String toString(){
 	}
 
 	/**
+<<<<<<< HEAD
  	* 
  	* @return devuelve la lista de casilleros bloqueados del tablero
  	*/
@@ -398,6 +526,13 @@ public String toString(){
 	 * @param dato no puede ser null
 	 * @param casillero no puede ser null y debe contener dato
 	 * @throws Exception si dato y/o casillero son null, o si casillero no contiene al dato 
+=======
+	 * pre:
+	 * @param dato no debe ser nulo.
+	 * @param casillero no debe ser nulo.
+	 * post: Actualiza o agrega la relación entre el dato y el casillero especificado.
+	 * @throws Exception si 'dato' o 'casillero' son nulos.
+>>>>>>> origin/caracteristica/pruebas-de-tdas
 	 */
 	public void actualizarRelacionDatoCasillero(T dato, Casillero<T> casillero) throws Exception
 	{
@@ -421,6 +556,7 @@ public String toString(){
 	}
 
 	/**
+<<<<<<< HEAD
 	 * Elimina la relacion dato-casillero correspondiente a dato
 	 * @param dato no puede ser null, el tablero no debe contenerlo y debe existir una
 	 * 			   relacion dato-casillero con dato igual a dato
@@ -428,6 +564,15 @@ public String toString(){
 	 * 					o si no existe relacion dato-casillero con dato igual a dato
 	 */
 	public void eliminarRelacionDatoCasillero(T dato) throws Exception
+=======
+	 * pre: 
+	 * @param dato no debe ser nulo.
+	 * @param color no debe ser nulo.
+	 * post: Actualiza o agrega la relación entre el dato y el color especificado.
+	 * @throws Exception si 'dato' o 'color' son nulos.
+	 */
+	public void actualizarRelacionDatoColor(T dato, Color color) throws Exception
+>>>>>>> origin/caracteristica/pruebas-de-tdas
 	{
 		ValidacionesUtiles.validarNoNull(dato, "dato");
 		if(this.contiene(dato))
@@ -475,6 +620,7 @@ public String toString(){
 		this.coloresDeLosDatos.agregar(new RelacionDatoColor<>(color, dato));
 	}
 
+<<<<<<< HEAD
 	/**
 	 * Elimina la relacion dato-color correspondiente a dato
 	 * @param dato no puede ser null, el tablero no debe contenerlo y debe existir una
@@ -506,4 +652,7 @@ public String toString(){
 	}
 
 //SETTERS SIMPLES -----------------------------------------------------------------------------------------	
+=======
+	//SETTERS SIMPLES -----------------------------------------------------------------------------------------	
+>>>>>>> origin/caracteristica/pruebas-de-tdas
 }

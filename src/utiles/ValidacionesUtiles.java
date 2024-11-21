@@ -60,11 +60,11 @@ public class ValidacionesUtiles {
         validarEnteroMaximo(entero, maximo, nombre);
     }
 
-    public static <T> void validarNoNull(T objeto, String nombre) throws Exception
+    public static <T> void validarNoNull(T objeto, String nombre) throws NullPointerException
     {
         if(objeto == null)
         {
-            throw new Exception(nombre + "no puede ser null");
+            throw new NullPointerException(nombre + "no puede ser null");
         }
     }
 }
