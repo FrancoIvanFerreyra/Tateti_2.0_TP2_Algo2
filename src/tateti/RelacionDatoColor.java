@@ -13,9 +13,9 @@ public class RelacionDatoColor<T> {
 	 * Crea una relacion dato-color
 	 * @param color no puede ser null
 	 * @param dato no puede ser null
-	 * @throws Exception si dato o color son null
+	 * @throws NullPointerException si dato o color son null
 	 */	
-	public RelacionDatoColor(Color color, T dato) throws Exception{
+	public RelacionDatoColor(Color color, T dato) throws NullPointerException{
 		ValidacionesUtiles.validarNoNull(dato, "dato");
 		ValidacionesUtiles.validarNoNull(color, "color");
 		this.color = color;
@@ -47,18 +47,18 @@ public class RelacionDatoColor<T> {
 	/**
 	 * Actualiza el dato de la relacion
 	 * @param dato no puede ser null
-	 * @throws Exception si el dato es null
+	 * @throws NullPointerException si el dato es null
 	 */
-    public void setDato(T dato) throws Exception {
+    public void setDato(T dato) throws NullPointerException {
 		ValidacionesUtiles.validarNoNull(dato, "dato");
         this.dato = dato;
     }
 	/**
 	 * Actualiza el color de la relacion
 	 * @param color no puede ser null
-	 * @throws Exception si color es null
+	 * @throws NullPointerException si color es null
 	 */
-    public void setColor(Color color) throws Exception{
+    public void setColor(Color color) throws NullPointerException{
 		ValidacionesUtiles.validarNoNull(color, "color");
         this.color = color;
     }

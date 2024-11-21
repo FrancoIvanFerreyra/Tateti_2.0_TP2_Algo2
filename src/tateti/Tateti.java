@@ -198,7 +198,7 @@ public class Tateti {
 						Consola.imprimirMensaje("Guardando la carta...");
 						Utiles.esperar(1500);
 						turnoActual.getJugador().agregarCarta(nuevaCarta);
-					} catch (IllegalStateException e) {
+					} catch (IllegalArgumentException e) {
 						Consola.imprimirMensaje("No podes tener mas cartas. Devolviendo la carta levantada al mazo...");
 						Utiles.esperar(1500);
 						mazoDeCartas.devolverCarta(nuevaCarta);
@@ -213,7 +213,7 @@ public class Tateti {
 
 				while (turnoActual.haySubturnos()) {
 					turnoActual.utilizarSubturno();
-					if (!turnoActual.getJugador().tieneTodasLasFichasEnElTablero()) {
+					if (!turnoActual.getJugador().tieneTodasLasFichasEnElTablero(this.getTablero())) {
 						casilleroDestino = jugadaInicial(this.tablero, turnoActual);
 					} else {
 						casilleroDestino = mover(this.tablero, turnoActual);
@@ -349,7 +349,7 @@ public class Tateti {
 		if (casillero.getCasilleroVecino(movimiento).estaOcupado()) {
 		throw new Exception("No existe el movimiento en esa direccion");
 		}
-		tablero.mover(casillero, casillero.getCasilleroVecino(movimiento), ficha);
+		tablero.mover(casillero, casillero.getCasilleroVecino(movimiento));
 
 		turnoActual.setFichaUtilizada(ficha);
 		turnoActual.setMovimientoAplicado(movimiento);

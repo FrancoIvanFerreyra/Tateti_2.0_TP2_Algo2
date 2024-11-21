@@ -1,9 +1,10 @@
 package tateti;
 
-import java.awt.Color;
-import estructuras.Vector;
-import utiles.ValidacionesUtiles;
 import cartas.Carta;
+import estructuras.Vector;
+import java.awt.Color;
+import java.util.NoSuchElementException;
+import utiles.ValidacionesUtiles;
 
 public class Jugador {
 
@@ -25,15 +26,18 @@ public class Jugador {
      * @param cantidadDeFichas mayor o igual que 1.
      * @param color no puede ser null.
      * @param cantidadDeCartas mayor o igual a 1.
-     * @throws Exception si nombre es null o vacio, si color es null o si cantidadDeFichas
-	 * 					 o cantidadDeCartas son menores a 1
+     * @throws NullPointerException si nombre es null o color es null
+	 * @throws IllegalArgumentException si nombre es vacio o si cantidadDeFichas o cantidadDeCartas
+	 * 									son menores a 1
      */
-	public Jugador(String nombre, int cantidadDeFichas, Color color, int cantidadDeCartas) throws Exception
+	public Jugador(String nombre, int cantidadDeFichas, Color color, int cantidadDeCartas) 
+																throws NullPointerException,
+																IllegalArgumentException
 	{
 		ValidacionesUtiles.validarNoNull(nombre, "nombre");
 		if(nombre.length() == 0)
 		{
-			throw new Exception("El nombre no puede estar vacio");
+			throw new IllegalArgumentException("El nombre no puede estar vacio");
 		}
 		ValidacionesUtiles.validarNoNull(color, "color");
 		ValidacionesUtiles.validarEnteroMinimo(cantidadDeFichas, 1, "cantidadDeFichas");
@@ -42,9 +46,9 @@ public class Jugador {
 		this.nombre = nombre;
 		this.id = idDeJugadorActual;
 		idDeJugadorActual++;
-		this.fichas = new Vector<Ficha>(cantidadDeFichas, null);
+		this.fichas = new Vector<>(cantidadDeFichas, null);
 		this.color = color;
-		this.cartas = new Vector<Carta>(cantidadDeCartas, null);
+		this.cartas = new Vector<>(cantidadDeCartas, null);
 	}
 	//METODOS DE CLASE ----------------------------------------------------------------------------------------
 	//METODOS GENERALES ---------------------------------------------------------------------------------------
@@ -63,9 +67,9 @@ public class Jugador {
 	/**
 	 * @param tablero no puede ser null
 	 * @return devuelve verdadero si el tablero tiene la cantidad maxima de fichas del jugador
-	 * @throws Exception si tablero es null
+	 * @throws NullPointerException si tablero es null
 	 */
-	public boolean tieneTodasLasFichasEnElTablero(Tablero<Ficha> tablero) throws Exception{
+	public boolean tieneTodasLasFichasEnElTablero(Tablero<Ficha> tablero) throws NullPointerException{
 		ValidacionesUtiles.validarNoNull(tablero, "tablero");
 		if(this.fichas.contarElementos() < this.fichas.getLongitud())
 		{
@@ -84,9 +88,9 @@ public class Jugador {
     /**
 	 * @param tablero no puede ser null
 	 * @return devuelve verdadero si el tablero tiene al menos una ficha del jugador
-	 * @throws Exception si tablero es null
+	 * @throws NullPointerException si tablero es null
 	 */
-	public boolean tieneAlgunaFichaEnElTablero(Tablero<Ficha> tablero) throws Exception
+	public boolean tieneAlgunaFichaEnElTablero(Tablero<Ficha> tablero) throws NullPointerException
 	{
 		ValidacionesUtiles.validarNoNull(tablero, "tablero");
 		if(this.fichas.contarElementos() == 0)
@@ -107,14 +111,15 @@ public class Jugador {
     /**
      * Agrega una ficha al jugador.
      * @param ficha no puede ser null.
-     * @throws Exception Si la ficha es null o si el jugador ya tiene el máximo de fichas.
+     * @throws NullPointerException Si la ficha es null
+	 * @throws IllegalArgumentException si el jugador ya tiene el máximo de fichas.
      */
-	public void agregarFicha(Ficha ficha) throws Exception
+	public void agregarFicha(Ficha ficha) throws NullPointerException, IllegalArgumentException
 	{
 		ValidacionesUtiles.validarNoNull(ficha, "ficha");
 		if(this.fichas.contarElementos() >= this.fichas.getLongitud())
 		{
-			throw new Exception("Se agrego el maximo de fichas (" + this.fichas.getLongitud() + ")");
+			throw new IllegalArgumentException("Se agrego el maximo de fichas (" + this.fichas.getLongitud() + ")");
 		}
 		this.fichas.agregar(ficha);
 	}
@@ -123,14 +128,15 @@ public class Jugador {
 	/**
 	 * Quita una ficha especifica al jugador
 	 * @param ficha no debe ser null, y el jugador debe tenerla
-	 * @throws Exception si ficha es null o si el jugador no la tiene
+	 * @throws NullPointerException si ficha es null
+	 * @throws NoSuchElementException si el jugador no tiene la ficha
 	 */
-	public void quitarFicha(Ficha ficha) throws Exception
+	public void quitarFicha(Ficha ficha) throws NullPointerException, NoSuchElementException
 	{
 		ValidacionesUtiles.validarNoNull(ficha, "ficha");
 		if(!this.fichas.contiene(ficha))
 		{
-			throw new Exception("El jugador no posee esa ficha");
+			throw new NoSuchElementException("El jugador no posee esa ficha");
 		}
 		int i = 1;
 		while(i <= this.fichas.getLongitud())
@@ -148,19 +154,20 @@ public class Jugador {
 	 * Quita la ficha del jugador en una posicion especifica
 	 * @param posicion rango entre [1, contarElementos()], el jugador debe poseer al menos una ficha,
 	 * 				   debe existir la ficha en la posicion 
-	 * @throws Exception si jugador no tiene fichas o si posicion no esta en el rango [1, contarElementos()]
+	 * @throws IllegalArgumentException si jugador no tiene fichas
+	 * @throws NoSuchElementException si posicion no esta en el rango [1, contarElementos()]
 	 */
-	public void quitarFicha(int posicion) throws Exception
+	public void quitarFicha(int posicion) throws IllegalArgumentException, NoSuchElementException
 	{
 		if(this.fichas.contarElementos() < 1)
 		{
-			throw new Exception("El jugador no tiene fichas");
+			throw new IllegalArgumentException("El jugador no tiene fichas");
 		}
 		ValidacionesUtiles.validarEnteroEnRango(posicion, 1,
 												 this.fichas.contarElementos(), "posicion");
 		if(this.fichas.obtener(posicion) == null)
 		{
-			throw new Exception("No existe una ficha en esa posicion");
+			throw new NoSuchElementException("No existe una ficha en esa posicion");
 		}
 		this.fichas.remover(posicion);
 	}
@@ -168,16 +175,16 @@ public class Jugador {
     /**
 	 * Agrega una carta al jugador
 	 * @param carta no puede ser null
-	 * @throws Exception si carta es null
-	 * @throws IllegalStateException si el jugador ya tiene el maximo de cartas
+	 * @throws NullPointerException si carta es null
+	 * @throws IllegalArgumentException si el jugador ya tiene el maximo de cartas
 	 */
 
-	public void agregarCarta(Carta carta) throws Exception, IllegalStateException
+	public void agregarCarta(Carta carta) throws NullPointerException, IllegalArgumentException
 	{
 		ValidacionesUtiles.validarNoNull(carta, "carta");
 		if(this.cartas.contarElementos() >= this.cartas.getLongitud())
 		{
-			throw new IllegalStateException("Se agrego el maximo de cartas (" + this.cartas.getLongitud() + ")");
+			throw new IllegalArgumentException("Se agrego el maximo de cartas (" + this.cartas.getLongitud() + ")");
 		}
 		this.cartas.agregar(carta);	
 	}
@@ -186,20 +193,21 @@ public class Jugador {
 	 * Quita una carta del jugador en una posicion especifica
 	 * @param posicion debe estar en rango [1, this.cartas.contarElementos()], el jugador debe tener
 	 * 				   al menos una carta, la carta debe existir en posicion
-	 * @throws Exception si posicion no esta en rango [1, this.cartas.contarElementos()], si el
-	 * 					jugador no tiene cartas o si no existe la carta en posicion
+	 * @throws IllegalArgumentException si posicion no esta en rango [1, this.cartas.contarElementos()]
+	 * 									o si el jugador no tiene cartas
+	 * @throws NoSuchElementException si no existe la carta en posicion
 	 */
-	public void quitarCarta(int posicion) throws Exception
+	public void quitarCarta(int posicion) throws IllegalArgumentException, NoSuchElementException
 	{
 		if(this.cartas.contarElementos() < 1)
 		{
-			throw new Exception("El jugador no tiene cartas");
+			throw new IllegalArgumentException("El jugador no tiene cartas");
 		}
 		ValidacionesUtiles.validarEnteroEnRango(posicion, 1,
 												 this.cartas.contarElementos(), "posicion");
 		if(this.cartas.obtener(posicion) == null)
 		{
-			throw new Exception("No existe una carta en esa posicion");
+			throw new NoSuchElementException("No existe una carta en esa posicion");
 		}
 		this.cartas.remover(posicion);
 	}
@@ -207,14 +215,15 @@ public class Jugador {
 	/**
 	 * Quita una carta especifica del jugador
 	 * @param carta no debe ser null, y el jugador debe tenerla
-	 * @throws Exception si carta es null o si el jugador no tiene la carta
+	 * @throws NullPointerException si carta es null
+	 * @throws NoSuchElementException si el jugador no tiene la carta
 	 */
-	public void quitarCarta(Carta carta) throws Exception
+	public void quitarCarta(Carta carta) throws NullPointerException, NoSuchElementException
 	{
 		ValidacionesUtiles.validarNoNull(carta, "carta");
 		if(!this.cartas.contiene(carta))
 		{
-			throw new Exception("El jugador no posee esa carta");
+			throw new NoSuchElementException("El jugador no posee esa carta");
 		}
 		int i = 1;
 		while(i <= this.cartas.getLongitud())
@@ -231,20 +240,14 @@ public class Jugador {
 	//GETTERS SIMPLES -----------------------------------------------------------------------------------------
     /**
      * Obtiene una ficha del jugador en una posición específica.
-     * @param indice debe estar en rango [1, this.fichas.contarElementos()]. El jugador debe tener
-	 * 				 al menos una ficha.
+     * @param indice debe estar en rango [1, this.fichas.getLongitud()].
      * @return Devuelve la ficha del jugador en la posición indicada.
-     * @throws Exception Si el índice no esta en rango [1, this.fichas.contarElementos()] o si
-	 * 						el jugador no tiene fichas.
+     * @throws IllegalArgumentException si el índice no esta en rango [1, this.fichas.getLongitud()]
      */
-	public Ficha getFicha(int indice) throws Exception
+	public Ficha getFicha(int indice) throws IllegalArgumentException
 	{
-		if(this.fichas.contarElementos() < 1)
-		{
-			throw new Exception("El jugador no tiene fichas");
-		}
 		ValidacionesUtiles.validarEnteroEnRango(indice, 1,
-												 this.fichas.contarElementos(), "indice");
+												 this.fichas.getLongitud(), "indice");
 		return this.fichas.obtener(indice);
 	}
 
@@ -252,42 +255,29 @@ public class Jugador {
 	 * 
 	 * @return Devuelve un vector de tamanio igual a la cantidad maxima de fichas,
 	 * 		   que contiene tanto las fichas del jugador como los espacios vacios.
-	 * 		   Si no tiene fichas devuelve un vector de 1 elemento que contiene null 
 	 */
 	public Vector<Ficha> getFichas()
 	{
-		if (this.fichas.getLongitud() >= 1) {
-			Vector<Ficha> resultado = new Vector<>(this.fichas.getLongitud(), null);
-			for (int i = 1; i <= this.fichas.getLongitud(); i++) {
-				resultado.agregar(this.fichas.obtener(i));
-			}
-			return resultado;
-		} else {
-			// Retornar un Vector vacío con longitud 1 para evitar excepciones
-			return new Vector<>(1, null);
+		Vector<Ficha> resultado = new Vector<>(this.fichas.getLongitud(), null);
+		for (int i = 1; i <= this.fichas.getLongitud(); i++) {
+			resultado.agregar(this.fichas.obtener(i));
 		}
+		return resultado;
 	}
 	
 	
 
 	/**
-
 	 * @return Devuelve un vector de tamanio igual a la cantidad maxima de cartas,
 	 * 		   que contiene tanto las cartas del jugador como los espacios vacios.
-	 * 		   Si no tiene cartas devuelve un vector de 1 elemento que contiene null 
 	 * */
-	public Vector<Carta> getCartas() throws Exception
+	public Vector<Carta> getCartas()
 	{
-		if (this.cartas.getLongitud() > 0) {
-			Vector<Carta> resultado = new Vector<>(this.cartas.getLongitud(), null);
-			for (int i = 1; i <= this.cartas.getLongitud(); i++) {
-				resultado.agregar(this.cartas.obtener(i));
-			}
-			return resultado;
-		} else {
-			// Retornar un Vector vacío con longitud mínima de 1
-			return new Vector<>(1, null);
+		Vector<Carta> resultado = new Vector<>(this.cartas.getLongitud(), null);
+		for (int i = 1; i <= this.cartas.getLongitud(); i++) {
+			resultado.agregar(this.cartas.obtener(i));
 		}
+		return resultado;
 	}
 	
 

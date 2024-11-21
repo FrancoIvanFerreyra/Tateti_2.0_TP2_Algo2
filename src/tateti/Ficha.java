@@ -39,7 +39,7 @@ public class Ficha implements Bloqueable{
      * @return devuelve verdadero si ambas fichas tienen el mismo símbolo.
 	 * @throws Exception si ficha es null
      */
-	public boolean esElMismoSimbolo(Ficha ficha) throws Exception{
+	public boolean esElMismoSimbolo(Ficha ficha) throws NullPointerException{
 		ValidacionesUtiles.validarNoNull(ficha, "ficha");
 		return getSimbolo().equals(ficha.getSimbolo());
 	}
@@ -65,7 +65,7 @@ public class Ficha implements Bloqueable{
      * @throws Exception si cantidadDeBloqueos es menor a 1 o mayor a getCantidadDeBloqueosRestantes.
      */
 	@Override
-	public void reducirBloqueosRestantes(int cantidadDeBloqueos) throws Exception {
+	public void reducirBloqueosRestantes(int cantidadDeBloqueos) throws IllegalArgumentException {
 		ValidacionesUtiles.validarEnteroEnRango(cantidadDeBloqueos, 1, this.bloqueosRestantes,
 												 "cantidadDeBloqueos");
 		this.bloqueosRestantes -= cantidadDeBloqueos;
