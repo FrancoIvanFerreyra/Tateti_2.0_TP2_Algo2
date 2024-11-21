@@ -78,8 +78,8 @@ public boolean jugar(Tateti tateti, Turno turnoActual) throws Exception {
     } while(casilleroFichaABloquear == null);
 
 
-
-    casilleroFichaABloquear.getDato().incrementarBloqueosRestantes(1);
+    // aumenta la cantidad de bloquoes de esa ficha segun la cantidad de participantes 
+    casilleroFichaABloquear.getDato().incrementarBloqueosRestantes(tateti.getJugadores().getLongitud() + 1);
     getCasillerosAfectados().agregar(casilleroFichaABloquear);
     Consola.imprimirMensaje("Se bloqueo correctamente la ficha ubicada en " +
                              casilleroFichaABloquear.toString() + "!");

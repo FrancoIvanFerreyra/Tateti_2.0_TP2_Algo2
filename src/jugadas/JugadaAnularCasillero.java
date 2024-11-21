@@ -39,7 +39,7 @@ public boolean jugar(Tateti tateti, Turno turnoActual) throws Exception {
     {
         return false;
     }
-    casilleroAAnular.incrementarBloqueosRestantes(1);
+    casilleroAAnular.incrementarBloqueosRestantes(tateti.getJugadores().getLongitud() + 1);
     tateti.getTablero().getCasillerosBloqueados().agregar(casilleroAAnular);
     getCasillerosAfectados().agregar(casilleroAAnular);
     Consola.imprimirMensaje("Se anulo correctamente el " + casilleroAAnular.toString() + "!");
