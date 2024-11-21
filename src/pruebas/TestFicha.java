@@ -1,7 +1,5 @@
 package pruebas;
 
-import java.awt.Color;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,25 +8,38 @@ import tateti.Ficha;
 
 public class TestFicha {
     private Ficha ficha;
+    private Ficha otraFicha;
 
     @BeforeEach
     public void setUp() {
         try {
-            ficha = new Ficha('X', Color.RED);
+            ficha = new Ficha("Rojo");
         } catch (Exception e) {
             System.out.println("Error al crear la ficha: " + e.getMessage());
         }
     }
+    
+    @Test
+    public void testCrearFichaConValorValido() {
+        try {
+            Ficha fichaValida = new Ficha("Azul");
+            Assertions.assertNotNull(fichaValida, "La ficha no debería ser null");
+        } catch (Exception e) {
+            Assertions.fail("No debería lanzarse excepción para un valor válido");
+        }
+    }    
 
     @Test
-    public void testConstructorFicha() {
-        Assertions.assertEquals('X', ficha.getSimbolo(), "El símbolo de la ficha debe ser X.");
+    public void testCrearFichaConValorNull() {
+        Exception exception = Assertions.assertThrows(Exception.class, () -> {
+            new Ficha(null); // Caso inválido
+        });
+        Assertions.assertEquals("simbolo no puede ser null", exception.getMessage());
     }
-
     @Test
     public void testEsElMismoSimbolo() {
         try {
-            Ficha otraFicha = new Ficha('X', Color.RED);
+            otraFicha = new Ficha("Rojo");
             Assertions.assertTrue(ficha.esElMismoSimbolo(otraFicha), "Las fichas deberían tener el mismo símbolo.");
         } catch (Exception e) {
             System.out.println("Error al crear las fichas: " + e.getMessage());
@@ -36,13 +47,8 @@ public class TestFicha {
     }
 
     @Test
-    public void testGetColor() {
-        Assertions.assertTrue(ficha.getColor() == Color.RED);
-    }
-
-    @Test
     public void testToString() {
-        Assertions.assertEquals("X", ficha.toString(), "El método toString debería devolver el símbolo de la ficha como cadena.");
+        Assertions.assertEquals("Rojo", ficha.toString(), "El método toString debería devolver el símbolo de la ficha como cadena.");
     }
 
     @Test
