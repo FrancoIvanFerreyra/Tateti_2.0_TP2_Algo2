@@ -38,23 +38,26 @@ public class ValidacionesUtiles {
         return nombre != null && nombre.matches("^[a-zA-Z][a-zA-Z0-9]*$");  
     }
 
-    public static void validarEnteroMinimo(int entero, int minimo, String nombre) throws Exception
+    public static void validarEnteroMinimo(int entero, int minimo,
+                                         String nombre) throws IllegalArgumentException
     {
         if(!esMayorOIgualQue(entero, minimo))
         {
-            throw new Exception(nombre + "debe ser mayor o igual a " + minimo);
+            throw new IllegalArgumentException(nombre + "debe ser mayor o igual a " + minimo);
         }
     }
 
-    public static void validarEnteroMaximo(int entero, int maximo, String nombre) throws Exception
+    public static void validarEnteroMaximo(int entero, int maximo,
+                                     String nombre) throws IllegalArgumentException
     {
         if(!esMenorOIgualQue(entero, maximo))
         {
-            throw new Exception(nombre + "debe ser menor o igual a " + maximo);
+            throw new IllegalArgumentException(nombre + "debe ser menor o igual a " + maximo);
         }
     }
 
-    public static void validarEnteroEnRango(int entero, int minimo, int maximo, String nombre) throws Exception
+    public static void validarEnteroEnRango(int entero, int minimo,
+                                             int maximo, String nombre) throws IllegalArgumentException
     {
         validarEnteroMinimo(entero, minimo, nombre);
         validarEnteroMaximo(entero, maximo, nombre);
