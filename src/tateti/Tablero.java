@@ -12,6 +12,7 @@ public class Tablero<T> {
 	//ATRIBUTOS -----------------------------------------------------------------------------------------------
 	private Lista<RelacionDatoCasillero<T>> posicionDeLosDatos = null;
 	private Lista<RelacionDatoColor<T>> coloresDeLosDatos = null;
+	private Lista<Casillero<T>> casillerosBloqueados = null;
 	private Lista<Lista<Lista<Casillero<T>>>> tablero = null;
 	private int ancho = 0;
 	private int alto = 0;
@@ -37,6 +38,7 @@ public class Tablero<T> {
 		this.tablero = new ListaSimplementeEnlazada<Lista<Lista<Casillero<T>>>>();
 		this.posicionDeLosDatos = new ListaSimplementeEnlazada<RelacionDatoCasillero<T>>();
 		this.coloresDeLosDatos = new ListaSimplementeEnlazada<RelacionDatoColor<T>>();
+		this.casillerosBloqueados = new ListaSimplementeEnlazada<Casillero<T>>();
 
 		for( int i = 1; i <= ancho; i++) {
 			Lista<Lista<Casillero<T>>> fila = new ListaSimplementeEnlazada<Lista<Casillero<T>>>();
@@ -59,14 +61,14 @@ public class Tablero<T> {
 					}
 					for(int l = -1; l <= 0; l++)
 					{
-						if (this.existeElCasillero(i, j + l, -1)) {
-							relacionarCasillerosVecinos(this.getCasillero(i, j  + l, -1), nuevoCasillero, 0, l, -1);
+						if (this.existeElCasillero(i, j + l, k-1)) {
+							relacionarCasillerosVecinos(this.getCasillero(i, j  + l, k - 1), nuevoCasillero, 0, l, -1);
 						}
 					}
 					for(int l = -1; l <= 0; l++)
 					{
-						if (l != 0 && this.existeElCasillero(i, j + l, 0)) {
-							relacionarCasillerosVecinos(this.getCasillero(i, j + l, 0), nuevoCasillero, 0, l, 0);
+						if (l != 0 && this.existeElCasillero(i, j + l, k)) {
+							relacionarCasillerosVecinos(this.getCasillero(i, j + l, k), nuevoCasillero, 0, l, 0);
 						}
 					}
 				}
@@ -229,7 +231,8 @@ public class Tablero<T> {
 		for(Movimiento movimiento : Movimiento.values())
 		{
 			if (casillero.existeElVecino(movimiento)
-			 && !casillero.getCasilleroVecino(movimiento).estaOcupado())
+			 && !casillero.getCasilleroVecino(movimiento).estaOcupado()
+			 && !casillero.getCasilleroVecino(movimiento).estaBloqueado())
 			 {
 				movimientosPosibles.agregar(movimiento);
 			 }
@@ -334,6 +337,12 @@ public class Tablero<T> {
 		return this.coloresDeLosDatos;
 	}
 
+	public Lista<Casillero<T>> getCasillerosBloqueados()
+	{
+		return this.casillerosBloqueados;
+	}
+
+
 	/**
 	 * pre:
 	 * @param dato no debe ser nulo.
@@ -358,11 +367,34 @@ public class Tablero<T> {
 			if(relacionDatoCasillero.getDato().equals(dato))
 			{
 				relacionDatoCasillero.setCasillero(casillero);
-				break;
+				return;
 			}
 		}
 		this.posicionDeLosDatos.agregar(new RelacionDatoCasillero<>(casillero, dato));
 	}
+
+	public void eliminarRelacionDatoCasillero(T dato) throws Exception
+	{
+		if(dato == null)
+		{
+			throw new Exception("El dato a buscar no puede ser null");
+		}
+
+		getPosicionDeLosDatos().iniciarCursor();
+		int i = 1;
+		while(getPosicionDeLosDatos().avanzarCursor())
+		{
+			RelacionDatoCasillero<T> relacionDatoCasillero = getPosicionDeLosDatos().obtenerCursor();
+			if(relacionDatoCasillero.getDato().equals(dato))
+			{
+				getPosicionDeLosDatos().remover(i);
+				return;
+			}
+			i++;
+		}
+		throw new Exception("No existe relacion datoCasillero para este dato");
+	}
+
 
 	/**
 	 * pre: 
@@ -392,6 +424,28 @@ public class Tablero<T> {
 			}
 		}
 		this.coloresDeLosDatos.agregar(new RelacionDatoColor<>(color, dato));
+	}
+
+	public void eliminarRelacionDatoColor(T dato) throws Exception
+	{
+		if(dato == null)
+		{
+			throw new Exception("El dato a buscar no puede ser null");
+		}
+
+		getColoresDeLosDatos().iniciarCursor();
+		int i = 1;
+		while(getColoresDeLosDatos().avanzarCursor())
+		{
+			RelacionDatoColor<T> relacionDatoColor = getColoresDeLosDatos().obtenerCursor();
+			if(relacionDatoColor.getDato().equals(dato))
+			{
+				getColoresDeLosDatos().remover(i);;
+				return;
+			}
+			i++;
+		}
+		throw new Exception("No existe relacion datoColor para este dato");
 	}
 
 	//SETTERS SIMPLES -----------------------------------------------------------------------------------------	

@@ -1,33 +1,27 @@
 package tateti;
 
 import interfaces.Bloqueable;
-import java.awt.Color;
+import utiles.ValidacionesUtiles;
 
 public class Ficha implements Bloqueable{
 	//ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
+
 	//ATRIBUTOS -----------------------------------------------------------------------------------------------
-	private char simbolo;
+	private String simbolo;
 	private int bloqueosRestantes = 0;
-	private Color color = null;
 	
 	//CONSTRUCTORES -------------------------------------------------------------------------------------------
-    /**
-     * Crea una ficha con el símbolo y el color especificados.
-     * pre: color != null.
-     * @param simbolo El símbolo que representa a la ficha.
-     * @param color El color asociado a la ficha.
-	 * @throws Exception Si el color que recibe es null
-     * pos: Se crea una ficha con el símbolo y el color indicados.
-     */
-	public Ficha(char simbolo, Color color) throws Exception {
-		if (color == null) {
-            throw new Exception("El color no puede ser nulo.");
-        }
+	/*
+	 * pre: simbolo no debe ser null
+	 * post: crea una ficha con su simbolo
+	 */
+	public Ficha(String simbolo) throws Exception {
+		ValidacionesUtiles.validarNoNull(simbolo, "simbolo");
 		this.simbolo = simbolo;
-		this.color = color;
 	}
 	
 	//METODOS DE CLASE ----------------------------------------------------------------------------------------
+
 	//METODOS GENERALES ---------------------------------------------------------------------------------------
 	/**
      * Convierte el símbolo de la ficha en una cadena.
@@ -47,7 +41,7 @@ public class Ficha implements Bloqueable{
      * @return true si ambas fichas tienen el mismo símbolo, false en caso contrario.
      */
 	public boolean esElMismoSimbolo(Ficha ficha) {
-		return getSimbolo() == ficha.getSimbolo();
+		return getSimbolo().equals(ficha.getSimbolo());
 	}
 	
 	//METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
@@ -59,10 +53,10 @@ public class Ficha implements Bloqueable{
      * pos: La cantidad de bloqueos restantes de la ficha aumenta en cantidadDeBloqueos.
      */
 	@Override
-	public void incrementarBloqueosRestantes(int cantidadDeBloqueos) throws Exception{
+	public void incrementarBloqueosRestantes(int cantidadDeBloqueos) throws IllegalArgumentException{
 		if(cantidadDeBloqueos < 1)
 		{
-			throw new Exception("Cantidad de bloqueos debe ser mayor a 0");
+			throw new IllegalArgumentException("Cantidad de bloqueos debe ser mayor a 0");
 		}
 		this.bloqueosRestantes += cantidadDeBloqueos;
 	}
@@ -99,13 +93,8 @@ public class Ficha implements Bloqueable{
 
 
 	//GETTERS SIMPLES -----------------------------------------------------------------------------------------
-	/**
-     * Obtiene el símbolo de la ficha.
-     * pre: -
-     * @return El símbolo de la ficha.
-     */
-	public char getSimbolo() {
-		return simbolo;
+	public String getSimbolo() {
+		return this.simbolo;
 	}
 
     /**
@@ -117,29 +106,5 @@ public class Ficha implements Bloqueable{
     public int getBloqueosRestantes() {
         return this.bloqueosRestantes;
     }
-
-	/**
-     * Obtiene el color de la ficha.
-     * pre: -
-     * @return El color de la ficha.
-     */
-	public Color getColor() {
-        return color;  // Método para obtener el color de la ficha
-    }
-
-	/**
-     * Establece el color de la ficha.
-     * pre: color no puede ser null.
-     * @param color El nuevo color de la ficha.
-     * pos: El color de la ficha se actualiza al valor especificado.
-     */
-	public void setColor(Color color) throws Exception {
-		if (color == null) {
-            throw new Exception("El color no puede ser nulo.");
-        }
-		this.color = color;
-	}
-
 	//SETTERS SIMPLES -----------------------------------------------------------------------------------------	
-
 }

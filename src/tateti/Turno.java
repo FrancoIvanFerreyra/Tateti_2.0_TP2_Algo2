@@ -63,7 +63,7 @@ public class Turno {
 		}
 		if(this.bloqueosRestantes - cantidadDeBloqueos < 0)
 		{
-			throw new Exception("No se pueden quitar " + cantidadDeBloqueos + "bloqueos, quedan " + this.bloqueosRestantes);
+			throw new IllegalArgumentException("No se pueden quitar " + cantidadDeBloqueos + "bloqueos, quedan " + this.bloqueosRestantes);
 		}
 		this.bloqueosRestantes -= cantidadDeBloqueos;
 	}

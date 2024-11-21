@@ -8,8 +8,12 @@ import cartas.Carta;
 public class Jugador {
 
 	//ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
+
+	private static int idDeJugadorActual = 1;
+
 	//ATRIBUTOS -----------------------------------------------------------------------------------------------
 	private String nombre;
+	private int id;
 	private Vector<Ficha> fichas;
 	private Vector<Carta> cartas;
 	private Color color;
@@ -28,6 +32,8 @@ public class Jugador {
 	public Jugador(String nombre, int cantidadDeFichas, Color color, int cantidadDeCartas) throws Exception
 	{
 		this.nombre = nombre;
+		this.id = idDeJugadorActual;
+		idDeJugadorActual++;
 		this.fichas = new Vector<Ficha>(cantidadDeFichas, null);
 		this.color = color;
 		this.cartas = new Vector<Carta>(cantidadDeCartas, null);
@@ -78,8 +84,42 @@ public class Jugador {
 		{
 			throw new Exception("Se agrego el maximo de fichas (" + this.fichas.getLongitud() + ")");
 		}
-		ficha.setColor(this.color);
 		this.fichas.agregar(ficha);
+	}
+
+	public void quitarFicha(Ficha ficha) throws Exception
+	{
+		if(ficha == null)
+		{
+			throw new Exception("La Ficha no puede ser null");
+		}
+		if(!this.fichas.contiene(ficha))
+		{
+			throw new Exception("El jugador no posee esa Ficha");
+		}
+		int i = 1;
+		while(i <= this.fichas.getLongitud())
+		{
+			if(this.fichas.obtener(i) == ficha)
+			{
+				this.quitarFicha(i);
+				return;
+			}
+			i++;
+		}
+	}
+
+	public void quitarFicha(int posicion) throws Exception
+	{
+		if(!ValidacionesUtiles.estaEntre(posicion, 1, this.fichas.getLongitud()))
+		{
+			throw new Exception("La posicion debe estar entre 1 y " + this.fichas.getLongitud());
+		}
+		if(this.fichas.obtener(posicion) == null)
+		{
+			throw new Exception("No existe una ficha en esa posicion");
+		}
+		this.fichas.remover(posicion);
 	}
 
     /**
@@ -218,6 +258,11 @@ public class Jugador {
 	public Color getColor()
 	{
 		return this.color;
+	}
+
+	public int getId()
+	{
+		return this.id;
 	}
 	//SETTERS SIMPLES -----------------------------------------------------------------------------------------	
 }

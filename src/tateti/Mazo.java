@@ -8,6 +8,7 @@ import estructuras.ListaSimplementeEnlazada;
 
 
 import cartas.*;
+import interfaz.Consola;
 import java.util.Random;
 
 public class Mazo {
@@ -24,7 +25,7 @@ public class Mazo {
         Random random = new Random();
         for(int i = 0; i < tamanio; i++)
         {
-            int indiceRandom = random.nextInt(tiposDeCarta.getTamanio() - 1) + 1;
+            int indiceRandom = random.nextInt(tiposDeCarta.getTamanio()) + 1;
             try {
                 Carta nuevaCarta = tiposDeCarta.obtener(indiceRandom).getDeclaredConstructor().newInstance(null);
                 cartasDisponibles.acolar(nuevaCarta);
@@ -41,6 +42,9 @@ public class Mazo {
             tiposDeCarta.agregar(CartaDuplicarTurno.class);
             tiposDeCarta.agregar(CartaBloquearFicha.class);
             tiposDeCarta.agregar(CartaAnularCasillero.class);
+            tiposDeCarta.agregar(CartaRetrocederUnaJugada.class);
+            tiposDeCarta.agregar(CartaTeletransportarFicha.class);
+            tiposDeCarta.agregar(CartaCambiarColorFicha.class);
         }
         catch(Exception e)
         {
@@ -52,7 +56,7 @@ public class Mazo {
 
     public Carta levantarCarta() throws Exception
     {
-        if(cartasDisponibles.contarElementos() <= 0)
+        if(!hayCartasDisponibles())
         {
             throw new Exception("No hay cartas disponibles en el mazo");
         }
@@ -68,6 +72,15 @@ public class Mazo {
         this.cartasDisponibles.acolar(carta);
     }
 
+    public void descartarCarta(Carta carta) throws Exception
+    {
+        if(carta == null)
+        {
+            throw new Exception("La carta no puede ser null");
+        }
+        this.cartasUtilizadas.agregar(carta);
+    }
+
     public void mezclar() throws Exception
     {
         if(hayCartasDisponibles())
@@ -79,11 +92,11 @@ public class Mazo {
 
         for(int i = 0; i < cantidadDeIntercambios; i++)
         {
-            int indiceMazo1 = random.nextInt(this.tamanio - 1) + 1;
+            int indiceMazo1 = random.nextInt(this.cartasUtilizadas.getTamanio()) + 1;
             int indiceMazo2 = 0;
             do
             {
-                indiceMazo2 = random.nextInt(this.tamanio - 1) + 1;
+                indiceMazo2 = random.nextInt(this.cartasUtilizadas.getTamanio()) + 1;
             } while(indiceMazo2 == indiceMazo1);
     
             cartasUtilizadas.intercambiar(indiceMazo1, indiceMazo2);

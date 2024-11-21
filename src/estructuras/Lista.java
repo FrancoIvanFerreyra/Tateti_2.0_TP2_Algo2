@@ -79,6 +79,13 @@ public abstract class Lista<T> {
 	 */
 	public abstract void remover(int posicion) throws Exception;
 
+		/*
+	 * pre : elemento no es null y lista contiene a elemento
+	 * post: remueve de la Lista la primera aparicion del elemento en la lista
+	 * (en el indice mas bajo).
+	 */
+	public abstract void removerPrimeraAparicion(T elemento) throws Exception;
+
 	/**
 	 * pre : posición pertenece al intervalo: [1, contarElementos()]
 	 * pos: devuelve el dato de la posicion
@@ -160,7 +167,7 @@ public abstract class Lista<T> {
 	}
 	
 	protected void disminuirTamanio() {
-		this.tamanio++;
+		this.tamanio--;
 	}
 	
 	//GETTERS SIMPLES -----------------------------------------------------------------------------------------

@@ -1,5 +1,7 @@
 package estructuras;
 
+import utiles.ValidacionesUtiles;
+
 public class ListaSimplementeEnlazada<T> extends Lista<T> {
 //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
 //ATRIBUTOS -----------------------------------------------------------------------------------------------
@@ -45,6 +47,28 @@ public class ListaSimplementeEnlazada<T> extends Lista<T> {
 			anterior.setSiguiente(removido.getSiguiente());
 		}
 		this.disminuirTamanio();
+	}
+
+	@Override
+	public void removerPrimeraAparicion(T elemento) throws Exception
+	{
+		ValidacionesUtiles.validarNoNull(elemento, "elemento");
+		if(!this.contiene(elemento))
+		{
+			throw new Exception("La lista no contiene este elemento");
+		}
+		int i = 1;
+		this.iniciarCursor();
+		boolean encontrado = false;
+		while(!encontrado && this.avanzarCursor())
+		{
+			if(this.obtenerCursor().equals(elemento))
+			{
+				this.remover(i);
+				encontrado = true;
+			}
+			i++;
+		}
 	}
 
 	@Override

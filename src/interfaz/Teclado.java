@@ -38,6 +38,11 @@ public class Teclado {
 		return scanner.nextInt();
 	}
 
+	public static void limpiarEntrada()
+	{
+		scanner.nextLine();
+	}
+
 	public static void finalizar() {
 		if (scanner != null) {
 			scanner.close();

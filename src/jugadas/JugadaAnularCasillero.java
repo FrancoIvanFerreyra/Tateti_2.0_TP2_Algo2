@@ -3,14 +3,21 @@ package jugadas;
 import cartas.Carta;
 import interfaz.Consola;
 import tateti.Casillero;
+import tateti.Ficha;
 import tateti.Tateti;
 import tateti.Turno;
-
+/**
+ * El jugador decice que casillero del tablero quiere bloquear
+ */
 public class JugadaAnularCasillero extends Jugada{
 //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
 //ATRIBUTOS -----------------------------------------------------------------------------------------------
 //CONSTRUCTORES -------------------------------------------------------------------------------------------
-	
+/**
+    /**
+     * pre: recibe la carta que se quiere utilizar como base para almancenar la jugada 
+     * pos: se incializa una carta con la jugada que bloquea un casillero
+     */
 public JugadaAnularCasillero(Carta carta) {
     super(carta);
 }
@@ -19,57 +26,48 @@ public JugadaAnularCasillero(Carta carta) {
 //METODOS GENERALES ---------------------------------------------------------------------------------------
 //METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
 
+/*
+ * pre: recibe el estado del tateti y el turno acutual del jugador
+ * pos: se bloquea el casillero seleccionado mediante el ingreso de coordenas, el bloqueo se realiza mediante el incremento del contado de bloqueos del mismo, en 
+ *      caso de que se cumpla se agrega al listado de casillero afectados y retorna true, caso contrario retorna false
+ */
 @Override
 public boolean jugar(Tateti tateti, Turno turnoActual) throws Exception {
-    int x, y, z;
-    Casillero casilleroAAnular;
-    String mensajeError = "";
-    do 
-    { 
-        Consola.imprimirMensaje(mensajeError);
-        mensajeError = "";
-        x = Consola.obtenerNumeroEnteroDelUsuario("Ingrese coordenada X del casillero a anular:");
-        y = Consola.obtenerNumeroEnteroDelUsuario("Ingrese coordenada Y del casillero a anular:");
-        z = Consola.obtenerNumeroEnteroDelUsuario("Ingrese coordenada Z del casillero a anular:");
-        
-        if(tateti.getTablero().existeElCasillero(x, y, z))
-        {
-            casilleroAAnular = tateti.getTablero().getCasillero(x, y, z);
-            if(casilleroAAnular.estaOcupado())
-            {
-                mensajeError += "Casillero ocupado!\t";
-            }
-            if(casilleroAAnular.estaBloqueado())
-            {
-                mensajeError += "Casillero bloqueado!\t";
-            }
-        }
-        else
-        {
-            casilleroAAnular = null;
-        }
-
-
-    } while (casilleroAAnular == null ||
-            casilleroAAnular.estaOcupado() || 
-            casilleroAAnular.estaBloqueado());
-
-    casilleroAAnular.incrementarBloqueosRestantes(1);
-
+    Casillero<Ficha> casilleroAAnular;
+    casilleroAAnular = tateti.obtenerCasilleroDirectoDelUsuario("Se necesitan los datos del casillero a anular");
+    if(casilleroAAnular == null)
+    {
+        return false;
+    }
+    casilleroAAnular.incrementarBloqueosRestantes(tateti.getJugadores().getLongitud() + 1);
+    tateti.getTablero().getCasillerosBloqueados().agregar(casilleroAAnular);
     getCasillerosAfectados().agregar(casilleroAAnular);
+    Consola.imprimirMensaje("Se anulo correctamente el " + casilleroAAnular.toString() + "!");
+    
     return true;
 
 }
 
+/**
+ * pre: recibe el estado del tateti
+ * pos: se disminuye el contador de bloques del casillero que fue afectado, se lo obtiene del listado de casillero afectados
+ */
 @Override
 public void deshacer(Tateti tateti) throws Exception {
     getCasillerosAfectados().iniciarCursor();
     while(getCasillerosAfectados().avanzarCursor())
     {
-        Casillero casilleroAfectado = getCasillerosAfectados().obtenerCursor();
+        @SuppressWarnings("unchecked")
+        Casillero<Ficha> casilleroAfectado = getCasillerosAfectados().obtenerCursor();
         if(casilleroAfectado.estaBloqueado())
         {
             casilleroAfectado.reducirBloqueosRestantes(1);
+            try {
+                tateti.getTablero().getCasillerosBloqueados().removerPrimeraAparicion(casilleroAfectado);
+                Consola.imprimirMensaje("Se libero correctamente el " + casilleroAfectado.toString() + "!");
+            } catch (Exception e) {
+                Consola.imprimirMensaje("No se pudo deshacer la jugada correctamente" + e.getMessage());
+            }
         }
     }
 }

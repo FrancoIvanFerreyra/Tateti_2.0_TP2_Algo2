@@ -4,6 +4,7 @@ import estructuras.Lista;
 import estructuras.ListaSimplementeEnlazada;
 import estructuras.Vector;
 import java.lang.reflect.Method;
+import java.util.InputMismatchException;
 import utiles.ValidacionesUtiles;
 public class Consola {
 
@@ -38,7 +39,9 @@ public class Consola {
             throw new Exception("Debe existir al menos una opcion");
         }
         imprimirMenuDeOpciones(opciones, titulo, tieneOpcionParaVolver);
-        int indiceElegido = obtenerNumeroEnteroDelUsuario("Opcion seleccionada:");
+        int indiceElegido = obtenerNumeroEnteroEnRangoDelUsuario("Opcion seleccionada:",
+                            (tieneOpcionParaVolver) ? 0 : 1,
+                            opciones.getTamanio());
         return (indiceElegido == 0) ? null : opciones.obtener(indiceElegido);
    }
 
@@ -67,8 +70,19 @@ public class Consola {
 
     public static int obtenerNumeroEnteroDelUsuario(String titulo)
     {
-        System.out.println(titulo + "\t");
-        return Teclado.leerEntero();
+        boolean ingresoNumero = false;
+        int numero = 0;
+        do { 
+            try {
+                System.out.println(titulo + "\t");
+                numero = Teclado.leerEntero();
+                ingresoNumero = true;
+            } catch (InputMismatchException e) {
+                imprimirMensaje("Debe ingresar un numero");
+                Teclado.limpiarEntrada();
+            }
+        } while (!ingresoNumero);
+        return numero;
     }
 
     public static boolean obtenerConfirmacionDelUsuario(String titulo) throws Exception
@@ -79,15 +93,53 @@ public class Consola {
         return "SI".equals(consultarOpcionAlUsuario(opciones, titulo, false));
     }
 
+    public static Boolean obtenerConfirmacionORetornoDelUsuario(String titulo) throws Exception
+    {
+        Lista<String> opciones = new ListaSimplementeEnlazada<String>();
+        opciones.agregar("SI");
+        opciones.agregar("NO");
+        String resultado = consultarOpcionAlUsuario(opciones, titulo, true);
+        if(resultado == null)
+        {
+            return null;
+        }
+        return "SI".equals(resultado);
+    }
+
     public static int obtenerNumeroEnteroEnRangoDelUsuario(String titulo, int minimoValido, int maximoValido)
     {
-        System.out.println(titulo + "\t");
-        int numero = Teclado.leerEntero();
+        int numero = obtenerNumeroEnteroDelUsuario(titulo);
         while(!ValidacionesUtiles.estaEntre(numero, minimoValido, maximoValido))
         {
             imprimirMensaje("Por favor ingrese un numero entre " + minimoValido + " y " + maximoValido + "\t");
-            numero = Teclado.leerEntero();
+            numero = obtenerNumeroEnteroDelUsuario(titulo);
         }
+        return numero;
+    }
+
+    public static int obtenerNumeroEnteroEnRangoMinimoDelUsuario(String titulo, int minimoValido)
+    {
+        int numero;
+        do { 
+            numero = obtenerNumeroEnteroDelUsuario(titulo);
+            if(!ValidacionesUtiles.esMayorOIgualQue(numero, minimoValido))
+            {
+                imprimirMensaje("Por favor ingrese un numero mayor o igual que " + minimoValido + "\t");
+            }
+        } while (!ValidacionesUtiles.esMayorOIgualQue(numero, minimoValido));
+        return numero;
+    }
+
+    public static int obtenerNumeroEnteroEnRangoMaximoDelUsuario(String titulo, int maximoValido)
+    {
+        int numero;
+        do { 
+            numero = obtenerNumeroEnteroDelUsuario(titulo);
+            if(!ValidacionesUtiles.esMenorOIgualQue(numero, maximoValido))
+            {
+                imprimirMensaje("Por favor ingrese un numero menor o igual que " + maximoValido + "\t");
+            }
+        } while (!ValidacionesUtiles.esMenorOIgualQue(numero, maximoValido));
         return numero;
     }
 

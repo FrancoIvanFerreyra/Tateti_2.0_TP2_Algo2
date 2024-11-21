@@ -1,23 +1,20 @@
 package tateti;
 
 import cartas.Carta;
-import cartas.CartaAnularCasillero;
-import cartas.CartaBloquearFicha;
 import estructuras.Cola;
 import estructuras.Lista;
 import estructuras.ListaSimplementeEnlazada;
 import estructuras.Vector;
 import estructuras.Pila;
 import exportadores.ExportadorDeDatosAImagen;
-//import exportadores.ExportadorDeDatosAImagen;
 import jugadas.Jugada;
+import jugadas.JugadaBloquearFicha;
 import utiles.Utiles;
 
 import interfaz.Consola;
 import java.awt.Color;
 import java.io.File;
 
-import javax.swing.tree.ExpandVetoException;
 import utiles.AdministradorDeArchivos;
 
 import utiles.ValidacionesUtiles;
@@ -32,24 +29,33 @@ public class Tateti {
 	private Vector<Color> coloresDeFicha = null;
 	private Vector<Turno> turnos = null;
 	private Pila<Turno> historialTurnos = null;
-	private int cantidadDeFichasPorJugador;
-	private Pila<EstadoJuego> hitorialEstado = null;
+	private int cantidadDeFichasSeguidasParaGanar;
 	
 	//demas cosas, jugadores, cartas, etc
 
 	//CONSTRUCTORES -------------------------------------------------------------------------------------------
 
 	public Tateti() throws Exception {
-		this(5, 5,5,  2, 3, 5);
+		this(3, 3,1,  2, 3, 3, 3);
+	}
+
+	public Tateti(ConfiguracionPartida configuracion) throws Exception
+	{
+		this(configuracion.getAnchoTablero(), configuracion.getAltoTablero(),
+			configuracion.getProfundidadTablero(), configuracion.getCantidadDeJugadores(),
+			configuracion.getCantidadDeFichasPorJugador(), configuracion.getCantidadDeCartasPorJugador(),
+			configuracion.getCantidadDeFichasSeguidasParaGanar());
 	}
 
 	public Tateti(int anchoTablero, int altoTablero, int profundidadTablero, int cantidadJugadores,
-					int cantidadDeFichasPorJugador, int cantidadDeCartasPorJugador) throws Exception {
+					int cantidadDeFichasPorJugador, int cantidadDeCartasPorJugador,
+					int cantidadDeFichasSeguidasParaGanar) throws Exception {
+		
 		this.tablero = new Tablero<Ficha>(anchoTablero, altoTablero, profundidadTablero);
 		this.jugadores = new Vector<Jugador>(cantidadJugadores, null);
 		this.coloresDeFicha = new Vector<Color>(cantidadJugadores, Color.black);
 		this.mazoDeCartas = new Mazo((cantidadDeCartasPorJugador + 2) * cantidadJugadores);
-		this.hitorialEstado = new Pila<>();
+		this.cantidadDeFichasSeguidasParaGanar = cantidadDeFichasSeguidasParaGanar;
 		for(int i = 1; i <= this.jugadores.getLongitud(); i++)
 		{
 			String titulo = "Jugador " + i + ", por favor ingrese su nombre:";
@@ -59,16 +65,16 @@ public class Tateti {
 				nombreDelJugador = Consola.obtenerStringDelUsuario("Nombre inválido!\n" + titulo);
 			}
 			Color colorDelJugador = Utiles.generarColorAleatorio();
-			while(coloresDeFicha.contiene(colorDelJugador))
+			while(Utiles.esColorDistinto(colorDelJugador, this.coloresDeFicha))
 			{
 				colorDelJugador = Utiles.generarColorAleatorio();
 			}
 			this.jugadores.agregar(new Jugador(nombreDelJugador, cantidadDeFichasPorJugador, colorDelJugador, cantidadDeCartasPorJugador));
+			this.coloresDeFicha.agregar(colorDelJugador);
 		}
 		this.turnos = new Vector<Turno>(this.jugadores.getLongitud(), null);
 		for(int i = 0; i < this.turnos.getLongitud(); i++)
 		{
-			System.out.println("Turno agregado");
 			this.turnos.agregar(new Turno(this.jugadores.obtener(i + 1)));
 		}
 		this.historialTurnos = new Pila<Turno>();
@@ -100,7 +106,6 @@ public class Tateti {
 	}
 	public boolean existeGanador(Casillero<Ficha> casillero) throws Exception {
 		//validar
-		int cantidadFichas = 3; //longitud del tateti
 
 		Lista<Movimiento> movimientosAChequear = Utiles.obtenerMovimientosAChequear();
 		movimientosAChequear.iniciarCursor();
@@ -110,7 +115,7 @@ public class Tateti {
 			Movimiento movimiento = movimientosAChequear.obtenerCursor();                                                                //casillero de la derecha
 			int cantidadDeFichasSeguidas = contarFichasSeguidas(casillero, movimiento, casillero.getDato()) + 
 			contarFichasSeguidas(casillero, Utiles.movimientoOpuesto(movimiento), casillero.getDato());
-			if(cantidadDeFichasSeguidas - 1 >= cantidadFichas)
+			if(cantidadDeFichasSeguidas - 1 >= this.cantidadDeFichasSeguidasParaGanar)
 			{
 				//hay ganador
 				return true;
@@ -149,21 +154,62 @@ public class Tateti {
 			
 			turnoActual = filaDeTurnos.desacolar();
 			Consola.imprimirMensaje("Turno de jugar para " + turnoActual.getJugador().getNombre());
+			Utiles.esperar(2000);
 			turnoActual.limpiar();
 			Casillero<Ficha> casilleroDestino = null;
 
 			if (!turnoActual.estaBloqueado()) {
 				turnoActual.iniciarTurno();
 				
-				int dado = 3;
-				for(int i = 0; i < dado; i++)
+				Consola.imprimirMensaje("Tirando el dado...");
+				Utiles.esperar(2000);
+				int cantidadDeCartasASacar = tirarDado();
+				Consola.imprimirMensaje("Salio el numero " + cantidadDeCartasASacar + "!");
+				Utiles.esperar(1500);
+				Consola.imprimirMensaje("-----------------------------CARTAS-------------------------------");
+				for(int i = 0; i < cantidadDeCartasASacar; i++)
 				{
-					Carta nuevaCarta = mazoDeCartas.levantarCarta();
+					Carta nuevaCarta;
+					try{
+						Consola.imprimirMensaje("Levantando del mazo la carta " + (i + 1) + " de " + cantidadDeCartasASacar + "...");
+						Utiles.esperar(1500);
+						nuevaCarta = mazoDeCartas.levantarCarta();
+					}
+					catch(Exception e)
+					{
+						try
+						{
+							Consola.imprimirMensaje("No hay cartas que levantar. Mezclando las ya usadas...");
+							Utiles.esperar(1500);
+							mazoDeCartas.mezclar();
+						}
+						catch(Exception ex)
+						{
+							Consola.imprimirMensaje("No hay cartas que mezclar. Todas estan en juego!");
+							Utiles.esperar(1500);
+							break;
+						}
+						Consola.imprimirMensaje("Cartas mezcladas!");
+						Utiles.esperar(1500);
+						Consola.imprimirMensaje("Levantando del mazo la carta " + (i + 1) + " de " + cantidadDeCartasASacar + "...");
+						Utiles.esperar(1500);
+						nuevaCarta = mazoDeCartas.levantarCarta();
+					}
 					try {
+						Consola.imprimirMensaje("Guardando la carta...");
+						Utiles.esperar(1500);
 						turnoActual.getJugador().agregarCarta(nuevaCarta);
 					} catch (IllegalStateException e) {
+						Consola.imprimirMensaje("No podes tener mas cartas. Devolviendo la carta levantada al mazo...");
+						Utiles.esperar(1500);
 						mazoDeCartas.devolverCarta(nuevaCarta);
+						Consola.imprimirMensaje("------------------------------------------------------------------");
+						continue;
 					}
+					Consola.imprimirMensaje("Se guardo la carta " + nuevaCarta.getTitulo());
+					Utiles.esperar(1500);
+					Consola.imprimirMensaje("------------------------------------------------------------------");
+
 				}
 
 				while (turnoActual.haySubturnos()) {
@@ -173,6 +219,8 @@ public class Tateti {
 					} else {
 						casilleroDestino = mover(this.tablero, turnoActual);
 					}
+					
+					Utiles.esperar(1500);
 
 					boolean cartaJugada = false;
 					while(!cartaJugada)
@@ -202,7 +250,9 @@ public class Tateti {
 								}	
 								turnoActual.setJugadaEjecutada(jugada);
 								cartaJugada = true;	
-								turnoActual.getJugador().quitarCarta(cartaActual);		
+								turnoActual.getJugador().quitarCarta(cartaActual);
+								mazoDeCartas.descartarCarta(cartaActual);
+								Utiles.esperar(2000);		
 							}						
 						}
 						else
@@ -210,19 +260,26 @@ public class Tateti {
 							cartaJugada = true;
 						}
 					}
+					
 
 				}
 				Consola.imprimirMensaje("Finalizo tu turno!");
+				Utiles.esperar(2000);
 				turnoActual.terminarTurno();
+				reducirBloqueos();
 				historialTurnos.apilar(turnoActual);
 				existeGanador = existeGanador(casilleroDestino);
 			}
 			else
 			{
 				Consola.imprimirMensaje("Estas bloqueado por este turno :(");
+				Utiles.esperar(1500);
 				Consola.imprimirMensaje("Finalizo tu turno!");
+				Utiles.esperar(2000);
 				turnoActual.terminarTurno();
+				reducirBloqueos();
 			}
+			
 			filaDeTurnos.acolar(turnoActual);
 			exportarEstadoDelTablero(tablero, "./src/estadosTablero/", numeroDeTurno);
 			numeroDeTurno++;
@@ -233,43 +290,23 @@ public class Tateti {
 		}
 
 	}
+
+	public int tirarDado()
+	{
+		return Utiles.obtenerEnteroAleatorio(1, 6);
+	}
 	
 	
 	public Casillero<Ficha> jugadaInicial(Tablero<Ficha> tablero, Turno turnoActual) throws Exception {
 		Jugador jugador = turnoActual.getJugador();
-		Ficha ficha = new Ficha(jugador.getNombre().charAt(0));
+		Ficha ficha = new Ficha(String.valueOf(jugador.getId()));
 		tablero.actualizarRelacionDatoColor(ficha, jugador.getColor()); //crea
-		int x = Consola.obtenerNumeroEnteroEnRangoDelUsuario("Ingrese coordenada x de la nueva ficha (entre 1 y " + tablero.getAncho() + "):", 1, tablero.getAncho()); //pregunta la posicion
-		int y = Consola.obtenerNumeroEnteroEnRangoDelUsuario("Ingrese coordenada y de la nueva ficha: (entre 1 y " + tablero.getAlto() + "):", 1, tablero.getAlto());
-		int z = Consola.obtenerNumeroEnteroEnRangoDelUsuario("Ingrese coordenada z de la nueva ficha: (entre 1 y " + tablero.getProfundidad() + "):", 1, tablero.getProfundidad());
-
-		Casillero<Ficha> casillero = tablero.getCasillero(x, y, z);
-		while (casillero == null || casillero.estaOcupado() || casillero.estaBloqueado()) {
-			if(casillero.estaBloqueado())
-			{
-				Consola.imprimirMensaje("El casillero (" + x + ", " + y + ", " + z + ") esta bloqueado!");
-			}
-			if(casillero.estaOcupado())
-			{
-				Consola.imprimirMensaje("El casillero (" + x + ", " + y + ", " + z + ") ya esta ocupado por otra ficha!");
-			}
-			x = Consola.obtenerNumeroEnteroEnRangoDelUsuario("Ingrese coordenada x de la nueva ficha (entre 1 y " + tablero.getAncho() + "):", 1, tablero.getAncho()); //pregunta la posicion
-			y = Consola.obtenerNumeroEnteroEnRangoDelUsuario("Ingrese coordenada y de la nueva ficha: (entre 1 y " + tablero.getAlto() + "):", 1, tablero.getAlto());
-			z = Consola.obtenerNumeroEnteroEnRangoDelUsuario("Ingrese coordenada z de la nueva ficha: (entre 1 y " + tablero.getProfundidad() + "):", 1, tablero.getProfundidad());
-			
-			if(tablero.existeElCasillero(x, y, z))
-			{
-				casillero = tablero.getCasillero(x, y, z);
-			}
-			else
-			{
-				casillero = null;
-			}
-		}
+		Casillero<Ficha> casillero = obtenerCasilleroDirectoDelUsuarioSinRetorno("Se necesitan los datos del casillero destino de la ficha");
 		casillero.setDato(ficha);
 		jugador.agregarFicha(ficha);
 		tablero.actualizarRelacionDatoCasillero(ficha, casillero);
 		turnoActual.setFichaUtilizada(ficha);
+		Consola.imprimirMensaje("Ficha colocada correctamente en " + casillero.toString() + "!");
 		return casillero;
 	}
 
@@ -280,20 +317,20 @@ public class Tateti {
 		Movimiento movimiento = null;
 		while(movimiento == null)
 		{
-			try {
-				fichaAMover = Consola.consultarOpcionAlUsuario(jugador.getFichas().filtrar(ficha -> 
+			Vector<Ficha> fichas = jugador.getFichas().filtrar(ficha -> 
+			{
+				try 
 				{
-					try 
-					{
-						return !ficha.estaBloqueado() &&
-						tablero.tieneMovimientosPosibles(ficha);
-					} 
-					catch (Exception e) 
-					{
-						return false;
-					}
-				}),
-	"Seleccione una ficha para mover", false); //Preguntar la ficha al usuario
+					return !ficha.estaBloqueado() &&
+					tablero.tieneMovimientosPosibles(ficha);
+				} 
+				catch (Exception e) 
+				{
+					return false;
+				}
+			});
+			try {
+				fichaAMover = obtenerFichaDelUsuarioSinRetorno(fichas, "Seleccione una ficha para mover"); //Preguntar la ficha al usuario
 	
 			} catch (Exception e) {
 				Consola.imprimirMensaje("No puede mover ninguna de sus fichas");
@@ -321,6 +358,9 @@ public class Tateti {
 		turnoActual.setFichaUtilizada(ficha);
 		turnoActual.setMovimientoAplicado(movimiento);
 
+		Consola.imprimirMensaje("Ficha movida correctamente a " +
+								 casillero.getCasilleroVecino(movimiento).toString() + "!");
+
 		return casillero.getCasilleroVecino(movimiento);
 	}
 
@@ -346,7 +386,11 @@ public class Tateti {
 
 			if(turno.getMovimientoAplicado() == null)
 			{
-				//Ficha debe volver al jugador
+				turno.getJugador().quitarFicha(turno.getFichaUtilizada());
+				Casillero casillero = getTablero().getCasillero(turno.getFichaUtilizada());
+				casillero.vaciar();
+				getTablero().eliminarRelacionDatoCasillero(turno.getFichaUtilizada());
+				getTablero().eliminarRelacionDatoColor(turno.getFichaUtilizada());
 			}
 			else
 			{
@@ -368,14 +412,172 @@ public class Tateti {
 		File directorioTurno = AdministradorDeArchivos.crearDirectorio(directorio, "turno" + numeroDeTurno);
         ExportadorDeDatosAImagen.exportarTableroPorCapas(tablero, directorioTurno.getPath());
 	}
-	public EstadoJuego obtenerEstadoJuego(){
-		return new EstadoJuego(getTablero(), getJugadores(), getTurnos());
+
+	public Jugador obtenerJugadorDelUsuario(Vector<Jugador> jugadores, String mensaje) throws Exception
+	{
+		return Consola.consultarOpcionAlUsuario(jugadores, mensaje, true);
 	}
-	public void restaurarEstado(EstadoJuego estado) {
-        this.tablero = estado.getTablero();
-        this.jugadores = estado.getJugadores();
-        this.turnos = estado.getTurno();
-    }
+
+	public <T> Casillero<T> obtenerCasilleroDelUsuario(Vector<Casillero<T>> casilleros, String mensaje) throws Exception
+	{
+		return Consola.consultarOpcionAlUsuario(casilleros, mensaje, true);
+	}
+
+	public Ficha obtenerFichaDelUsuario(Vector<Ficha> fichas, String mensaje) throws Exception
+	{
+		return obtenerCasilleroDeFichaDelUsuario(fichas, mensaje).getDato();
+	}
+
+	public Ficha obtenerFichaDelUsuarioSinRetorno(Vector<Ficha> fichas, String mensaje) throws Exception
+	{
+		return obtenerCasilleroDeFichaDelUsuarioSinRetorno(fichas, mensaje).getDato();
+	}
+
+	public Casillero<Ficha> obtenerCasilleroDeFichaDelUsuario(Vector<Ficha> fichas, String mensaje) throws Exception
+	{
+        Lista<Casillero<Ficha>> casilleros = new ListaSimplementeEnlazada<>();
+        for(int i = 1; i <= fichas.contarElementos(); i++)
+        {
+            Casillero<Ficha> casillero = getTablero().getCasillero(fichas.obtener(i));
+            casilleros.agregar(casillero);
+        }
+		Casillero<Ficha> casilleroDeFichaElegida = Consola.consultarOpcionAlUsuario(casilleros, mensaje,
+														 true);
+		return casilleroDeFichaElegida;
+	}
+
+	public Casillero<Ficha> obtenerCasilleroDeFichaDelUsuarioSinRetorno(Vector<Ficha> fichas, String mensaje) throws Exception
+	{
+        Lista<Casillero<Ficha>> casilleros = new ListaSimplementeEnlazada<>();
+        for(int i = 1; i <= fichas.contarElementos(); i++)
+        {
+            Casillero<Ficha> casillero = getTablero().getCasillero(fichas.obtener(i));
+            casilleros.agregar(casillero);
+        }
+		Casillero<Ficha> casilleroDeFichaElegida = Consola.consultarOpcionAlUsuario(casilleros, mensaje,
+														 false);
+		return casilleroDeFichaElegida;
+	}
+
+	public Casillero<Ficha> obtenerCasilleroDirectoDelUsuario(String mensaje) throws Exception
+	{
+		Consola.imprimirMensaje(mensaje);
+		Casillero<Ficha> casillero = null;
+		int x, y, z;
+		do
+		{
+			x = Consola.obtenerNumeroEnteroEnRangoDelUsuario("Ingrese coordenada x de la nueva ficha (entre 1 y " + tablero.getAncho() + "):", 1, tablero.getAncho()); //pregunta la posicion
+			y = Consola.obtenerNumeroEnteroEnRangoDelUsuario("Ingrese coordenada y de la nueva ficha: (entre 1 y " + tablero.getAlto() + "):", 1, tablero.getAlto());
+			z = Consola.obtenerNumeroEnteroEnRangoDelUsuario("Ingrese coordenada z de la nueva ficha: (entre 1 y " + tablero.getProfundidad() + "):", 1, tablero.getProfundidad());
+			
+			Consola.imprimirMensaje("Casillero elegido es (" + x + ", " + y + ", " + z + ")");
+			Boolean usuarioConfirmoIngreso = Consola.obtenerConfirmacionORetornoDelUsuario("Confirmar casillero?");
+			if(usuarioConfirmoIngreso == null)
+			{
+				return null;
+			}
+			if(usuarioConfirmoIngreso)
+			{
+				if(tablero.existeElCasillero(x, y, z))
+				{
+					casillero = tablero.getCasillero(x, y, z);
+					if(casillero.estaBloqueado())
+					{
+						Consola.imprimirMensaje("El casillero (" + x + ", " + y + ", " + z + ") esta bloqueado!");
+					}
+					if(casillero.estaOcupado())
+					{
+						Consola.imprimirMensaje("El casillero (" + x + ", " + y + ", " + z + ") ya esta ocupado por otra ficha!");
+					}
+				}
+				else
+				{
+					Consola.imprimirMensaje("El casillero (" + x + ", " + y + ", " + z + ") no existe!");
+					casillero = null;
+				}
+			}
+
+		} while (casillero == null || casillero.estaOcupado() || casillero.estaBloqueado());
+		return casillero;
+	}
+
+	public Casillero<Ficha> obtenerCasilleroDirectoDelUsuarioSinRetorno(String mensaje) throws Exception
+	{
+		Consola.imprimirMensaje(mensaje);
+		Casillero<Ficha> casillero = null;
+		int x, y, z;
+		do
+		{
+			x = Consola.obtenerNumeroEnteroEnRangoDelUsuario("Ingrese coordenada x de la nueva ficha (entre 1 y " + tablero.getAncho() + "):", 1, tablero.getAncho()); //pregunta la posicion
+			y = Consola.obtenerNumeroEnteroEnRangoDelUsuario("Ingrese coordenada y de la nueva ficha: (entre 1 y " + tablero.getAlto() + "):", 1, tablero.getAlto());
+			z = Consola.obtenerNumeroEnteroEnRangoDelUsuario("Ingrese coordenada z de la nueva ficha: (entre 1 y " + tablero.getProfundidad() + "):", 1, tablero.getProfundidad());
+			
+			Consola.imprimirMensaje("Casillero elegido es (" + x + ", " + y + ", " + z + ")");
+			Boolean usuarioConfirmoIngreso = Consola.obtenerConfirmacionDelUsuario("Confirmar casillero?");
+			if(usuarioConfirmoIngreso)
+			{
+				if(tablero.existeElCasillero(x, y, z))
+				{
+					casillero = tablero.getCasillero(x, y, z);
+					if(casillero.estaBloqueado())
+					{
+						Consola.imprimirMensaje("El casillero (" + x + ", " + y + ", " + z + ") esta bloqueado!");
+					}
+					if(casillero.estaOcupado())
+					{
+						Consola.imprimirMensaje("El casillero (" + x + ", " + y + ", " + z + ") ya esta ocupado por otra ficha!");
+					}
+				}
+				else
+				{
+					Consola.imprimirMensaje("El casillero (" + x + ", " + y + ", " + z + ") no existe!");
+					casillero = null;
+				}
+			}
+
+		} while (casillero == null || casillero.estaOcupado() || casillero.estaBloqueado());
+		return casillero;
+	}
+	public void reducirBloqueos() {
+		Lista<Casillero<Ficha>> casillerosBloqueados = this.tablero.getCasillerosBloqueados();
+		
+		// Verificar si no hay casilleros bloqueados
+		if (casillerosBloqueados.getTamanio() == 0) {
+			Consola.imprimirMensaje("No hay casilleros para desbloquear.");
+			return;  // Salir del método si no hay casilleros bloqueados
+		}
+	
+		try {
+			// Iniciar el cursor para recorrer los casilleros bloqueados
+			casillerosBloqueados.iniciarCursor();
+			
+			boolean bloqueoReducido = false;  // Para verificar si se redujeron bloqueos
+			
+			// Recorrer todos los casilleros bloqueados
+			while (casillerosBloqueados.avanzarCursor()) {
+				Casillero<Ficha> casilleroBloqueado = casillerosBloqueados.obtenerCursor();
+	
+				// Verificar si la ficha está bloqueada antes de reducir los bloqueos
+				if (casilleroBloqueado.estaBloqueado()) {
+					casilleroBloqueado.reducirBloqueosRestantes(1);
+					bloqueoReducido = true;
+					Consola.imprimirMensaje("Se redujo un bloqueo en la ficha ubicada en " +
+							casilleroBloqueado.toString());
+				}
+			}
+	
+			// Mensaje de éxito si se redujeron bloqueos
+			if (bloqueoReducido) {
+				Consola.imprimirMensaje("Los bloqueos se redujeron exitosamente.");
+			} else {
+				Consola.imprimirMensaje("No se encontraron fichas bloqueadas para reducir.");
+			}
+	
+		} catch (Exception e) {
+			// Capturar y manejar excepciones específicas si es necesario
+			Consola.imprimirMensaje("No se pudo reducir los bloqueos. Error: " + e.getMessage());
+		}
+	}
 	
 	//GETTERS SIMPLES -----------------------------------------------------------------------------------------
 	
@@ -393,9 +595,6 @@ public class Tateti {
 	}
 	public Vector<Turno> getTurnos(){
 		return this.turnos;
-	}
-	public Pila<EstadoJuego> getHistorialDeEstado(){
-		return this.hitorialEstado;
 	}
 	//SETTERS SIMPLES -----------------------------------------------------------------------------------------	
 }
