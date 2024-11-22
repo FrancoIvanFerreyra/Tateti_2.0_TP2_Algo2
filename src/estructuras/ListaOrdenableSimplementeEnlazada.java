@@ -1,13 +1,15 @@
 package estructuras;
 
 import java.util.Comparator;
+import utiles.ValidacionesUtiles;
 
 public class ListaOrdenableSimplementeEnlazada<T extends Comparable<T>> extends ListaSimplementeEnlazada<T>{
 
-		    /**
-     * Verifica si la lista está ordenada en orden ascendente.
+	/**
+     * 
+     * @return devuelve verdadero si todos los elementos de la lista estan ordenados de forma ascendente
      */
-    public boolean estaOrdenada() throws Exception {
+    public boolean estaOrdenada() {
         if (this.estaVacia() || this.getTamanio() == 1) {
             return true; // Una lista vacía o de un solo elemento está ordenada
         }
@@ -27,11 +29,20 @@ public class ListaOrdenableSimplementeEnlazada<T extends Comparable<T>> extends 
         return true; // Está en orden ascendente
     }
 
-    public int insertarOrdenado(T elemento) throws Exception
+    /**
+     * Inserta un elemento en una lista ordenada de forma ascendente de manera que
+     * persista el orden. La lista debe estar previamente ordenada
+     * @param elemento no puede ser null
+     * @return devuelve el indice de la insercion
+     * @throws NullPointerException si elemento es null
+     * @throws IllegalStateException si la lista no esta ordenada de forma ascendente
+     */
+    public int insertarOrdenado(T elemento) throws NullPointerException, IllegalStateException
 	{
+        ValidacionesUtiles.validarNoNull(elemento, "elemento");
 		if(!this.estaOrdenada())
 		{
-			throw new Exception("La lista no esta ordenada");
+			throw new IllegalStateException("La lista no esta ordenada");
 		}
 		this.iniciarCursor();
 		int index = 1;
@@ -50,7 +61,15 @@ public class ListaOrdenableSimplementeEnlazada<T extends Comparable<T>> extends 
 		return index;
 	}
 
-    public void ordenar(Comparator<T> comparador) throws Exception {
+    /**
+     * Ordena la lista de forma ascendente utilizando el algoritmo de burbujeo
+     * @param comparador no puede ser null
+     * @throws NullPointerException si comparador es null
+     * @throws ClassCastException si comparador no es compatible con los elementos de la lista
+     */
+    public void ordenar(Comparator<T> comparador) throws NullPointerException, ClassCastException {
+        ValidacionesUtiles.validarNoNull(comparador, "comparador");
+        
         if (this.estaVacia() || this.getTamanio() == 1) {
             return; // Lista ya está ordenada si tiene 0 o 1 elementos
         }

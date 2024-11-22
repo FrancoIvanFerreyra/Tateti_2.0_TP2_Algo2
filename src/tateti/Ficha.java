@@ -16,9 +16,9 @@ public class Ficha implements Bloqueable{
     /**
      * Crea una ficha con el símbolo especificado.
      * @param simbolo no puede ser null.
-	 * @throws Exception si simbolo es null
+	 * @throws NullPointerException si simbolo es null
      */
-	public Ficha(String simbolo) throws Exception {
+	public Ficha(String simbolo) throws NullPointerException {
 		ValidacionesUtiles.validarNoNull(simbolo, "simbolo");
 		this.simbolo = simbolo;
 	}

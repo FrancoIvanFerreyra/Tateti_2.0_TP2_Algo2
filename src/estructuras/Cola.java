@@ -1,5 +1,7 @@
 package estructuras;
 
+import utiles.ValidacionesUtiles;
+
 public class Cola<T> {
 	//ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
 	//ATRIBUTOS -----------------------------------------------------------------------------------------------
@@ -33,16 +35,14 @@ public class Cola<T> {
 		return (this.tamanio == 0);
 	}
 
-	/*
-	 * pre: el elemento no es vacio
-	 * post: agrega el elemento a la cola
+	/**
+	 * Agrega el elemento a la cola
+	 * @param elemento no debe ser null
+	 * @throws NullPointerException si elemento es null
 	 */
-	public void acolar(T elemento) throws Exception{
-		//validar
-		if(elemento == null)
-		{
-			throw new Exception("El elemento no puede ser null");
-		}
+	public void acolar(T elemento) throws NullPointerException{
+		ValidacionesUtiles.validarNoNull(elemento, "elemento");
+
 		Nodo<T> nuevo = new Nodo<>(elemento);
 		if (!this.estaVacia()) {
 			this.ultimo.setSiguiente(nuevo);
@@ -54,16 +54,13 @@ public class Cola<T> {
 		this.tamanio++;
 	}
 
-	/*
-	 * pre: el elemento no es vacio
-	 * post: agrega el elemento a la cola
+	/**
+	 * Agrega a la cola cada elemento de la lista
+	 * @param lista no debe ser null
+	 * @throws NullPointerException si lista es null
 	 */
-	public void acolar(Lista<T> lista) throws Exception{
-		//validar
-		if(lista == null)
-		{
-			throw new Exception("La lista no puede ser null");
-		}
+	public void acolar(Lista<T> lista) throws NullPointerException{
+		ValidacionesUtiles.validarNoNull(lista, "lista");
 		lista.iniciarCursor();
 		int i = 0;
 		while (lista.avanzarCursor() && i < lista.getTamanio()) {
@@ -72,16 +69,13 @@ public class Cola<T> {
 		}
 	}
 
-		/*
-	 * pre: el elemento no es vacio
-	 * post: agrega cada elemento no nulo del vector a la cola
+	/**
+	 * Agrega a la cola los elementos del vector
+	 * @param vector no debe ser null
+	 * @throws NullPointerException si vector es null
 	 */
-	public void acolar(Vector<T> vector) throws Exception{
-		//validar
-		if(vector == null)
-		{
-			throw new Exception("El vector no puede ser null");
-		}
+	public void acolar(Vector<T> vector) throws NullPointerException{
+		ValidacionesUtiles.validarNoNull(vector, "vector");
 		for(int i = 1; i <= vector.getLongitud(); i++)
 		{
 			if(vector.obtener(i) != null)

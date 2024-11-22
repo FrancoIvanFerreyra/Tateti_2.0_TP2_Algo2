@@ -1,5 +1,7 @@
 package estructuras;
 
+import utiles.ValidacionesUtiles;
+
 public class Pila<T> {
 	//ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
 	//ATRIBUTOS -----------------------------------------------------------------------------------------------
@@ -29,31 +31,26 @@ public class Pila<T> {
 		return (this.tamanio == 0);
 	}
 
-	/*
-	 * pre: el elemento no es vacio
-	 * post: agrega el elemento a la pila
+	/**
+	 * Agrega el elemento a la pila
+	 * @param elemento no es null
+	 * @throws NullPointerException si elemento es null
 	 */
-	public void apilar(T elemento) throws Exception{
-		if(elemento == null)
-		{
-			throw new Exception("El elemento no puede ser null");
-		}
+	public void apilar(T elemento) throws NullPointerException{
+		ValidacionesUtiles.validarNoNull(elemento, "elemento");
 		Nodo<T>nuevo = new Nodo<>(elemento);
 		nuevo.setSiguiente(this.tope);
 		this.tope = nuevo;
 		this.tamanio++;
 	}
 
-	/*
-	 * pre: el elemento no es vacio
-	 * post: agrega el elemento a la pila
+	/**
+	 * Agrega cada elemento de la lista a la pila
+	 * @param lista no es null
+	 * @throws NullPointerException si lista es null
 	 */
-	public void apilar(Lista<T> lista) throws Exception{
-		//validar
-		if(lista == null)
-		{
-			throw new Exception("La lista no puede ser null");
-		}
+	public void apilar(Lista<T> lista) throws NullPointerException{
+		ValidacionesUtiles.validarNoNull(lista, "lista");
 		lista.iniciarCursor();
 		int i = 0;
 		while (lista.avanzarCursor() && i < lista.getTamanio()) {

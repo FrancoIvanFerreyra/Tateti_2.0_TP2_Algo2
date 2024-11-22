@@ -14,22 +14,22 @@ public class App {
         opcionesTateti.agregar(new ConfiguracionPartida(
             "Clasico",
              3, 3, 1,
-             2, 
-             3,
+             3, 
+             2,
               3,
                3));
 
         opcionesTateti.agregar(new ConfiguracionPartida(
                 "Cubo 3x3x3",
                  3, 3, 3,
-                 2, 
-                 4,
+                 3, 
+                 2,
                   3,
                    3));
         opcionesTateti.agregar(new ConfiguracionPartida(
                     "Cubo 5x5x5",
                      5, 5, 5,
-                     3, 
+                     4, 
                      5,
                       4,
                        4));
@@ -37,13 +37,13 @@ public class App {
                         "Cubo 10x10x10",
                          10, 10, 10,
                          5, 
-                         8,
+                         6,
                           6,
                            6));
         opcionesTateti.agregar(new ConfiguracionPartida(
                             "Crear nueva configuracion",
                              3, 3, 3,
-                             2, 
+                             3, 
                              3,
                               3,
                                3));
@@ -55,9 +55,8 @@ public class App {
             ConfiguracionPartida opcion = Consola.consultarOpcionAlUsuario(opcionesTateti,
              "Selecciona una configuracion de partida:", false);
     
-            if(opcion.getTitulo() == "Crear nueva configuracion")
+            if(opcion.getTitulo().equals("Crear nueva configuracion"))
             {
-    
                 anchoTablero = Consola.obtenerNumeroEnteroEnRangoMinimoDelUsuario(
                     "De cuantos casilleros debe ser el ancho del tablero? (Numero mayor o igual a 3) ",
                 3);
@@ -67,25 +66,59 @@ public class App {
                 profundidadTablero = Consola.obtenerNumeroEnteroEnRangoMinimoDelUsuario(
                     "De cuantos casilleros debe ser la profundidad del tablero? (Numero mayor o igual a 3) ",
                 3);
-                cantidadJugadores = Consola.obtenerNumeroEnteroEnRangoMinimoDelUsuario(
-                    "Cuantos jugadores? (Numero mayor o igual a 2) ",1);
+
+                int longitudMaximaTateti = ConfiguracionPartida.obtenerLongitudMaximaDeTateti(
+                    anchoTablero, altoTablero, profundidadTablero);
+
+                cantidadFichasSeguidasParaGanar = Consola.obtenerNumeroEnteroEnRangoDelUsuario(
+                        "Cuantos fichas seguidas para ganar? (Numero entre 3 y " +
+                         longitudMaximaTateti + ") ",
+                         3,
+                          longitudMaximaTateti);
+
+                int cantidadMaximaDeJugadoresParaElTablero = ConfiguracionPartida.
+                          obtenerCantidadMaximaDeJugadoresParaElTablero(
+                anchoTablero, altoTablero, profundidadTablero, cantidadFichasSeguidasParaGanar);
+
+                cantidadJugadores = Consola.obtenerNumeroEnteroEnRangoDelUsuario(
+                    "Cuantos jugadores? (Numero entre 2 y " + 
+                    cantidadMaximaDeJugadoresParaElTablero + ") ",2,
+                    cantidadMaximaDeJugadoresParaElTablero);
+
+                int cantidadMaximaDeFichasPorJugadorEnElTablero = ConfiguracionPartida.
+                    obtenerCantidadMaximaDeFichasPorJugadorEnElTablero(
+                    anchoTablero, altoTablero, profundidadTablero,
+                    cantidadFichasSeguidasParaGanar, cantidadJugadores);
                 
-                cantidadDeFichasPorJugador = Consola.obtenerNumeroEnteroEnRangoMinimoDelUsuario(
-                        "Cuantos fichas por jugador? (Numero mayor o igual a 3) ",3);
+                cantidadDeFichasPorJugador = Consola.obtenerNumeroEnteroEnRangoDelUsuario(
+                        "Cuantos fichas por jugador? (Numero entre " + 
+                        cantidadFichasSeguidasParaGanar + " y " +
+                        cantidadMaximaDeFichasPorJugadorEnElTablero + ") ",
+                         cantidadFichasSeguidasParaGanar, 
+                        cantidadMaximaDeFichasPorJugadorEnElTablero);
         
                 cantidadCartasPorJugador = Consola.obtenerNumeroEnteroEnRangoMinimoDelUsuario(
                         "Cuantos cartas por jugador? (Numero mayor o igual a 1) ",1);
-                cantidadFichasSeguidasParaGanar = Consola.obtenerNumeroEnteroEnRangoDelUsuario(
-                        "Cuantos fichas seguidas para ganar? (Numero entre 3 y " +
-                         cantidadDeFichasPorJugador + ") ",
-                         3,
-                          cantidadDeFichasPorJugador);
-        
-                tateti = new Tateti(anchoTablero, altoTablero, profundidadTablero, cantidadJugadores,
-                                            cantidadDeFichasPorJugador, cantidadCartasPorJugador,
-                                             cantidadFichasSeguidasParaGanar);
-                usuarioEligioConfiguracion = true;
-        
+
+                String resumenOpcionesIngresadas = "Dimensiones del tablero: (" +
+                                                anchoTablero + ", " +
+                                                altoTablero + ", " + 
+                                                profundidadTablero + ")\n" +
+                 "Cantidad de jugadores: " + cantidadJugadores + "\n" + 
+                 "Cantidad de fichas por jugador: " + cantidadDeFichasPorJugador + "\n" + 
+                 "Cantidad de cartas por jugador: " + cantidadCartasPorJugador + "\n" + 
+                 "Longitud del tateti: " + cantidadFichasSeguidasParaGanar + "\n";
+
+                Consola.imprimirMensaje(resumenOpcionesIngresadas);
+                if(Consola.obtenerConfirmacionDelUsuario("Confirmar configuracion?"))
+                {
+                    tateti = new Tateti(anchoTablero, altoTablero, profundidadTablero,
+                    cantidadFichasSeguidasParaGanar,
+                    cantidadJugadores,
+                    cantidadDeFichasPorJugador, cantidadCartasPorJugador
+                     );
+                    usuarioEligioConfiguracion = true;
+                }
             }
             else
             {

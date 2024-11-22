@@ -2,6 +2,7 @@ package tateti;
 
 import estructuras.Lista;
 import estructuras.ListaSimplementeEnlazada;
+import estructuras.Vector;
 import java.awt.Color;
 import java.util.NoSuchElementException;
 import utiles.ValidacionesUtiles;
@@ -212,6 +213,33 @@ public class Tablero<T> {
 	}
 
 	/**
+	 * 
+	 * @param datos no debe ser null
+	 * @return Devuelve una lista de casilleros que contienen los elementos del vector datos.
+	 * Si el dato es null o no esta en el tablero se ignora y continua
+	 * @throws NullPointerException si datos es null 
+	 */
+	public Lista<Casillero<T>> getCasilleros(Vector<T> datos) throws NullPointerException
+	{
+		ValidacionesUtiles.validarNoNull(datos, "datos");
+        Lista<Casillero<T>> casilleros = new ListaSimplementeEnlazada<>();
+        for(int i = 1; i <= datos.contarElementos(); i++)
+        {
+			T dato = datos.obtener(i);
+			Casillero<T> casillero;
+
+			try {
+				casillero = getCasillero(dato);
+				casilleros.agregar(casillero);
+			} catch (NullPointerException | NoSuchElementException e) {
+				//Se ignora si el dato es nulo o no esta en el tablero
+			}
+			
+        }
+		return casilleros;
+	}
+
+	/**
 	 * @param dato no puede ser null
 	 * @return: devuelve el color representado por el dato
 	 * @throws NullPointerException si el dato es null
@@ -230,6 +258,7 @@ public class Tablero<T> {
 		}
 		throw new NoSuchElementException("No se encontro el dato en el tablero");
 	}
+
 	
 	/**
 	 * @param casillero no puede ser null y debe tener un dato

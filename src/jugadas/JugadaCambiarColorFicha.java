@@ -24,7 +24,7 @@ public class JugadaCambiarColorFicha extends Jugada {
             jugadorBeneficiado = turnoActual.getJugador();
             Casillero<Ficha> casilleroFichaACambiarColor;
 
-            if(jugadorBeneficiado.tieneTodasLasFichasEnElTablero())
+            if(jugadorBeneficiado.tieneTodasLasFichasEnElTablero(tateti.getTablero()))
             {
                 Consola.imprimirMensaje("No tenes fichas disponibles para intercambiar. Todas estan en el tablero!");
                 return false;
@@ -34,7 +34,7 @@ public class JugadaCambiarColorFicha extends Jugada {
             {
                 try {
                     Vector<Jugador> jugadores = tateti.getJugadores().filtrar(
-                        jugador -> (jugador != jugadorBeneficiado && jugador.tieneAlgunaFichaEnElTablero())
+                        jugador -> (jugador != jugadorBeneficiado && jugador.tieneAlgunaFichaEnElTablero(tateti.getTablero()))
                     );
                     // Seleccionar jugador afectado
                     jugadorAfectado = tateti.obtenerJugadorDelUsuario(jugadores,
@@ -54,7 +54,7 @@ public class JugadaCambiarColorFicha extends Jugada {
                         ficha -> {
                             try {
                                 return tateti.getTablero().contiene(ficha) && !ficha.estaBloqueado();
-                            } catch (Exception e) {
+                            } catch (NullPointerException e) {
                                 return false;
                             }
                         }
