@@ -1,0 +1,13 @@
+Cuestionario
+1) ¿Qué es un svn? 
+2) ¿Qué es una “Ruta absoluta” o una “Ruta relativa”? 
+3) ¿Qué es git?
+
+Respuesta
+1) Un SVN representan las siglas de Subversión. Se trata de un sistema de control de versiones de código abierto y nos permite administrar el acceso de archivos, mantener un historial de cambios realizados, el acceso de otros participantes al historial de cambios, realizar un seguimiento de los cambios realizados e interactuar con versiones nuevas o viejas del proyecto. Otro beneficio de este sistema es el manejo de ramas, cada proyecto parte de una base o raíz y los diferentes integrantes se forman un espacio de trabajo aislado de los demás o ramas, de esta manera se mejora el flujo de trabajo y la organización del proyecto. Al tener varias personas trabajando en un mismo proyecto se utilizan múltiples dispositivos, lo que favorece al trabajo en distintas partes.
+En resumen SVN, es un sistema para gestionar un proyecto, desde varios dispositivos y distintas versiones del mismo.
+
+2) Una Ruta absoluta, es una ruta conformada por todas las paradas realizadas hasta llegar a un directorio o archivo específico, de esta manera se describe todo el recorrido que se tiene que hacer para llegar al destino.
+Mientras que una ruta relativa solo representa una parte de la ruta, que es la que almacena al archivo o directorio, ignorando todo el proceso de llegada al destino.
+
+3) Git es un software de control de versiones que nos permite trabajar con versiones de proyectos(tanto antiguas como actuales), comparar versiones, restaurar versiones, fusionar cambios, trabajar con distintos desarrolladores en un mismo proyecto y también nos ayuda a trabajar con proyectos de manera local o remota.

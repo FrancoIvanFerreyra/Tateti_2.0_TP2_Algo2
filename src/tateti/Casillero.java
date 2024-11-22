@@ -2,6 +2,7 @@ package tateti;
 
 import interfaces.Bloqueable;
 
+
 public class Casillero<T> implements Bloqueable{
 //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
 	public static int CANTIDAD_DE_VECINOS = 3;
@@ -18,10 +19,11 @@ public class Casillero<T> implements Bloqueable{
 //CONSTRUCTORES -------------------------------------------------------------------------------------------
 	
 	/**
-	 * pre:
+	 * pre: recibe las tres coordenas necesarias para poder formar un casillero
 	 * @param x: 1 o mayor
 	 * @param y: 1 o mayor
 	 * @throws Exception
+	 * pos: retorna un casillero con sus tres coordenas(x,y,z) y crea una matriz con los vecinos 
 	 */
 	@SuppressWarnings("unchecked")
 	public Casillero(int x, int y, int z) throws Exception {
@@ -51,29 +53,36 @@ public class Casillero<T> implements Bloqueable{
 	}
 	
 //METODOS DE CLASE ----------------------------------------------------------------------------------------
-	
+	/*
+	 * pre: recibe uan cordenada 
+	 * pos: retorna la inversa de esa coordenada
+	 */
 	public static int invertirCoordenadaDeVecino(int i) {
 		return i * -1;
 	}
 	
 //METODOS GENERALES ---------------------------------------------------------------------------------------
-	
+	/**
+	 * pre: -
+	 * pos: retorna un mensaje con las coordenas de un casillero uno al lado del otro
+	 */
 	@Override
 	public String toString() {	
 		return "Casillero (" + this.x + ", " + this.y + ", " + this.z+ ")";
 	}
 	
 //METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
-	
+	/*
+	 * pre: -
+	 * pos: retorna verdadero si el casillero esta ocupado en caso contrario retorna false
+	 */
 	public boolean estaOcupado() {
 		return this.dato != null;
 	}
 	
 	/**
-	 * pre:
-	 * @param dato: no puede ser vacio
-	 * @return: devuelve verdadero si el dato es el mismo
-	 * @throws Exception 
+	 * pre: recibe un dato para poder analizar
+	 * pos: se retorna true en caso de que el dato ingresado sea el mismo que esta almacenado en el casillero, caso contrario false
 	 */
 	public boolean tiene(T dato) throws Exception {
 		if (dato == null) {
@@ -87,10 +96,8 @@ public class Casillero<T> implements Bloqueable{
 	}
 	
 	/**
-	 * pre:
-	 * @param movimiento: un movimiento en 2d, no puede ser nulo
-	 * @return devuelve verdadero si existe el casillero vecino en esa direccion o falso si no existe (por ejemplo en el 
-	 *         borde) 
+	 * pre: recibie un movimiento 2d, que no puede ser nulo  
+	 * pos: devuelve verdadero si existe el casillero vecino en esa direccion o falso si no existe (por ejemplo en el borde) 
 	 */
 	public boolean existeElVecino(Movimiento movimiento) {
 		switch (movimiento) {
@@ -180,13 +187,16 @@ public class Casillero<T> implements Bloqueable{
 	
 	/**
 	 * pre:
-	 * post: remueve la ficha del casillero
+	 * post: remueve el objeto almacenado en el casillero
 	 */
 	public void vaciar() {
 		this.setDato(null);		
 	}
 
-
+	/*
+	 * pre: recibe un entero que representa la cantidad de bloqueos a incrementar 
+	 * pos: el contador de bloqueos del casillero se incrementa la cantidad ingresado, en caso de que sea un valor invalido se lanza un error
+	 */
 	@Override
 	public void incrementarBloqueosRestantes(int cantidadDeBloqueos) throws Exception{
 		if(cantidadDeBloqueos < 1)
@@ -196,6 +206,11 @@ public class Casillero<T> implements Bloqueable{
 		this.bloqueosRestantes += cantidadDeBloqueos;
 	}
 
+	/*
+	 * pre: recibe un entero que representa la cantidad de bloqueos a disminuir
+	 * pos: el contador de bloqueos del casillero disminuye la cantidad ingresa, en caso de que no se pueda disminuir o la cantidad ingresada es mayor a la existente
+	 * 		se lanza un error 
+	 */
 	@Override
 	public void reducirBloqueosRestantes(int cantidadDeBloqueos) throws Exception {
 		if(cantidadDeBloqueos <= 0)
@@ -209,24 +224,41 @@ public class Casillero<T> implements Bloqueable{
 		this.bloqueosRestantes -= cantidadDeBloqueos;
 	}
 
+	/*
+	 * pre: -
+	 * pos: retorna verdadero si el contado de bloqueos es mayor a 0, en caso false
+	 */
 	@Override
 	public boolean estaBloqueado() {
 		return this.bloqueosRestantes > 0;
 	}
 	
 //GETTERS SIMPLES -----------------------------------------------------------------------------------------
-	
+	/*
+	 * pre:-
+	 * pos: retorna la coordenad x del casillero
+	 */
 	public int getX() {
 		return x;
 	}
+	/*
+	 * pre:-
+	 * pos: retorna la coordenad y del casillero
+	 */
 	public int getY() {
 		return y;
 	}
-
+	/*
+	 * pre:-
+	 * pos: retorna la coordenad z del casillero
+	 */
 	public int getZ() {
 		return z;
 	}
-
+		/*
+	 * pre:-
+	 * pos: retorna el dato que se alamcena en el casillero
+	 */
 	public T getDato() {
 		return this.dato;
 	}
@@ -235,13 +267,16 @@ public class Casillero<T> implements Bloqueable{
 	 * pre: 
 	 * @param x: -1 0 y 1, para indicar izquierda centro o derecho respectivamente
 	 * @param y: -1 0 y 1, para indicar arriba centro o abajo respectivamente
-	 * @return devuelve el casilero
+	 * @return devuelve el casilero vecino 
 	 */
 	public Casillero<T> getCasilleroVecino(int x, int y, int z) {
 		//validar rangos
 		return this.vecinos[x + 1][y + 1][z + 1];
 	}
-	
+	/*
+	 * pre: recibe el tipo de movimiento realizado
+	 * pos: devuelve los casilleros vecinos a partir del movimeinto ingresado
+	 */
 	public Casillero<T> getCasilleroVecino(Movimiento movimiento) throws Exception {
 		switch (movimiento) {
 
@@ -330,8 +365,8 @@ public class Casillero<T> implements Bloqueable{
 	}
 	
 	/**
-	 * Devuelve una matriz con los vecinos, y el casillero actual en el centro
-	 * @return
+	 * pre: -
+	 * pos: Devuelve una matriz con los vecinos, y el casillero actual en el centro
 	 */
 	@SuppressWarnings("unchecked")
 	public Casillero<T>[][][] getCasillerosVecinos() {
@@ -347,13 +382,20 @@ public class Casillero<T> implements Bloqueable{
 		}
 		return matriz;
 	}
-
+	/*
+	 * pre: -
+	 * pos: retonra un entero que representa la cantidad de bloqueos restantes del casillero
+	 */
 	public int getBloqueosRestantes()
 	{
 		return this.bloqueosRestantes;
 	}
 		
 //SETTERS SIMPLES -----------------------------------------------------------------------------------------	
+	/*
+	 * pre: recibe un dato
+	 * pos: se coloca en el casillero el dato ingresado
+	 */
 	public void setDato(T dato) {
 		this.dato = dato;		
 	}

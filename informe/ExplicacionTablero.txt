@@ -1,0 +1,21 @@
+Manual Para el usuario
+Esta es una guía para poder entender y comprender el funcionamiento del tablero del juego Tateti, como así sus elementos y funciones principales.
+
+Vista general
+El tablero se representa mediante un plano tridimensional (tres dimensiones), posee:
+    - Un eje X, horizontal.
+    - Un eje y, vertical.
+    - Un eje z, profundidad.
+Cada coordenada (x,y,z) forma un casillero del tablero, de esta manera nos aseguramos que cada uno tiene una referencia única.
+
+Componentes visuales
+    -Casilleros bloqueados, se representan con un rombo de color rojo. Su función es impedir el uso del mismo por un determinado tiempo.
+    -Fichas bloqueadas, se le impone la letra "B", que nos indica que está bloqueada por lo que no podemos interactuar con la misma por un tiempo determinado.
+    -Fichas jugables, son aquellas fichas puestas por los jugadores, cada una lleva un color que va acorde a su dueño.
+
+Interacciones básicas
+Para el desarrollo del juego se reconocen unas interacciones básicas:
+    -Colocar ficha, al empezar el turno obtenemos nuestras cartas y podemos colocar una de nuestra fichas en un casillero disponible.
+    -Mover ficha, en el caso de que no tengamos más fichas que colocar recurrimos al movimiento de las mismas, se pueden desplazar en cualquier dirección siempre y cuando sea el casillero vecino.
+    -Tirar carta, al comienzo de nuestro turno tiramos un dado que indica cuantas cartas obtenemos, cada una de ellas posee un tipo de jugada particular que nos puede beneficiar o perjudicar.
+    

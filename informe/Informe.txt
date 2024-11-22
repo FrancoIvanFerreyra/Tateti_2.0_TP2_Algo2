@@ -1,7 +1,4 @@
-Informe
-
-Jugadas, en este repositorio se guardan todas las jugadas que puede realizar un jugador
-
+INFORME PARA EL PROGRAMADOR DE JUGADAS
 Clase Jugada 
 Es una clase abstracta diseñada para representar una acción genérica que un jugador puede realizar. Define la estructura base de las jugadas, lo que facilita la creación de nuevas acciones al reutilizar y extender su funcionalidad.
 Para poder desarrollar esta clase se necesitan los siguientes atributos:
@@ -19,35 +16,73 @@ Los métodos de la clase,
 Clase JugadaAnularCasillero
 Permite al jugador anular un casillero en el tablero para que no se pueda utilizar temporalmente
 Métodos:
-	- Jugar: se solicita al usuario las coordenadas del casillero a anular. Valida que el casillero exista, no este ocupado ni bloqueado, y luego se incrementa su contador de bloqueos. Retorna true si la acción es exitosa o muestra un error y retorna false en caso contrario.
+	- Jugar: se solicita al usuario las coordenadas del casillero a anular. Válida que el casillero exista, no este ocupado ni bloqueado, y luego se incrementa su contador de bloqueos. Retorna true si la acción es exitosa o muestra un error y retorna false en caso contrario.
 	- Deshacer: recorre la lista de casilleros afectados, hasta encontrar el correspondiente, se disminuye el contador de bloqueos y se libera el contador de bloqueos al llegar a 0.
 
 Clase JugadaRetrocederUnaJugada
-Permite retroceder una jugada previamente realizada, utilizando un TDA que registra las ultimas modificaciones del juego.
+Permite retroceder una jugada previamente realizada, utilizando un TDA que registra las últimas modificaciones del juego.
 Métodos:
-	- Jugar: Se realiza el llamado al método "retrocederTurno" de la clase Tatetí, Se trata de una pila que almacena las ultimas jugadas realizadas y las reestablece. En caso de que ocurran complicaciones en el proceso retorna false, en caso contrario, retorna true.
-	- Deshacer:  Se verifica si existe una version previa del juego almacenada. Si se encuentra, se reestablece los atributos del juego correspondiente (turnos, movimientos, estado del tablero). En caso de que ocurra o se produzca algún error se lanza un mensaje.
+	- Jugar: Se realiza el llamado al método "retrocederTurno" de la clase Tatetí, Se trata de una pila que almacena las últimas jugadas realizadas y las restablece. En caso de que ocurran complicaciones en el proceso retorna false, en caso contrario, retorna true.
+	- Deshacer: Se verifica si existe una versión previa del juego almacenada. Sí se encuentra, se restablece los atributos del juego correspondiente (turnos, movimientos, estado del tablero). En caso de que ocurra o se produzca algún error se lanza un mensaje.
 
 Clase JugadaBloquarFicha
 Permite bloquear una ficha de otro jugador, impidiendo que sea utilizada.
 Métodos:
 	- Jugar: Se solicita al usuario seleccionar un jugador y la ficha para bloquear. Si la selección se cumple se incrementa el contador de bloqueos de la ficha y se agrega a la lista de casilleros afectas la ubicación de dicha ficha.
-	- Deshacer: Recorre la lista de casilleros afectados, identifica cual de ellos posee la ficha bloqueada y le disminuye su contador de bloqueos.
+	- Deshacer: Recorre la lista de casilleros afectados, identifica cuál de ellos posee la ficha bloqueada y le disminuye su contador de bloqueos.
 
 Clase JugadaCambiarColorFicha
 
 Métodos:
-	- Jugar: Se solicita al usuario seleccionar un oponente y la ficha que se desea afectar. Cambia el color de la ficha seleccionada y realiza el intercambio de fichas entre jugadores. Al jugador que realiza jugada se le quita un ficha mientras que a su oponente se le agrega una ficha a posicionar. SI se realiza exitosamente se retorna true, en caso contrario false.
+	- Jugar: Se solicita al usuario seleccionar un oponente y la ficha que se desea afectar. Cambia el color de la ficha seleccionada y realiza el intercambio de fichas entre jugadores. Al jugador que realiza jugada se le quita una ficha mientras que a su oponente se le agrega una ficha a posicionar. Si se realiza exitosamente se retorna true, en caso contrario false.
 	- Deshacer: Se realiza el proceso anterior a la inversa, devolviendo el color antiguo a la ficha y a su dueño original. En caso de que se produzca algún error se lanza un mensaje.
 
 Clase JugadaPierdeTurno
-Hace que un jugador pierda su proximo turno.
+Hace que un jugador pierda su próximo turno.
 Métodos:
 	-Jugar; Se solicita al usuario seleccionar un jugador, le incrementa el contador de bloqueos y lo agrega a la lista de jugadores afectados. En caso de que el proceso se realice con éxito se retorna true, en caso contrario false.
-		-Deshacer, Se identifica al usuario bloqueado en la lista de jugadores afectas, para reducirle su contador de bloqueos y de esta manera estar libre.
+	-Deshacer, Se identifica al usuario bloqueado en la lista de jugadores afectados, para reducirle su contador de bloqueos y de esta manera estar libre.
 
 Clase JugadaTeletransportarFicha
-Permite al jugador mover una ficha del tablero a cualquier casillero valido.
+Permite al jugador mover una ficha del tablero a cualquier casillero válido.
 Métodos:	
-	-Jugar: Se solicita al usuario selecciona cual de sus fichas es la candidata y el casillero de destino. En caso de que el casillero se encuentre disponible (exista, no este bloqueado ni ocupado) se realiza el movimiento. Si el proceso se realiza con existo retorna true, en caso contrario se retorna false.
+	-Jugar: Se solicita al usuario selecciona cuál de sus fichas es la candidata y el casillero de destino. En caso de que el casillero se encuentre disponible (exista, no este bloqueado ni ocupado) se realiza el movimiento. Si el proceso se realiza con éxito retorna true, en caso contrario se retorna false.
 	-Deshacer: Se recorre la lista de casilleros afectados, se obtiene la ficha que fue transportada y se la devuelve a su casillero original, liberando el casillero de destino. En caso de que no se pueda realizar este proceso se muestra un mensaje de error.
+INFORME PARA EL PROGRAMADOR DE CARTAS
+Clase Carta
+Es una clase abstracta, por lo que es la base para desarrollar otras cartas de diferentes tipos. Cada carta posee un título y está asociada a una jugada.
+Atributos:
+	- Id, es un identificador de cada carta, posee un contador por lo que se garantiza que sea único.
+	- Titulo, es un string que contiene el nombre la carta.
+Constructores, tenemos dos tipos de constructores para la carta:
+	-Por defecto, se crea una carta con un título predefinido y su id.
+	-Personalizado, se crea una carta con un título en específico y su id.
+Métodos:
+	-getIdActual(): retorna el id de la carta.
+	-getTitulo(): retorna el título de la carta.
+	-getJugada(): retorna la jugada a la que esta asociada la carta.
+
+Hijos de la Carta (herencia)
+Cada carta posee la misma estructura, pero se diferencia por la jugada a la que están asociadas. Pero en métodos y atributos comparten la misma estructura.
+Constructor: cualquier tipo de carta se inicializa con un id único y su título predeterminado
+Métodos:
+	-getTituloPorDefecto(): retorna un string con el título predeterminado para esa carta.
+	-getJugada(): retorna la jugada asociada a la carta, en este caso es una instancia a la jugada relacionada.
+
+
+INFORME PARA EL USUARIO DE JUGADAS
+
+Jugadas
+Una jugada es una acción que puede realizar el usuario de manera estratégica mediante una carta. Cada carta posee un diferente tipo de jugada que nos puede beneficiar o perjudicar, por esto tenemos que ser cautelosos en como y cuando utilizamos, ya que puede determinar el destino de nuestra partida. Cada jugada posee una estructura base:
+	- Una carta, cada jugada está asociada a una carta.
+	- Jugadores y casilleros afectados, un registro de los atributos que fueron afectados.
+	- Reversibilidad, la mayoría de las jugadas posee una opción para deshacer los cambios realizados.
+La ejecución de una jugada no se puede realizar en cualquier momento, tenemos que estar en nuestro turno y seleccionaremos que jugada ejecutar (una vez realizado la interacción con la ficha), si la acción cumple las validaciones o reglas se podrá ejecutar la jugada. Cada jugada tiene sus instrucciones para el desarrollo del juego.
+Como ya mencionamos tenemos una variedad de jugadas disponibles:
+	- Anular casillero, nos permite seleccionar un casillero de nuestro tablero y bloquearlo hasta nuestro próximo turno. De esta manera ningún jugador puede interactuar con el casillero afectado.
+	- Bloquear ficha, nos permite seleccionar una ficha de otro jugador y bloquearlo. Esto le impide al jugador mover o interactuar con esa ficha hasta que se cumpla la ronda.
+	- Cambiar de color una ficha, nos permite apropiarnos de una ficha de otro jugador, mediante el cambio del color.
+	- Duplicar turno, nos permite tener un turno extra, de esta manera podemos jugar de nuevo.
+	- Pierde turno, nos permite seleccionar un jugador al cual le queramos hacer perder un turno.
+	- Retroceder una jugada, nos permite volver atrás un movimiento, una acción de carta o cualquier modificación al juego.
+	- Teletransportar una Ficha, nos permite mover una ficha del tablero a cualquier posición del mismo, siempre y cuando el lugar de destino esté disponible.

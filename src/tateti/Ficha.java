@@ -24,27 +24,39 @@ public class Ficha implements Bloqueable{
 	
 //METODOS DE CLASE ----------------------------------------------------------------------------------------
 //METODOS GENERALES ---------------------------------------------------------------------------------------
-	
+	/*
+	 * pre: -
+	 * pos: muesta el sibolo de la ficha
+	 */
 	@Override
 	public String toString() {
 		return "" + this.simbolo;
 	}
-	
+	/*
+	 * pre: recibe una ficha
+	 * pos: retorna verdadero si el sibolo de ambas fichas son iguales, caso contrario false
+	 */
 	public boolean esElMismoSimbolo(Ficha ficha) {
 		return getSimbolo().equals(ficha.getSimbolo());
 	}
 	
 //METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
-
+	/*
+	* pre: recibe un entero que representa la ccantidad de bloques a aumentar, debe ser mayor
+	* pos: aumenta el contador de bloquoes ,de la ficha, la cantidad de veces señalada 
+	*/
 	@Override
 	public void incrementarBloqueosRestantes(int cantidadDeBloqueos) throws IllegalArgumentException{
-		if(cantidadDeBloqueos < 1)
+		if(cantidadDeBloqueos <= 1)
 		{
 			throw new IllegalArgumentException("Cantidad de bloqueos debe ser mayor a 0");
 		}
 		this.bloqueosRestantes += cantidadDeBloqueos;
 	}
-
+	/*
+	 * pre: recibe un entero que representa la cantidad de bloques a disminuir, debe ser mayor que 0
+	 * pos: disminuye el contador de bloques de la ficha
+	 */
 	@Override
 	public void reducirBloqueosRestantes(int cantidadDeBloqueos) throws Exception {
 		if(cantidadDeBloqueos <= 0)
@@ -58,6 +70,10 @@ public class Ficha implements Bloqueable{
 		this.bloqueosRestantes -= cantidadDeBloqueos;
 	}
 
+	/*
+	 * pre: -
+	 * pos: retorna true si el contador de bloqueos es mayor a 0, caso contrario retorna false
+	 */
 	@Override
 	public boolean estaBloqueado() {
 		return this.bloqueosRestantes > 0;
@@ -65,11 +81,18 @@ public class Ficha implements Bloqueable{
 
 
 //GETTERS SIMPLES -----------------------------------------------------------------------------------------
-	
+	/*
+	 * pre: -
+	 * pos: retorna el simbolo establecido a la ficha
+	 */
 	public String getSimbolo() {
 		return this.simbolo;
 	}
 
+	/*
+	 * pre: -
+	 * pos: devuelve un enetero que representa la cantida de bloqueos restantes para poder ser liberado
+	 */
 	@Override
     public int getBloqueosRestantes() {
         return this.bloqueosRestantes;
@@ -77,8 +100,4 @@ public class Ficha implements Bloqueable{
 
 //SETTERS SIMPLES -----------------------------------------------------------------------------------------	
 
-
-
-
-	
 }
