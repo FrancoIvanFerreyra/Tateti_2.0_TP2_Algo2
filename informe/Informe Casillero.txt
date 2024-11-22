@@ -1,0 +1,34 @@
+INFORME PARA EL PROGRAMADOR
+clase Casillero, representa un componente del tablero tridimensional del juego Tateti. Cada casillero posee unas unicas coordenas (x,y,z) y un unico dato generico. Tambien posee una matriz tridimensional para los casilleros vecinos.
+
+Atributos:
+    -CANTIDAD_DE_VECINOS: es estatico y define el tamaño de la mattriz de vecinos.
+    -coordenada: x.
+    -coordenada: y.
+    -coordenada: z.
+    -dato: es el objeto que almacena el casillero.
+    -vecinos: matriz tridimensional que almacena todos los vecnios del casillero actual.
+    -bloqueosRestantes: es un entero que representa la catidad de bloquoes que posee el casillero.
+Constructor:
+    -Para poder formar un casillero necesitamos sus coordenas que deben ser ingresadas como enteros por parametro, distinos de 0. Una vez inicializado se calculan los casilleros vecinos y se forma la matriz.
+Metodos: 
+    -getX(),getY(),getZ() : retorna un enteror que representa la correspondiente coordenada.
+    -setDato(): modifica o ingresa un dato al casillero.
+    -setCasilleroVecino(): se modifica o se ingresa un casillero vecino a la matriz de casilleros vecinos.
+    -incrementarBloqueosRestantes(): se incrementa una cierta cantidad de veces el contador de bloqueos.
+    -reducirBloqueosRestantes(): reduce una cierta cantidad de veces el contador de bloqueos.
+    -estaBloqueado(): retorna true si el casillero esta bloqueado (contador de bloqueos mayor a 0), caso contrario retorna false(contador de bloqueos igual 0).
+    -getCasilleroVecino(): dependiendo el movimiento que se ingrese se retorna el casillero vecino.
+    -estaOcupado(): retorna true en caso de que el casillero seleccionado este ocupado por algun objeto.
+    -vaciar(): del casillero seleccionado elimina cualquier objeto que lo este ocupando.
+    -toString(): muestra las coordenas del casillero como cadena de texto.
+
+INFORME PARA EL USUARIO
+El Casillero es una unidad esencial dentro de un tablero tridimensional, diseñado para gestionar y organizar la interacción en el juego. Cada casillero tiene las siguientes características: 
+    -Ubicación: cada casillero posee coordenadas tridimensionales únicas (x, y, z) que determinan su posición en el tablero.
+    -Capacidad de Almacenamiento: puede almacenar un objeto. Este objeto representa una ficha de juego con la cual los jugadores interactúan.
+    -Estados del Casillero: desocupado, el casillero está disponible para almacenar una ficha. Ocupado, una vez que una ficha se coloca, el casillero pasa a este estado, bloqueando cualquier interacción por parte de otros jugadores hasta que se desocupe.
+    -Bloqueos Temporales: con ciertas cartas del juego, el acceso al casillero puede ser limitado por un tiempo determinado. Durante este periodo, no se puede interactuar con él, incluso si está desocupado.
+    -Casilleros Vecinos: cada casillero está conectado con un conjunto de vecinos definidos por su posición en la matriz tridimensional. Los jugadores pueden mover sus fichas a un casillero vecino siempre que cumpla con las condiciones de disponibilidad y no esté bloqueado.
+    -Comportamiento Durante el Juego: los jugadores deben ingresar las coordenadas del casillero donde desean colocar sus fichas. Esto actualiza el estado del casillero a ocupado. Movimientos de fichas si todas las fichas ya están colocadas, los jugadores pueden moverlas a un casillero vecino, siempre y cuando el casillero vecino esté desocupado.No esté bloqueado por ninguna restricción de juego.
+    -Restricciones y Validaciones: al intentar interactuar con un casillero bloqueado nos saltara un mensaje de error y nos informara del estado del mismo.

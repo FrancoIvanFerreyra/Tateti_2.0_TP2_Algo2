@@ -47,7 +47,7 @@ public class Ficha implements Bloqueable{
 	*/
 	@Override
 	public void incrementarBloqueosRestantes(int cantidadDeBloqueos) throws IllegalArgumentException{
-		if(cantidadDeBloqueos <= 1)
+		if(cantidadDeBloqueos < 1)
 		{
 			throw new IllegalArgumentException("Cantidad de bloqueos debe ser mayor a 0");
 		}

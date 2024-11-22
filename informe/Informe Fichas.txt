@@ -1,0 +1,25 @@
+INFORME PARA EL PROGRAMADOR
+Clase Ficha
+
+Es un elemento fundamental para el funcionamiento del juego Tatetí, se caracteriza por ser el objeto que se desplaza e interactúa con el tablero. El mismo posee un símbolo distintivo asociado a un jugador.
+Atributos:
+    -Símbolo, representado por un String y es un distinto que posee la ficha para poder diferenciarse de las demás. 
+    -BloqueosRestantes, representado por un número entero, se almacena la cantidad de bloques aplicados a la ficha. Se lo inicializa en 0.
+
+Constructor:
+    -Para poder crea una ficha necesitamos su símbolo, el mismo debe ser distinto de null para poder ser válido.
+
+Métodos:
+    -toString(): retorna el símbolo de la ficha un formato cadena.
+    -esElMismoSimbolo(Ficha ficha): compara(mediante el método equals()) el símbolo de dos fichas, una ingresada por parámetro, que debe ser distinto de null. En caso de que los símbolos sean iguales se retorna true, caso contrario false.
+    -incrementarBloqueosRestantes(int cantidadDeBloqueos): recibe un entero por parámetro que representa la cantidad de bloqueos que se incrementa a la ficha, este número debe ser mayor que 0.
+    -reducirBloqueosRestantes(int cantidadDeBloqueos); recibe un entero por parámetro que representa la cantidad de bloqueos que disminuye la ficha, es número debe ser mayor a 0, pero menor a la cantidad de bloqueos que posee.
+    -estaBloqueado(); verifica que el contador de bloqueos de la ficha sea mayor 0, lo que indica que la ficha está bloqueada y retorna true.
+    -getSimbolo(): retorna el símbolo de la ficha seleccionada.
+    -getBloqueosRestantes(); retorna un entero que representa la cantidad de bloqueos restantes de la ficha.
+
+INFORME PARA EL USUARIO
+
+Fichas 
+Para poder jugar al Tateti necesitamos fichas, son las encargadas de ocupar los casilleros y de esta manera poder ganar o perder el juego.
+Para poder formar una ficha necesitamos un símbolo y su contador de bloqueos, el cual definirá si podemos mover o interactuar con la misma, si el contador está en 0 significa es libre a realizar cualquier movimiento, en el caso de que tenga un número mayor a 0 significa que está bloqueado y no podemos interactuar con él.
