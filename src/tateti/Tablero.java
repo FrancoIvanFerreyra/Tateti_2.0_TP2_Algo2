@@ -135,7 +135,7 @@ public class Tablero<T> {
 				{
 					return false;
 				}
-			} catch (Exception e) {
+			} catch (NullPointerException | IllegalArgumentException e) {
 				//Algun indice esta fuera de rango, por lo que no existe el casillero
 				return false;
 			}
@@ -300,7 +300,8 @@ public class Tablero<T> {
 		while(getPosicionDeLosDatos().avanzarCursor())
 		{
 			RelacionDatoCasillero<T> relacionDatoCasillero = getPosicionDeLosDatos().obtenerCursor();
-			if(relacionDatoCasillero.getDato().equals(dato))
+			if(relacionDatoCasillero.getDato().equals(dato) &&
+				relacionDatoCasillero.getCasillero().tiene(dato))
 			{
 				return true;
 			}
@@ -473,7 +474,7 @@ public String toString(){
 	 * @param dato no puede ser null, el tablero no debe contenerlo y debe existir una
 	 * 			   relacion dato-casillero con dato igual a dato
 	 * @throws NullPointerException si dato es null
-	 * @throws IllegalArgumentException si el tablero contiene al dato 
+	 * @throws IllegalArgumentException si el tablero aun contiene al dato 
 	 * @throws NoSuchElementException si no existe relacion dato-casillero con dato igual a dato
 	 */
 	public void eliminarRelacionDatoCasillero(T dato) throws NullPointerException, NoSuchElementException,
@@ -482,9 +483,9 @@ public String toString(){
 		ValidacionesUtiles.validarNoNull(dato, "dato");
 		if(this.contiene(dato))
 		{
-			throw new IllegalArgumentException("El tablero contiene al dato. Relacion no se puede eliminar");
-		}
-
+			throw new IllegalArgumentException(
+				"El tablero aun contiene al dato. Relacion no se puede eliminar");
+		};
 		getPosicionDeLosDatos().iniciarCursor();
 		int i = 1;
 		while(getPosicionDeLosDatos().avanzarCursor())
@@ -539,7 +540,8 @@ public String toString(){
 		ValidacionesUtiles.validarNoNull(dato, "dato");
 		if(this.contiene(dato))
 		{
-			throw new IllegalArgumentException("El tablero contiene al dato. Relacion no se puede eliminar");
+			throw new IllegalArgumentException(
+								"El tablero aun contiene al dato. Relacion no se puede eliminar");
 		}
 
 		getColoresDeLosDatos().iniciarCursor();
