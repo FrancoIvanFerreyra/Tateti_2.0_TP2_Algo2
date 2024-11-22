@@ -104,6 +104,13 @@ public abstract class Lista<T> {
 		this.getNodo(posicion).setDato(elemento);
 	}
 
+	/**
+	 * 
+	 * @param posicion1 debe estar en el rango [1, contarElementos()], distinto a posicion2
+	 * @param posicion2 debe estar en el rango [1, contarElementos()], distinto a posicion1
+	 * @throws IllegalArgumentException si posicion1 y posicion2 no estan en rango o son iguales
+	 * 									entre si
+	 */
 	public abstract void intercambiar(int posicion1, int posicion2) throws IllegalArgumentException;
 
 	// verifica si un objeto está en la lista.

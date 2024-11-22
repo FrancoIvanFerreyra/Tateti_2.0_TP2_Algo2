@@ -75,6 +75,10 @@ public class ListaSimplementeEnlazada<T> extends Lista<T> {
 	{
 		validarPosicion(posicion1);
 		validarPosicion(posicion2);
+		if(posicion1 == posicion2)
+		{
+			throw new IllegalArgumentException("No es necesario intercambiar posiciones iguales");
+		}
 
 		T auxiliar = this.obtener(posicion1);
 		this.cambiar(this.obtener(posicion2), posicion1);
