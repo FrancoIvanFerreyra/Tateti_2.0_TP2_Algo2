@@ -191,9 +191,9 @@ public class Jugador {
 
 	/**
 	 * Quita una carta del jugador en una posicion especifica
-	 * @param posicion debe estar en rango [1, this.cartas.contarElementos()], el jugador debe tener
+	 * @param posicion debe estar en rango [1, this.cartas.getLongitud()], el jugador debe tener
 	 * 				   al menos una carta, la carta debe existir en posicion
-	 * @throws IllegalArgumentException si posicion no esta en rango [1, this.cartas.contarElementos()]
+	 * @throws IllegalArgumentException si posicion no esta en rango [1, this.cartas.getLongitud()]
 	 * 									o si el jugador no tiene cartas
 	 * @throws NoSuchElementException si no existe la carta en posicion
 	 */
@@ -204,7 +204,7 @@ public class Jugador {
 			throw new IllegalArgumentException("El jugador no tiene cartas");
 		}
 		ValidacionesUtiles.validarEnteroEnRango(posicion, 1,
-												 this.cartas.contarElementos(), "posicion");
+												 this.cartas.getLongitud(), "posicion");
 		if(this.cartas.obtener(posicion) == null)
 		{
 			throw new NoSuchElementException("No existe una carta en esa posicion");
