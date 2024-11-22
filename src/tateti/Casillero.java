@@ -3,11 +3,10 @@ package tateti;
 import interfaces.Bloqueable;
 
 public class Casillero<T> implements Bloqueable{
-//ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
+	//ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
 	public static int CANTIDAD_DE_VECINOS = 3;
-	
-//ATRIBUTOS -----------------------------------------------------------------------------------------------
-	
+
+	//ATRIBUTOS -----------------------------------------------------------------------------------------------	
 	private int x = 0;
 	private int y = 0;
 	private int z = 0;
@@ -15,8 +14,7 @@ public class Casillero<T> implements Bloqueable{
 	private Casillero<T>[][][] vecinos;
 	private int bloqueosRestantes = 0;
 	
-//CONSTRUCTORES -------------------------------------------------------------------------------------------
-	
+	//CONSTRUCTORES -------------------------------------------------------------------------------------------
 	/**
 	 * pre:
 	 * @param x: 1 o mayor
@@ -50,21 +48,18 @@ public class Casillero<T> implements Bloqueable{
 		this.vecinos[1][1][1] = this; //definirlo
 	}
 	
-//METODOS DE CLASE ----------------------------------------------------------------------------------------
-	
+	//METODOS DE CLASE ----------------------------------------------------------------------------------------	
 	public static int invertirCoordenadaDeVecino(int i) {
 		return i * -1;
 	}
-	
-//METODOS GENERALES ---------------------------------------------------------------------------------------
-	
+
+	//METODOS GENERALES ---------------------------------------------------------------------------------------
 	@Override
 	public String toString() {	
 		return "Casillero (" + this.x + ", " + this.y + ", " + this.z+ ")";
 	}
-	
-//METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
-	
+
+	//METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
 	public boolean estaOcupado() {
 		return this.dato != null;
 	}
@@ -186,7 +181,13 @@ public class Casillero<T> implements Bloqueable{
 		this.setDato(null);		
 	}
 
-
+	/**
+	 * Incrementa la cantidad de bloqueos restantes
+	 * pre: cantidadDeBloqueos > 0.
+	 * pos: La cantidadDeBloqueos aumenta en la cantidad especificada.
+	 * @param cantidadDeBloqueos La cantidad de bloqueos a añadir.
+	 * @throws Exception Si la cantidad de bloqueos es menor a 1.
+	 */
 	@Override
 	public void incrementarBloqueosRestantes(int cantidadDeBloqueos) throws Exception{
 		if(cantidadDeBloqueos < 1)
@@ -195,7 +196,13 @@ public class Casillero<T> implements Bloqueable{
 		}
 		this.bloqueosRestantes += cantidadDeBloqueos;
 	}
-
+	/**
+	 * Reduce la cantidad de bloqueos restantes
+	 * pre: cantidadDeBloqueos > 0 y cantidadDeBloqueos <= bloqueosRestantes.
+	 * pos: La cantidad de bloqueos restantes disminuye en la cantidad especificada.
+	 * @param cantidadDeBloqueos La cantidad de bloqueos a quitar.
+	 * @throws Exception Si la cantidad de bloqueos es menor o igual a 0, o si se intenta reducir más bloqueos de los disponibles.
+	 */
 	@Override
 	public void reducirBloqueosRestantes(int cantidadDeBloqueos) throws Exception {
 		if(cantidadDeBloqueos <= 0)
@@ -209,13 +216,18 @@ public class Casillero<T> implements Bloqueable{
 		this.bloqueosRestantes -= cantidadDeBloqueos;
 	}
 
+	/**
+	 * Verifica si el casillero está bloqueado.
+	 * pre: -
+	 * pos: Devuelve true si hay bloqueos restantes; false en caso contrario.
+	 * @return true si el turno está bloqueado, false si no lo está.
+	 */
 	@Override
 	public boolean estaBloqueado() {
 		return this.bloqueosRestantes > 0;
 	}
 	
-//GETTERS SIMPLES -----------------------------------------------------------------------------------------
-	
+	//GETTERS SIMPLES -----------------------------------------------------------------------------------------
 	public int getX() {
 		return x;
 	}
@@ -353,7 +365,7 @@ public class Casillero<T> implements Bloqueable{
 		return this.bloqueosRestantes;
 	}
 		
-//SETTERS SIMPLES -----------------------------------------------------------------------------------------	
+	//SETTERS SIMPLES -----------------------------------------------------------------------------------------	
 	public void setDato(T dato) {
 		this.dato = dato;		
 	}
