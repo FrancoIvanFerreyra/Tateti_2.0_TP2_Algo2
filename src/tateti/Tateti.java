@@ -3,21 +3,17 @@ package tateti;
 import cartas.Carta;
 import estructuras.Cola;
 import estructuras.Lista;
-import estructuras.Vector;
 import estructuras.Pila;
+import estructuras.Vector;
 import exportadores.ExportadorDeDatosAImagen;
-import jugadas.Jugada;
-
-import utiles.Utiles;
-
 import interfaz.Consola;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.NoSuchElementException;
-
+import jugadas.Jugada;
 import utiles.AdministradorDeArchivos;
-
+import utiles.Utiles;
 import utiles.ValidacionesUtiles;
 
 public class Tateti {
@@ -230,6 +226,7 @@ public class Tateti {
 	 * Inicia la partida de tateti. Finaliza cuando hay un ganador
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public void jugar() {
 
 		Cola<Turno> filaDeTurnos = new Cola<>();
@@ -262,7 +259,7 @@ public class Tateti {
 						Utiles.pausarEjecucion(1500);
 						nuevaCarta = mazoDeCartas.levantarCarta();
 					}
-					catch(Exception e)
+					catch(NoSuchElementException e)
 					{
 						try
 						{
@@ -270,7 +267,7 @@ public class Tateti {
 							Utiles.pausarEjecucion(1500);
 							mazoDeCartas.mezclar();
 						}
-						catch(Exception ex)
+						catch(IllegalStateException ex)
 						{
 							Consola.imprimirMensaje("No hay cartas que mezclar. Todas estan en juego!");
 							Utiles.pausarEjecucion(1500);
@@ -338,6 +335,11 @@ public class Tateti {
 									continue;
 								}	
 								turnoActual.setJugadaEjecutada(jugada);
+								if(!casilleroDestino.estaOcupado() &&
+									!jugada.getCasillerosAfectados().estaVacia())
+								{
+									casilleroDestino = (Casillero<Ficha>) jugada.getCasillerosAfectados().obtener(1);
+								}
 								cartaJugada = true;	
 								turnoActual.getJugador().quitarCarta(cartaActual);
 								mazoDeCartas.descartarCarta(cartaActual);
@@ -497,6 +499,7 @@ public class Tateti {
 	 */
 	public void retrocederTurnos(int cantidadDeTurnos) throws IllegalArgumentException
 	{
+		System.out.println("largo: " + this.historialTurnos.contarElementos());
 		ValidacionesUtiles.validarEnteroEnRango(cantidadDeTurnos, 1,
 								 this.historialTurnos.contarElementos(), "cantidadDeTurnos");
 		while(cantidadDeTurnos > 0)
@@ -615,47 +618,69 @@ public class Tateti {
 		return casillero;
 	}
 	/**
-	 * 
+	 * pre: -
+	 * pos: reduce 1 bloqueo a todas las fichas y casilleros bloqueados del tablero
 	 */
 	public void reducirBloqueos() {
+		Consola.imprimirMensaje("Reduciendo bloqueos...");
+		Utiles.pausarEjecucion(1500);
+		int contador = 0;
+
+		// Iniciar el cursor para recorrer los casilleros bloqueados
+		this.tablero.getPosicionDeLosDatos().iniciarCursor();
+
+		// Recorrer todos los casilleros bloqueados
+		while (this.tablero.getPosicionDeLosDatos().avanzarCursor()) {
+			Ficha ficha = this.tablero.getPosicionDeLosDatos().obtenerCursor().getDato();
+			
+			// Verificar si la ficha está bloqueada antes de reducir los bloqueos
+			if (ficha.estaBloqueado()) {
+				ficha.reducirBloqueosRestantes(1);
+				contador++;
+			}
+		}
+		if(contador == 0)
+		{
+			Consola.imprimirMensaje("No hay fichas bloqueadas");
+		}
+		else
+		{
+			Consola.imprimirMensaje("Se redujeron bloqueos en " + contador + " ficha" +
+			((contador > 1) ? "s" : ""));	
+		}
+		Utiles.pausarEjecucion(2000);
+	
+		contador = 0;
+	
 		Lista<Casillero<Ficha>> casillerosBloqueados = this.tablero.getCasillerosBloqueados();
-		
+
 		// Verificar si no hay casilleros bloqueados
-		if (casillerosBloqueados.getTamanio() == 0) {
-			Consola.imprimirMensaje("No hay casilleros para desbloquear.");
+		if (casillerosBloqueados.estaVacia()) {
+			Consola.imprimirMensaje("No hay casilleros bloqueados");
 			return;  // Salir del método si no hay casilleros bloqueados
 		}
-	
-		try {
-			// Iniciar el cursor para recorrer los casilleros bloqueados
-			casillerosBloqueados.iniciarCursor();
+		// Iniciar el cursor para recorrer los casilleros bloqueados
+		casillerosBloqueados.iniciarCursor();
+		
+		// Recorrer todos los casilleros bloqueados
+		while (casillerosBloqueados.avanzarCursor()) {
+			Casillero<Ficha> casilleroBloqueado = casillerosBloqueados.obtenerCursor();
 			
-			boolean bloqueoReducido = false;  // Para verificar si se redujeron bloqueos
-			
-			// Recorrer todos los casilleros bloqueados
-			while (casillerosBloqueados.avanzarCursor()) {
-				Casillero<Ficha> casilleroBloqueado = casillerosBloqueados.obtenerCursor();
-	
-				// Verificar si la ficha está bloqueada antes de reducir los bloqueos
-				if (casilleroBloqueado.estaBloqueado()) {
-					casilleroBloqueado.reducirBloqueosRestantes(1);
-					bloqueoReducido = true;
-					Consola.imprimirMensaje("Se redujo un bloqueo en la ficha ubicada en " +
-							casilleroBloqueado.toString());
-				}
+			// Verificar si la ficha está bloqueada antes de reducir los bloqueos
+			if (casilleroBloqueado.estaBloqueado()) {
+				casilleroBloqueado.reducirBloqueosRestantes(1);
+				contador++;
 			}
-	
-			// Mensaje de éxito si se redujeron bloqueos
-			if (bloqueoReducido) {
-				Consola.imprimirMensaje("Los bloqueos se redujeron exitosamente.");
-			} else {
-				Consola.imprimirMensaje("No se encontraron fichas bloqueadas para reducir.");
+			if(!casilleroBloqueado.estaBloqueado() &&
+			casillerosBloqueados.contiene(casilleroBloqueado))
+			{
+				casillerosBloqueados.removerPrimeraAparicion(casilleroBloqueado);
 			}
-	
-		} catch (Exception e) {
-			// Capturar y manejar excepciones específicas si es necesario
-			Consola.imprimirMensaje("No se pudo reducir los bloqueos. Error: " + e.getMessage());
 		}
+		Consola.imprimirMensaje("Se redujeron bloqueos en " + contador + " casillero" +
+														((contador > 1) ? "s" : ""));
+		Utiles.pausarEjecucion(2000);
+
 	}
 
 	
