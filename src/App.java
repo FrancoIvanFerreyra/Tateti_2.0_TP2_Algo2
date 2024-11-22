@@ -110,7 +110,7 @@ public class App {
                  "Longitud del tateti: " + cantidadFichasSeguidasParaGanar + "\n";
 
                 Consola.imprimirMensaje(resumenOpcionesIngresadas);
-                if(Consola.obtenerConfirmacionDelUsuario("Confirmar configuracion?"))
+                if(Consola.obtenerConfirmacionDelUsuario("Confirmar configuracion?", false))
                 {
                     tateti = new Tateti(anchoTablero, altoTablero, profundidadTablero,
                     cantidadFichasSeguidasParaGanar,
@@ -123,7 +123,7 @@ public class App {
             else
             {
                 Consola.imprimirMensaje(opcion.getDescripcion());
-                if(Consola.obtenerConfirmacionDelUsuario("Confirmar configuracion?"))
+                if(Consola.obtenerConfirmacionDelUsuario("Confirmar configuracion?", false))
                 {
                     tateti = new Tateti(opcion);
                     usuarioEligioConfiguracion = true;
