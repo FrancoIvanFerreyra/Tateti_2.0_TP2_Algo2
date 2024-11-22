@@ -183,7 +183,8 @@ public class ValidacionesUtiles {
         if (Paths.get(ruta).isAbsolute()) {
             throw new IllegalArgumentException("La ruta debe ser relativa.");
         }
-        if (!ruta.matches("^[\\w\\-. ]+$")) {
+        if (!ruta.matches("^[\\w\\-./ ]+$"))
+        {
             throw new IllegalArgumentException("La ruta contiene caracteres no válidos.");
         }
     }
