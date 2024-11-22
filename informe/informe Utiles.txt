@@ -1,0 +1,38 @@
+INFORME DE PROGRAMADOR UTILES
+
+clase AdministradorDeArchivos:
+Esta clase nos permite manejar directorios desde el sistema de archivos, con el fin de almancenar cierta informacion relevante del juego.
+Métodos:
+    -crearDirectorio(String rutaPadre, String nombreDirectorio): crea un nuevo directorio en la ruta ingresada con un nombre en especifico. Esta carpeta sera utilizada para almacenar los turnos de juego.
+    -crearDirectorio(File archivoPadre, String nombreDirectorio): este es una variante de creacion de directorio, pero con la diferencia que se crear a partir de otro directorio, tambien tiene que tener un nomnbre. Almacena los turnos de juego.
+    -vaciarDirectorio(File directorio): elimina todos los datos y/o residuos creados por el juego, este proceso se realizar una vez terminada la partida. En caso de que el directorio ingreso no exista o no se pueda borrar se lanza un mensaje de error.
+
+clase Utiles:
+En esta clase se almacenan unos ciertos metodos que son necesarios para el funcionamiento del juego. Son funciones genericas que su objetivo es resolver varios conflictos. Estos son:
+    -movimientoOpuesto(Movimiento movimiento): recibe un cualquier tipo de movimeinto (relacionado al movimiento de la ficha) y se retorna su opuesto, ejemplo moviemiento = ADELANTE retorna moviemiento = ATRAS.
+    -obtenerMovimientosAChequear(): se retorna un listado con todos los tipos de moviemientos que se pueden realizar en el tablero.
+    -generarStringAleatorio(int longitud): retorna un string de palabras minusculas pero de una determinada longitud, esta debe ser un entero mayor a 0.
+    -generarColorAleatorio(): se genera un color mezclando ciertas cantidades de rojo, verde y blanco, estas cantidades son generadas por numeros random.
+    -esColorOscuro(Color color): se calcula la luminacion del color ingresado por parametro y si es muy oscuro retornamos true, caso contrario false.
+    -esColorDistinto(Color nuevoColor, Vector<Color> coloresGenerados): al crear un color nuevo se verifica si ya fue creado antes, de esta manera se recorre el vector de colores generados en busca del color nuevo, en caso de no estar en el vector se retorna true, caso contrario false.
+    -agregarOrdenadoSinRepetir(int numero, ListaOrdenableSimplementeEnlazada<Integer> lista): agrega un numero a una lista ordenada si que se repitan.
+    -rellenarExacto(Lista<Integer> lista, int rango): se completa con los valores intermedios de una lista hasta un cierto punto, determinado por el rango.
+    -btenerEnteroAleatorio(int minimo, int maximo): se retorna un entero cualquiera pero que este dentro de un rango de numeros determinado por parametro.
+    -esperar(int milisegundos): genera un retraso en el programa de milisegundos.
+
+clase ValidacionesUtiles:
+En esta clase se busca que ciertos objetos, atributos o parametros cumplan una cierta condiciones. Su objetivo es ahorrar tiepo y mejorar la calidad del programa.
+Validaciones:
+    -esMayorQue(int numero, int minimo): retorna en true en caso de que el numero sea mayor a minimo, caso contrario retorna false.
+    -esMayorOIgualQue(int numero, int minimo):  retorna true en caso de que el numero sea mayor o igual a minimo, caso contrario retorna false.
+    -esMenorQue(int numero, int maximo): retorna true en caso de que numero sea menor que maximo, en caso contrario retorna false.
+    -esMenorOIgualQue(int numero, int maximo): retorna true en caso de que numero sea menor o igual que maximo, en caso contrario retorna false.
+    -estaEntre(int numero, int minimo, int maximo): retorna treu en caso de que el numero este entre su maximo y minimo, pudiendo ser uno de ellos, caso contrario false.
+    -estaEstrictamenteEntre(int numero, int minimo, int maximo): retorna treu en caso de que el numero este entre su maximo y minimo, no puede ser uno de los extremos, caso contrario false.
+    -esNombreValido(String nombre): retorna true en caso de que el String no este vacio o este generado por caracteres no alfabeticos.
+    -validarEnteroMinimo(int entero, int minimo, String nombre): verifica si el entero sea mayor a su minimo y el nombre ingresado no este vacio.
+    -validarEnteroMaximo(int entero, int maximo, String nombre): verifica si el entero sea menor a su maximo y el nombre igresado no este vacio
+    -validarEnteroEnRango(int entero, int minimo, int maximo, String nombre): verifica si el entero ingresado este entre su minimo y maximo, tambien si el nombre no esta vacio.
+    -validarNoNull(T objeto, String nombre): verifica si un objeto no esta vacio, en caso de estarlo lanza un error.
+    -validarRutaRelativa(String ruta): verifica que la ruta ingresada no este vacia, ni tenga caracteres validos y que sea realtiva.
+    -tieneMetodoToString(T objeto): retorna true en caso de que un objeto pueda ser expresado como cadena.

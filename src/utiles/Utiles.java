@@ -1,18 +1,28 @@
+
 package utiles;
 
 import estructuras.Lista;
 import estructuras.ListaOrdenableSimplementeEnlazada;
 import estructuras.ListaSimplementeEnlazada;
 import estructuras.Vector;
-
 import java.awt.Color;
+import java.util.NoSuchElementException;
 import java.util.Random;
 import tateti.Movimiento;
 
 public class Utiles {
 
-    public static Movimiento movimientoOpuesto(Movimiento movimiento)
+    /**
+     * 
+     * @param movimiento movimiento en 3D, no debe ser null
+     * @return devuelve el movimiento opuesto a movimiento en el espacio 3D
+     * @throws NullPointerException si movimiento es null
+     * @throws NoSuchElementException si no se encontro el movimiento opuesto a movimiento
+     */
+    public static Movimiento movimientoOpuesto(Movimiento movimiento) throws NullPointerException,
+                                                                    NoSuchElementException
     {
+        ValidacionesUtiles.validarNoNull(movimiento, "movimiento");
         Movimiento resultado = null;
         switch(movimiento)
         {
@@ -42,13 +52,19 @@ public class Utiles {
             case Movimiento.IZQUIERDA_ATRAS_ABAJO -> resultado = Movimiento.DERECHA_ADELANTE_ARRIBA;
             case Movimiento.DERECHA_ATRAS_ARRIBA -> resultado = Movimiento.IZQUIERDA_ADELANTE_ABAJO;
             case Movimiento.DERECHA_ATRAS_ABAJO -> resultado = Movimiento.IZQUIERDA_ADELANTE_ARRIBA;
-            
+            default -> throw new NoSuchElementException(
+                    "No se encontro el movimiento opuesto a movimiento");
         }
         return resultado;
     }
 
-    public static Lista<Movimiento> obtenerMovimientosAChequear() throws Exception{
-        Lista<Movimiento> movimientosAChequear = new ListaSimplementeEnlazada<Movimiento>();
+    /**
+     * 
+     * @return devuelve una lista con todos los movimientos en 3D que no son opuestos entre
+     *         si
+     */
+    public static Lista<Movimiento> obtenerMovimientosAChequear(){
+        Lista<Movimiento> movimientosAChequear = new ListaSimplementeEnlazada<>();
 		movimientosAChequear.agregar(Movimiento.ADELANTE);
 		movimientosAChequear.agregar(Movimiento.IZQUIERDA);
 		movimientosAChequear.agregar(Movimiento.IZQUIERDA_ADELANTE);
@@ -64,21 +80,12 @@ public class Utiles {
 		movimientosAChequear.agregar(Movimiento.DERECHA_ATRAS_ARRIBA);
 
         return movimientosAChequear;
-
     }
 
-    public static String generarStringAleatorio(int longitud) {
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder(longitud);
-        
-        for (int i = 0; i < longitud; i++) {
-            char letraAleatoria = (char) ('a' + random.nextInt(26)); // 'a' es el primer carácter en el rango
-            sb.append(letraAleatoria);
-        }
-        
-        return sb.toString();
-    }
-
+    /**
+     * 
+     * @return devuelve un color aleatorio
+     */
     public static Color generarColorAleatorio() {
         Random random = new Random();
         int rojo = random.nextInt(256);  // Valor entre 0 y 255
@@ -88,7 +95,15 @@ public class Utiles {
         return new Color(rojo, verde, azul);
     }
 
-    public static boolean esColorOscuro(Color color) {
+    /**
+     * 
+     * @param color no debe ser null
+     * @return devuelve verdadero si el color es considerado "oscuro" a partir
+     * de la formula de luminancia relativa
+     * @throws NullPointerException si color es null
+     */
+    public static boolean esColorOscuro(Color color) throws NullPointerException{
+        ValidacionesUtiles.validarNoNull(color, "color");
         // Convertir los componentes RGB a escala [0, 1]
         double r = color.getRed() / 255.0;
         double g = color.getGreen() / 255.0;
@@ -106,31 +121,64 @@ public class Utiles {
         return luminancia < 0.5; // Umbral común para considerar un color "oscuro"
     }
 
-    public static boolean esColorDistinto(Color nuevoColor, Vector<Color> coloresGenerados) {
-        int UMBRAL_DISTINCION = 500;
+    /**
+     * 
+     * @param nuevoColor no debe ser null
+     * @param coloresGenerados no debe ser null
+     * @return devuelve verdadero si nuevoColor es lo suficientemente distinto a todos los
+     *         colores en coloresGenerados, bajo un umbral de distincion establecido
+     * @throws NullPointerException si color o coloresGenerados son null
+     */
+    public static boolean esColorDistinto(Color nuevoColor, Vector<Color> coloresGenerados)
+                                        throws NullPointerException {
+        ValidacionesUtiles.validarNoNull(nuevoColor, "nuevoColor");
+        ValidacionesUtiles.validarNoNull(coloresGenerados, "coloresGenerados");
+
+        int UMBRAL_DISTINCION = 100;
         for (int i = 1; i <= coloresGenerados.getLongitud(); i++) {
             Color colorGenerado;
-            try {
-                colorGenerado = coloresGenerados.obtener(i);
-            } catch (Exception e) {
-                continue;
-            }
-            if (calcularDistanciaColor(nuevoColor, colorGenerado) < UMBRAL_DISTINCION) {
+            colorGenerado = coloresGenerados.obtener(i);
+
+            if (colorGenerado != null &&
+                calcularDistanciaColor(nuevoColor, colorGenerado) < UMBRAL_DISTINCION) {
                 return false; // El color es demasiado similar a uno existente
             }
         }
         return true; // El color es suficientemente distinto
     }
 
-    private static double calcularDistanciaColor(Color c1, Color c2) {
-        int deltaRojo = c1.getRed() - c2.getRed();
-        int deltaVerde = c1.getGreen() - c2.getGreen();
-        int deltaAzul = c1.getBlue() - c2.getBlue();
+    /**
+     * 
+     * @param color1 no debe ser null
+     * @param color2 no debe ser null
+     * @return devuelve la distancia euclidiana entre color1 y color2
+     * @throws NullPointerException si color1 o color2 son null
+     */
+    private static double calcularDistanciaColor(Color color1, Color color2) 
+                                                    throws NullPointerException{
+        ValidacionesUtiles.validarNoNull(color1, "color1");
+        ValidacionesUtiles.validarNoNull(color2, "color2");
+
+        int deltaRojo = color1.getRed() - color2.getRed();
+        int deltaVerde = color1.getGreen() - color2.getGreen();
+        int deltaAzul = color1.getBlue() - color2.getBlue();
         return Math.sqrt(deltaRojo * deltaRojo + deltaVerde * deltaVerde + deltaAzul * deltaAzul);
     }
     
 
-    public static int agregarOrdenadoSinRepetir(int numero, ListaOrdenableSimplementeEnlazada<Integer> lista) throws Exception
+    /**
+     * Inserta un numero ordenado y sin repetir en una lista ordenada de forma ascendente
+     * @param numero
+     * @param lista no debe ser null y debe estar ordenada de forma ascendente
+     * @return devuelve el indice de insercion de numero en la lista ordenable. Si la lista ya tiene al
+     *         numero, devuelve -1
+     * @throws NullPointerException si lista es null
+     * @throws IllegalArgumentException si la lista no esta ordenada de forma ascendente
+     */
+    public static int agregarOrdenadoSinRepetir(int numero,
+                                             ListaOrdenableSimplementeEnlazada<Integer> lista)
+                                              throws NullPointerException,
+                                              IllegalArgumentException
     {
         if(lista.contiene(numero))
         {
@@ -141,14 +189,31 @@ public class Utiles {
             lista.agregar(numero);
             return 1;
         }
+        if(!lista.estaOrdenada())
+        {
+            throw new IllegalArgumentException("La lista no esta ordenada de forma ascendente");
+        }
         return lista.insertarOrdenado(numero);
     }
 
-    public static void rellenarExacto(Lista<Integer> lista, int rango) throws Exception {
-        if (lista == null || lista.getTamanio() < 2 || rango < 1) {
-            throw new IllegalArgumentException("La lista debe contener al menos 2 elementos y el rango debe ser mayor a 0.");
-        }
-    
+    /**
+     * Inserta a una lista elementos n en las posiciones a, si la diferencia entre
+     * los elementos posicionados en a - 1 y a es igual a rango + 1, es decir, 
+     * lista(a - 1) == n - ((rango + 1) / 2) y lista(a) == n + ((rango + 1) / 2)
+     * o viceversa
+     * @param lista no puede ser null y debe poseer al menos 2 elementos
+     * @param rango mayor o igual a 1
+     * @throws NullPointerException si lista es null
+     * @throws IllegalArgumentException si lista tiene menos de dos elementos
+     *                                  o rango es menor a 1
+     */
+    public static void rellenarExacto(Lista<Integer> lista, int rango) 
+                                        throws NullPointerException,
+                                        IllegalArgumentException {
+        ValidacionesUtiles.validarNoNull(lista, "lista");
+        ValidacionesUtiles.validarEnteroMinimo(lista.getTamanio(), 2, "tamanioLista");
+        ValidacionesUtiles.validarEnteroMinimo(rango, 1, "rango");
+
         int indice = 2; 
         while (indice <= lista.getTamanio()) {
             int elementoInferior = (lista.obtener(indice) - lista.obtener(indice - 1) > 0) ? lista.obtener(indice - 1) : lista.obtener(indice);
@@ -162,13 +227,30 @@ public class Utiles {
         }
     }
 
-    public static int obtenerEnteroAleatorio(int minimo, int maximo)
+    /**
+     * 
+     * @param minimo debe ser menor o igual al maximo
+     * @param maximo debe ser mayor o igual al minimo
+     * @return devuelve un entero aleatorio dentro del rango [minimo, maximo]
+     * @throws IllegalArgumentException si minimo es mayor a maximo
+     */
+    public static int obtenerEnteroAleatorio(int minimo, int maximo) throws IllegalArgumentException
     {
+        if(!ValidacionesUtiles.esMenorOIgualQue(minimo, maximo))
+        {
+            throw new IllegalArgumentException("Minimo es mayor que el maximo");
+        }
         Random random = new Random();
         return random.nextInt(maximo - minimo) + minimo;
     }
 
-    public static void esperar(int milisegundos) {
+    /**
+     * Detiene la ejecucion del programa la cantidad de milisegundos recibida
+     * @param milisegundos mayor a 1
+     * @throws IllegalArgumentException si milisegundos es menor a 1
+     */
+    public static void pausarEjecucion(int milisegundos) throws IllegalArgumentException{
+        ValidacionesUtiles.validarEnteroMinimo(milisegundos, 1, "milisegundos");
         try {
             Thread.sleep(milisegundos);
         } catch (InterruptedException e) {
@@ -176,8 +258,4 @@ public class Utiles {
             System.out.println("Se interrumpió la espera.");
         }
     }
-    
-    
-
-
 }
