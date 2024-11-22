@@ -6,6 +6,7 @@ import tateti.Casillero;
 import tateti.Ficha;
 import tateti.Tateti;
 import tateti.Turno;
+import utiles.ValidacionesUtiles;
 /**
  * El jugador decice que casillero del tablero quiere bloquear
  */
@@ -27,20 +28,26 @@ public JugadaAnularCasillero(Carta carta) {
 //METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
 
 /*
- * pre: recibe el estado del tateti y el turno acutual del jugador
- * pos: se bloquea el casillero seleccionado mediante el ingreso de coordenas, el bloqueo se realiza mediante el incremento del contado de bloqueos del mismo, en 
- *      caso de que se cumpla se agrega al listado de casillero afectados y retorna true, caso contrario retorna false
+ * pre: tateti y turno actual no pueden ser null
+ * pos: incrementa los bloqueos restantes del casillero seleccionado,
+ *      exactamente la cantidad de jugadores + 1, dejando al casillero
+ *      anulado por una ronda completa
  */
 @Override
-public boolean jugar(Tateti tateti, Turno turnoActual) throws Exception {
+public boolean jugar(Tateti tateti, Turno turnoActual) throws NullPointerException {
+    ValidacionesUtiles.validarNoNull(tateti, "tateti");
+    ValidacionesUtiles.validarNoNull(turnoActual, "turnoActual");
     Casillero<Ficha> casilleroAAnular;
-    casilleroAAnular = tateti.obtenerCasilleroDirectoDelUsuario("Se necesitan los datos del casillero a anular");
+    casilleroAAnular = tateti.obtenerCasilleroDirectoDelUsuario("Se necesitan los datos del casillero a anular", true);
     if(casilleroAAnular == null)
     {
         return false;
     }
     casilleroAAnular.incrementarBloqueosRestantes(tateti.getJugadores().getLongitud() + 1);
-    tateti.getTablero().getCasillerosBloqueados().agregar(casilleroAAnular);
+    if(!tateti.getTablero().getCasillerosBloqueados().contiene(casilleroAAnular))
+    {
+        tateti.getTablero().getCasillerosBloqueados().agregar(casilleroAAnular);
+    }
     getCasillerosAfectados().agregar(casilleroAAnular);
     Consola.imprimirMensaje("Se anulo correctamente el " + casilleroAAnular.toString() + "!");
     
@@ -49,11 +56,12 @@ public boolean jugar(Tateti tateti, Turno turnoActual) throws Exception {
 }
 
 /**
- * pre: recibe el estado del tateti
- * pos: se disminuye el contador de bloques del casillero que fue afectado, se lo obtiene del listado de casillero afectados
+ * pre: tateti no puede ser null
+ * pos: se libera al casillero de su estado bloqueado
  */
 @Override
-public void deshacer(Tateti tateti) throws Exception {
+public void deshacer(Tateti tateti) throws NullPointerException {
+    ValidacionesUtiles.validarNoNull(tateti, "tateti");
     getCasillerosAfectados().iniciarCursor();
     while(getCasillerosAfectados().avanzarCursor())
     {
@@ -61,12 +69,12 @@ public void deshacer(Tateti tateti) throws Exception {
         Casillero<Ficha> casilleroAfectado = getCasillerosAfectados().obtenerCursor();
         if(casilleroAfectado.estaBloqueado())
         {
-            casilleroAfectado.reducirBloqueosRestantes(1);
-            try {
+            casilleroAfectado.reducirBloqueosRestantes(casilleroAfectado.getBloqueosRestantes());
+            if (!casilleroAfectado.estaBloqueado() &&
+            tateti.getTablero().getCasillerosBloqueados().contiene(casilleroAfectado))
+            {
                 tateti.getTablero().getCasillerosBloqueados().removerPrimeraAparicion(casilleroAfectado);
-                Consola.imprimirMensaje("Se libero correctamente el " + casilleroAfectado.toString() + "!");
-            } catch (Exception e) {
-                Consola.imprimirMensaje("No se pudo deshacer la jugada correctamente" + e.getMessage());
+                Consola.imprimirMensaje("Se libero correctamente el " + casilleroAfectado.toString() + "!");    
             }
         }
     }

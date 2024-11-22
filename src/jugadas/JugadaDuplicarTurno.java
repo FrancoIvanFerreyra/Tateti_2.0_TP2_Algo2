@@ -4,6 +4,7 @@ import cartas.Carta;
 import interfaz.Consola;
 import tateti.Tateti;
 import tateti.Turno;
+import utiles.ValidacionesUtiles;
 
 /*
  * permiede a un jugador duplicar su turno
@@ -29,7 +30,10 @@ public class JugadaDuplicarTurno extends Jugada {
 	 */
 	@Override
 	public boolean jugar(Tateti tateti, 
-						Turno turnoActual) throws Exception {
+						Turno turnoActual) throws NullPointerException {
+		ValidacionesUtiles.validarNoNull(tateti, "tateti");
+        ValidacionesUtiles.validarNoNull(turnoActual, "turnoActual");
+
 		turnoActual.agregarSubturno();
 		Consola.imprimirMensaje("Turno duplicado. Podes jugar nuevamente!");
 		return true;
@@ -39,7 +43,8 @@ public class JugadaDuplicarTurno extends Jugada {
 	 * pos: en este caso no se puede deshacer la jugada duplicar turnos
 	 */
 	@Override
-    public void deshacer(Tateti tateti) throws Exception {
+    public void deshacer(Tateti tateti) throws NullPointerException {
+		ValidacionesUtiles.validarNoNull(tateti, "tateti");
 		
 		//No se puede deshacer
 		Consola.imprimirMensaje("No se puede deshacer la duplicacion del turno");

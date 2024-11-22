@@ -7,6 +7,7 @@ import tateti.Casillero;
 import tateti.Jugador;
 import tateti.Tateti;
 import tateti.Turno;
+import utiles.ValidacionesUtiles;
 
 /*
  * crea la clase abstracta jugada
@@ -17,7 +18,9 @@ public abstract class Jugada {
 	
 	private Carta carta = null;
 	private Jugador jugador;
+        @SuppressWarnings("FieldMayBeFinal")
 	private Lista<Jugador> jugadoresAfectados;
+	@SuppressWarnings("rawtypes")
 	private Lista<Casillero> casillerosAfectados;
 	
 //CONSTRUCTORES -------------------------------------------------------------------------------------------
@@ -35,17 +38,21 @@ public abstract class Jugada {
 //METODOS DE CLASE ----------------------------------------------------------------------------------------
 //METODOS GENERALES ---------------------------------------------------------------------------------------
 //METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
-	/*
-	 * pre: recibe el estado del tateti y el turno acutual del jugador 
-	 * pos: forma el metodo abtracto  jugar que retorna true o false
+	/**
+	 * Ejecuta la jugada sobre el tateti
+	 * @param tateti no puede ser null
+	 * @param turnoActual no puede ser null
+	 * @return devuelve verdadero si se completo la jugada
+	 * @throws NullPointerException si tateti o turnoActual son null
 	 */
 	public abstract boolean jugar(Tateti tateti, 
-								Turno turnoActual) throws Exception;
+								Turno turnoActual) throws NullPointerException;
 	/**
-	 * pre: recibe el estado del tateti
-	 * pos: forma el metodo abtracto para deshacer lo hecho por la jugada
+	 * Deshace todas las acciones hechas por la jugada
+	 * @param tateti no puede ser null
+	 * @throws NullPointerException si tateti es null
 	 */
-	public abstract void deshacer(Tateti tateti) throws Exception;
+	public abstract void deshacer(Tateti tateti) throws NullPointerException;
 
 //GETTERS SIMPLES -----------------------------------------------------------------------------------------
 	/*
@@ -73,21 +80,20 @@ public abstract class Jugada {
 	 * pre: = 
 	 * pos: retorna la lista de casillero afectados por la jugada
 	 */
+	@SuppressWarnings("rawtypes")
 	public Lista<Casillero> getCasillerosAfectados() {
 		return this.casillerosAfectados;
 	}
 	
 //SETTERS SIMPLES -----------------------------------------------------------------------------------------	
-	/*
-	 * pre: recibe el jugador que realiza la jugada
-	 * pos: estabelce al jugador que realiza la jugada
+	/**
+	 * Asigna el jugador que realiza la jugada
+	 * @param jugador no puede ser null
+	 * @throws NullPointerException si jugador es null
 	 */
-	protected void setJugador(Jugador jugador) throws Exception
+	protected void setJugador(Jugador jugador) throws NullPointerException
 	{
-		if(jugador == null)
-		{
-			throw new Exception("El jugador no puede ser null");
-		}
+		ValidacionesUtiles.validarNoNull(jugador, "jugador");
 		this.jugador = jugador;
 	}
 

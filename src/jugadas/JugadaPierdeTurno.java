@@ -6,6 +6,7 @@ import interfaz.Consola;
 import tateti.Jugador;
 import tateti.Tateti;
 import tateti.Turno;
+import utiles.ValidacionesUtiles;
 
 /**
  * El jugador decide a quien le hace perder el turno
@@ -32,31 +33,53 @@ public class JugadaPierdeTurno extends Jugada {
 	 */
 	@Override
 	public boolean jugar(Tateti tateti, 
-						Turno turnoActual) throws Exception {
+						Turno turnoActual) throws NullPointerException {
+		ValidacionesUtiles.validarNoNull(tateti, "tateti");
+        ValidacionesUtiles.validarNoNull(turnoActual, "turnoActual");
+
 		Vector<Jugador> jugadores = tateti.getJugadores().filtrar(
 			jugador -> {
-				return jugador != turnoActual.getJugador();
+				return jugador != null &&
+						jugador != turnoActual.getJugador();
 			}
 		);
-		
-		//Preguntar jugador
-		Jugador jugadorABloquear = tateti.obtenerJugadorDelUsuario(jugadores, "A que jugador desea bloquear 1 turno?");
-		if(jugadorABloquear == null)
-		{
-			return false;
-		} 
-		Turno turno = tateti.obtenerTurno(jugadorABloquear); //le pregunto al tateti el proximo turno del jugador
-		turno.incrementarBloqueosRestantes(1);
-		getJugadoresAfectados().agregar(jugadorABloquear);
-		Consola.imprimirMensaje("Se bloqueo correctamente 1 turno a " + jugadorABloquear.toString() + "!");
-		return true;
+
+		Boolean usuarioConfirmoSeleccion;
+		do { 
+			//Preguntar jugador
+			Jugador jugadorABloquear = Consola.consultarOpcionAlUsuario(jugadores, 
+			"A que jugador desea bloquear 1 turno?",
+			true);
+			if(jugadorABloquear == null)
+			{
+				return false;
+			}
+			usuarioConfirmoSeleccion = Consola.obtenerConfirmacionDelUsuario(
+					"Confirmar bloqueo de 1 turno a " +
+					jugadorABloquear.getNombre() + "?",
+							true);
+			if(usuarioConfirmoSeleccion == null)
+			{
+				return false;
+			}
+			if(usuarioConfirmoSeleccion)
+			{
+				Turno turno = tateti.obtenerTurno(jugadorABloquear); //le pregunto al tateti el proximo turno del jugador
+				turno.incrementarBloqueosRestantes(1);
+				getJugadoresAfectados().agregar(jugadorABloquear);
+				Consola.imprimirMensaje("Se bloqueo correctamente 1 turno a " + jugadorABloquear.toString() + "!");
+				return true;
+			}
+		} while (!usuarioConfirmoSeleccion);
+		return false;
 	}
 	/* 
 	 * pre: recibe el estado del tateti 
 	 * pos: se busca al jugador perjudicado en la lista de jugadores afectados, si se lo encuentra se reduce su contador de bloques y mostramos un mensaje
 	 */
 	@Override
-	public void deshacer(Tateti tateti) throws Exception {
+	public void deshacer(Tateti tateti) throws NullPointerException {
+		ValidacionesUtiles.validarNoNull(tateti, "tateti");
 		getJugadoresAfectados().iniciarCursor();
 		while(getJugadoresAfectados().avanzarCursor())
 		{
@@ -66,7 +89,7 @@ public class JugadaPierdeTurno extends Jugada {
 				turno.reducirBloqueosRestantes(1);
 			} catch (IllegalArgumentException e) {
 				Consola.imprimirMensaje(jugadorAfectado.getNombre() +
-										"ya cumplio con su bloqueo, imposible deshacer");
+										" ya cumplio con su bloqueo, imposible deshacer");
 				return;
 			}
 			Consola.imprimirMensaje("Se quito correctamente 1 bloqueo a " + 

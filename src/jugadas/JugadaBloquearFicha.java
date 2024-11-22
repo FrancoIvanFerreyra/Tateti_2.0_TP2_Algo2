@@ -1,6 +1,7 @@
 package jugadas;
 
 import cartas.Carta;
+import estructuras.Lista;
 import estructuras.Vector;
 import interfaz.Consola;
 import tateti.Casillero;
@@ -8,6 +9,7 @@ import tateti.Ficha;
 import tateti.Jugador;
 import tateti.Tateti;
 import tateti.Turno;
+import utiles.ValidacionesUtiles;
 
 /**
  * El jugador decide que ficha del trablero quiere mover a un caisllero en especifico 
@@ -32,10 +34,12 @@ public JugadaBloquearFicha(Carta carta) {
 /*
  * pre: recibe el estado del tateti y el turno acutual del jugador 
  * pos: bloquea una ficha de un jugador oponente, mediante un contador de bloqueos propio de la ficha, lo que le impide realizar cualquier moviemiento. Si el
- *      bloquoe se raliza con exito se retonra true, en caso contrario false (si el jugador no tiene fichas en el tablero o ya esta bloqueada)
+ *      bloqueo se raliza con exito se retorna true, en caso contrario false (si el jugador no tiene fichas en el tablero o ya esta bloqueada)
  */
 @Override
-public boolean jugar(Tateti tateti, Turno turnoActual) throws Exception {
+public boolean jugar(Tateti tateti, Turno turnoActual) throws NullPointerException {
+    ValidacionesUtiles.validarNoNull(tateti, "tateti");
+    ValidacionesUtiles.validarNoNull(turnoActual, "turnoActual");
     Jugador jugadorAAfectar;
     Casillero<Ficha> casilleroFichaABloquear = null;
     do
@@ -44,13 +48,14 @@ public boolean jugar(Tateti tateti, Turno turnoActual) throws Exception {
             Vector<Jugador> jugadores = tateti.getJugadores().filtrar(
                 jugador ->
                 {
-                    return jugador != turnoActual.getJugador() &&
-                            jugador.tieneAlgunaFichaEnElTablero();
+                    return jugador != null &&
+                            jugador != turnoActual.getJugador() &&
+                            jugador.tieneAlgunaFichaEnElTablero(tateti.getTablero());
                 }
             );
-            jugadorAAfectar = tateti.obtenerJugadorDelUsuario(jugadores,
-                    "A que jugador desea bloquear una ficha?");
-        } catch (Exception e) {
+            jugadorAAfectar = Consola.consultarOpcionAlUsuario(jugadores,
+                        "A que jugador desea bloquear una ficha?", true);
+        } catch (IllegalArgumentException e) {
             Consola.imprimirMensaje("No hay fichas de otros jugadores en el tablero");
             return false;
         }
@@ -60,26 +65,27 @@ public boolean jugar(Tateti tateti, Turno turnoActual) throws Exception {
         }
         Vector<Ficha> fichas = jugadorAAfectar.getFichas().filtrar(
             ficha -> {
-                try {
-                    return tateti.getTablero().contiene(ficha) && !ficha.estaBloqueado();
-                } catch (Exception e) {
-                    return false;
-                }
+                return ficha != null &&
+                        tateti.getTablero().contiene(ficha) &&
+                        !ficha.estaBloqueado();
             }
         );
+        Lista<Casillero<Ficha>> casillerosFichas = tateti.getTablero().getCasilleros(fichas);
         try {
-            casilleroFichaABloquear = tateti.obtenerCasilleroDeFichaDelUsuario(fichas,
-                             "Que ficha desea bloquear?");
+            casilleroFichaABloquear = Consola.consultarOpcionAlUsuario(casillerosFichas,
+                             "Que ficha desea bloquear?", true);
             
-        } catch (Exception e) {
-            Consola.imprimirMensaje("Todas las fichas del jugador " + jugadorAAfectar.getNombre() + " estan bloqueadas!");
+        } catch (IllegalArgumentException e) {
+            Consola.imprimirMensaje("Todas las fichas del jugador " + jugadorAAfectar.getNombre() +
+                                     " estan bloqueadas!");
             casilleroFichaABloquear = null;
         }
     } while(casilleroFichaABloquear == null);
 
 
     // aumenta la cantidad de bloquoes de esa ficha segun la cantidad de participantes 
-    casilleroFichaABloquear.getDato().incrementarBloqueosRestantes(tateti.getJugadores().getLongitud() + 1);
+    casilleroFichaABloquear.getDato().incrementarBloqueosRestantes(tateti.getJugadores().getLongitud()
+                                                                                                 + 1);
     getCasillerosAfectados().agregar(casilleroFichaABloquear);
     Consola.imprimirMensaje("Se bloqueo correctamente la ficha ubicada en " +
                              casilleroFichaABloquear.toString() + "!");
@@ -89,11 +95,11 @@ public boolean jugar(Tateti tateti, Turno turnoActual) throws Exception {
 
 /**
  * pre: reciebe el estado del tablero
- * pos: se recorre la lista de casillero afecatados en busca del casillero que contiene a la ficha bloqueda, en caso de que se encuentra se le reduce el contador
- *      de bloqueos
+ * pos: se libera a la ficha bloqueada de su estado bloqueado
  */
 @Override
-public void deshacer(Tateti tateti) throws Exception {
+public void deshacer(Tateti tateti) throws NullPointerException {
+    ValidacionesUtiles.validarNoNull(tateti, "tateti");
     getCasillerosAfectados().iniciarCursor();
     while(getCasillerosAfectados().avanzarCursor())
     {
@@ -102,8 +108,8 @@ public void deshacer(Tateti tateti) throws Exception {
         Ficha ficha = casilleroAfectado.getDato();
         if(ficha.estaBloqueado())
         {
-            ficha.reducirBloqueosRestantes(1);
-            Consola.imprimirMensaje("Se quito 1 bloqueo correctamente a la ficha ubicada en " +
+            ficha.reducirBloqueosRestantes(ficha.getBloqueosRestantes());
+            Consola.imprimirMensaje("Se libero correctamente a la ficha ubicada en " +
                                     casilleroAfectado.toString() + "!");
         }
     }

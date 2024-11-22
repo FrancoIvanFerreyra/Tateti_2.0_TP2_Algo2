@@ -4,6 +4,7 @@ import cartas.Carta;
 import interfaz.Consola;
 import tateti.Tateti;
 import tateti.Turno;
+import utiles.ValidacionesUtiles;
 
 /*
  * El jugador retrocede una jugada 
@@ -23,15 +24,18 @@ public class JugadaRetrocederUnaJugada extends Jugada{
      *      por retroceder retonrnamos false y mostramos un mensaje de error, en caso contrario retornamos true y un mensaje
      */
     @Override
-    public boolean jugar(Tateti tateti, Turno turnoActual) throws Exception {
+    public boolean jugar(Tateti tateti, Turno turnoActual) throws NullPointerException {
+        ValidacionesUtiles.validarNoNull(tateti, "tateti");
+        ValidacionesUtiles.validarNoNull(turnoActual, "turnoActual");
+
         try
         {
             tateti.retrocederTurnos(1);
             Consola.imprimirMensaje("Se retrocedio correctamente una jugada!");
         }
-        catch(Exception e)
+        catch(IllegalArgumentException e)
         {
-            Consola.imprimirMensaje("No hay jugadas que retroceder");
+            Consola.imprimirMensaje("No hay jugadas que retroceder" + e.getMessage());
             return false;
         }
         return true;
@@ -43,7 +47,8 @@ public class JugadaRetrocederUnaJugada extends Jugada{
      *      un mensaje que informa al usuario de la situación
      */
     @Override
-    public void deshacer(Tateti tateti) throws Exception {
+    public void deshacer(Tateti tateti) throws NullPointerException {
+        ValidacionesUtiles.validarNoNull(tateti, "tateti");
         //No se puede deshacer
         Consola.imprimirMensaje("No se puede deshacer el retroceso de jugadas");
     }
