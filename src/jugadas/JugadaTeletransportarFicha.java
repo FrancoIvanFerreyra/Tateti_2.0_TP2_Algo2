@@ -9,12 +9,23 @@ import tateti.Jugador;
 import tateti.Tateti;
 import tateti.Turno;
 
-
+/**
+ * El jugador decide que ficha del tablero quiere mover a un casillero en especifico 
+ */
 public class JugadaTeletransportarFicha extends Jugada{
 
+    /**
+     * pre: recibe la carta que se quiere utilizar como base para almancenar la jugada 
+     * pos: se incializa una carta con la jugada que teletransporta una ficha
+     */
     public JugadaTeletransportarFicha(Carta carta){
         super(carta);
     }
+    /*
+     * pre: recibe el estado del tateti y el turno acutual del jugador 
+     * pos: mueve una ficha desde un casillero a otro, se valida que la ficha a mover exista y el casillero destino sea vallido
+     *       en caso de que se produzca el cambio se retorna true, caso contrario false.
+     */
     @Override
     public boolean jugar(Tateti tateti, Turno turnoActual) throws Exception{
         Jugador jugadorActual =null;
@@ -62,7 +73,10 @@ public class JugadaTeletransportarFicha extends Jugada{
         return true;
 
     }
-    
+    /**
+     * pre: recieb el estado del tateti 
+     * pos: la ficha transportada vuelve a su casillero de origen y vacia el casillero donde se encotraba, se valida que el casillero de origen siga disponible
+     */
     @Override
     public void deshacer(Tateti tateti) throws Exception {
         if(this.getJugador() == null || getCasillerosAfectados().getTamanio() < 2)

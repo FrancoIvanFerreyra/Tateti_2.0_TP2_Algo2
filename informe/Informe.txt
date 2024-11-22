@@ -1,0 +1,53 @@
+Informe
+
+Jugadas, en este repositorio se guardan todas las jugadas que puede realizar un jugador
+
+Clase Jugada 
+Es una clase abstracta diseñada para representar una acción genérica que un jugador puede realizar. Define la estructura base de las jugadas, lo que facilita la creación de nuevas acciones al reutilizar y extender su funcionalidad.
+Para poder desarrollar esta clase se necesitan los siguientes atributos:
+	- Carta, representa la relación entre la carta y la jugada.
+	- Jugador, almacena al jugador que realiza la jugada.
+	- Jugadores afectados, es una lista de jugadores que son afectados por la jugada.
+	- Casilleros afectados, lista de los casilleros que fueron afectados por la jugada
+Para poder construir una jugada es necesario la carta asociada, la lista de jugadores y casilleros afectados como listas simplemente enlazadas vacías.
+Los métodos de la clase,
+	- Métodos Abstractos, son aquellos que tienen que estar presentes para cada tipo de jugada:
+			- Jugar, es la encargada de realizar la acción de la jugada
+			- deshacer, revierte los efectos de la jugada
+	- Métodos generales, son aquellos que facilitan la información de jugada sin exponer directamente a los atributos.
+
+Clase JugadaAnularCasillero
+Permite al jugador anular un casillero en el tablero para que no se pueda utilizar temporalmente
+Métodos:
+	- Jugar: se solicita al usuario las coordenadas del casillero a anular. Valida que el casillero exista, no este ocupado ni bloqueado, y luego se incrementa su contador de bloqueos. Retorna true si la acción es exitosa o muestra un error y retorna false en caso contrario.
+	- Deshacer: recorre la lista de casilleros afectados, hasta encontrar el correspondiente, se disminuye el contador de bloqueos y se libera el contador de bloqueos al llegar a 0.
+
+Clase JugadaRetrocederUnaJugada
+Permite retroceder una jugada previamente realizada, utilizando un TDA que registra las ultimas modificaciones del juego.
+Métodos:
+	- Jugar: Se realiza el llamado al método "retrocederTurno" de la clase Tatetí, Se trata de una pila que almacena las ultimas jugadas realizadas y las reestablece. En caso de que ocurran complicaciones en el proceso retorna false, en caso contrario, retorna true.
+	- Deshacer:  Se verifica si existe una version previa del juego almacenada. Si se encuentra, se reestablece los atributos del juego correspondiente (turnos, movimientos, estado del tablero). En caso de que ocurra o se produzca algún error se lanza un mensaje.
+
+Clase JugadaBloquarFicha
+Permite bloquear una ficha de otro jugador, impidiendo que sea utilizada.
+Métodos:
+	- Jugar: Se solicita al usuario seleccionar un jugador y la ficha para bloquear. Si la selección se cumple se incrementa el contador de bloqueos de la ficha y se agrega a la lista de casilleros afectas la ubicación de dicha ficha.
+	- Deshacer: Recorre la lista de casilleros afectados, identifica cual de ellos posee la ficha bloqueada y le disminuye su contador de bloqueos.
+
+Clase JugadaCambiarColorFicha
+
+Métodos:
+	- Jugar: Se solicita al usuario seleccionar un oponente y la ficha que se desea afectar. Cambia el color de la ficha seleccionada y realiza el intercambio de fichas entre jugadores. Al jugador que realiza jugada se le quita un ficha mientras que a su oponente se le agrega una ficha a posicionar. SI se realiza exitosamente se retorna true, en caso contrario false.
+	- Deshacer: Se realiza el proceso anterior a la inversa, devolviendo el color antiguo a la ficha y a su dueño original. En caso de que se produzca algún error se lanza un mensaje.
+
+Clase JugadaPierdeTurno
+Hace que un jugador pierda su proximo turno.
+Métodos:
+	-Jugar; Se solicita al usuario seleccionar un jugador, le incrementa el contador de bloqueos y lo agrega a la lista de jugadores afectados. En caso de que el proceso se realice con éxito se retorna true, en caso contrario false.
+		-Deshacer, Se identifica al usuario bloqueado en la lista de jugadores afectas, para reducirle su contador de bloqueos y de esta manera estar libre.
+
+Clase JugadaTeletransportarFicha
+Permite al jugador mover una ficha del tablero a cualquier casillero valido.
+Métodos:	
+	-Jugar: Se solicita al usuario selecciona cual de sus fichas es la candidata y el casillero de destino. En caso de que el casillero se encuentre disponible (exista, no este bloqueado ni ocupado) se realiza el movimiento. Si el proceso se realiza con existo retorna true, en caso contrario se retorna false.
+	-Deshacer: Se recorre la lista de casilleros afectados, se obtiene la ficha que fue transportada y se la devuelve a su casillero original, liberando el casillero de destino. En caso de que no se pueda realizar este proceso se muestra un mensaje de error.

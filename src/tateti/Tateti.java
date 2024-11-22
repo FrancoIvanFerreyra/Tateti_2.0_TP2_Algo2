@@ -3,11 +3,11 @@ package tateti;
 import cartas.Carta;
 import estructuras.Cola;
 import estructuras.Lista;
-import estructuras.ListaSimplementeEnlazada;
 import estructuras.Vector;
 import estructuras.Pila;
 import exportadores.ExportadorDeDatosAImagen;
 import jugadas.Jugada;
+
 import utiles.Utiles;
 
 import interfaz.Consola;
@@ -355,6 +355,7 @@ public class Tateti {
 				Consola.imprimirMensaje("Finalizo tu turno!");
 				Utiles.pausarEjecucion(2000);
 				turnoActual.terminarTurno();
+				reducirBloqueos();
 				historialTurnos.apilar(turnoActual);
 				existeGanador = existeGanador(casilleroDestino);
 			}
@@ -365,7 +366,9 @@ public class Tateti {
 				Consola.imprimirMensaje("Finalizo tu turno!");
 				Utiles.pausarEjecucion(2000);
 				turnoActual.terminarTurno();
+				reducirBloqueos();
 			}
+			
 			filaDeTurnos.acolar(turnoActual);
 			exportarEstadoDelTablero(tablero, "./src/estadosTablero/", numeroDeTurno);
 			numeroDeTurno++;
@@ -611,6 +614,50 @@ public class Tateti {
 		} while (casillero == null || casillero.estaOcupado() || casillero.estaBloqueado());
 		return casillero;
 	}
+	/**
+	 * 
+	 */
+	public void reducirBloqueos() {
+		Lista<Casillero<Ficha>> casillerosBloqueados = this.tablero.getCasillerosBloqueados();
+		
+		// Verificar si no hay casilleros bloqueados
+		if (casillerosBloqueados.getTamanio() == 0) {
+			Consola.imprimirMensaje("No hay casilleros para desbloquear.");
+			return;  // Salir del método si no hay casilleros bloqueados
+		}
+	
+		try {
+			// Iniciar el cursor para recorrer los casilleros bloqueados
+			casillerosBloqueados.iniciarCursor();
+			
+			boolean bloqueoReducido = false;  // Para verificar si se redujeron bloqueos
+			
+			// Recorrer todos los casilleros bloqueados
+			while (casillerosBloqueados.avanzarCursor()) {
+				Casillero<Ficha> casilleroBloqueado = casillerosBloqueados.obtenerCursor();
+	
+				// Verificar si la ficha está bloqueada antes de reducir los bloqueos
+				if (casilleroBloqueado.estaBloqueado()) {
+					casilleroBloqueado.reducirBloqueosRestantes(1);
+					bloqueoReducido = true;
+					Consola.imprimirMensaje("Se redujo un bloqueo en la ficha ubicada en " +
+							casilleroBloqueado.toString());
+				}
+			}
+	
+			// Mensaje de éxito si se redujeron bloqueos
+			if (bloqueoReducido) {
+				Consola.imprimirMensaje("Los bloqueos se redujeron exitosamente.");
+			} else {
+				Consola.imprimirMensaje("No se encontraron fichas bloqueadas para reducir.");
+			}
+	
+		} catch (Exception e) {
+			// Capturar y manejar excepciones específicas si es necesario
+			Consola.imprimirMensaje("No se pudo reducir los bloqueos. Error: " + e.getMessage());
+		}
+	}
+
 	
 	//GETTERS SIMPLES -----------------------------------------------------------------------------------------
 	

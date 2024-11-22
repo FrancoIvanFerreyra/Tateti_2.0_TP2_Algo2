@@ -9,12 +9,22 @@ import tateti.Jugador;
 import tateti.Tateti;
 import tateti.Turno;
 
+/**
+ *  El jugador decide que ficha de otro jugador cambiarle el color y apropiarsela
+ */
 public class JugadaCambiarColorFicha extends Jugada {
-
+    /**
+     * pre: recibe la carta que se quiere utilizar como base para almancenar la jugada 
+     * pos: se incializa una carta con la jugada que cambia el color de una ficha
+     */
     public JugadaCambiarColorFicha(Carta carta) {
         super(carta);
     }
-
+    /*
+     * pre: recibe el estado del tateti y el turno acutual del jugador
+     * pos: se cambia el color de la ficha de un oponente, seleccionado previamente, y de esta manera se realiza un intercambio de fichas, en caso de que no se 
+     *      pueda realizar el intercambio se lanza un mensaje de error y retorna false, en caso de que el intercambio se cumpla retorna true  
+     */
     @Override
     public boolean jugar(Tateti tateti, Turno turnoActual){
         Jugador jugadorBeneficiado;
@@ -93,6 +103,11 @@ public class JugadaCambiarColorFicha extends Jugada {
         }
     }
 
+    /*
+     * pre: se recibe el estaedo del tablero
+     * pos: se busca en la lista de casilleros y jugadores afectados los atributos que intervinieron en esta jugada,se regresa su color y casillero original, 
+     *      vaciando el nuevo casillero. En caso de que no esten en el listado ambos atributos o se produzca algun error se lanza un mensaje de error
+     */
     @Override
     public void deshacer(Tateti tateti) {
         try {

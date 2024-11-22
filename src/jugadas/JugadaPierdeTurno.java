@@ -14,7 +14,10 @@ public class JugadaPierdeTurno extends Jugada {
 //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
 //ATRIBUTOS -----------------------------------------------------------------------------------------------
 //CONSTRUCTORES -------------------------------------------------------------------------------------------
-	
+	/**
+	 * pre: recibe la carta que se quiere utilizar como base para almancenar la jugada 
+	 * pos: se incializa una carta con la jugada que hace perder un turno a otro jugador
+	 */
 	public JugadaPierdeTurno(Carta carta) {
 		super(carta);
 	}
@@ -22,7 +25,11 @@ public class JugadaPierdeTurno extends Jugada {
 //METODOS DE CLASE ----------------------------------------------------------------------------------------
 //METODOS GENERALES ---------------------------------------------------------------------------------------
 //METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
-	
+	/**
+	 * pre: recibe el estado del tateti y el turno acutual del jugador 
+	 * pos: se realiza la seleccion de un jugador, en caso de ser nulo retornamos false, en caso contrario se incrementa el contador de bloqueos al proximo turno,
+	 * 		si todo el proceso se realiza con exito se retorna true
+	 */
 	@Override
 	public boolean jugar(Tateti tateti, 
 						Turno turnoActual) throws Exception {
@@ -44,7 +51,10 @@ public class JugadaPierdeTurno extends Jugada {
 		Consola.imprimirMensaje("Se bloqueo correctamente 1 turno a " + jugadorABloquear.toString() + "!");
 		return true;
 	}
-
+	/* 
+	 * pre: recibe el estado del tateti 
+	 * pos: se busca al jugador perjudicado en la lista de jugadores afectados, si se lo encuentra se reduce su contador de bloques y mostramos un mensaje
+	 */
 	@Override
 	public void deshacer(Tateti tateti) throws Exception {
 		getJugadoresAfectados().iniciarCursor();

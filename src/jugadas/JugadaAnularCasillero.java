@@ -6,12 +6,18 @@ import tateti.Casillero;
 import tateti.Ficha;
 import tateti.Tateti;
 import tateti.Turno;
-
+/**
+ * El jugador decice que casillero del tablero quiere bloquear
+ */
 public class JugadaAnularCasillero extends Jugada{
 //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
 //ATRIBUTOS -----------------------------------------------------------------------------------------------
 //CONSTRUCTORES -------------------------------------------------------------------------------------------
-	
+/**
+    /**
+     * pre: recibe la carta que se quiere utilizar como base para almancenar la jugada 
+     * pos: se incializa una carta con la jugada que bloquea un casillero
+     */
 public JugadaAnularCasillero(Carta carta) {
     super(carta);
 }
@@ -20,6 +26,11 @@ public JugadaAnularCasillero(Carta carta) {
 //METODOS GENERALES ---------------------------------------------------------------------------------------
 //METODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
 
+/*
+ * pre: recibe el estado del tateti y el turno acutual del jugador
+ * pos: se bloquea el casillero seleccionado mediante el ingreso de coordenas, el bloqueo se realiza mediante el incremento del contado de bloqueos del mismo, en 
+ *      caso de que se cumpla se agrega al listado de casillero afectados y retorna true, caso contrario retorna false
+ */
 @Override
 public boolean jugar(Tateti tateti, Turno turnoActual) throws Exception {
     Casillero<Ficha> casilleroAAnular;
@@ -28,7 +39,7 @@ public boolean jugar(Tateti tateti, Turno turnoActual) throws Exception {
     {
         return false;
     }
-    casilleroAAnular.incrementarBloqueosRestantes(1);
+    casilleroAAnular.incrementarBloqueosRestantes(tateti.getJugadores().getLongitud() + 1);
     tateti.getTablero().getCasillerosBloqueados().agregar(casilleroAAnular);
     getCasillerosAfectados().agregar(casilleroAAnular);
     Consola.imprimirMensaje("Se anulo correctamente el " + casilleroAAnular.toString() + "!");
@@ -37,6 +48,10 @@ public boolean jugar(Tateti tateti, Turno turnoActual) throws Exception {
 
 }
 
+/**
+ * pre: recibe el estado del tateti
+ * pos: se disminuye el contador de bloques del casillero que fue afectado, se lo obtiene del listado de casillero afectados
+ */
 @Override
 public void deshacer(Tateti tateti) throws Exception {
     getCasillerosAfectados().iniciarCursor();
