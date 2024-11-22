@@ -20,126 +20,225 @@ import utiles.ValidacionesUtiles;
 
 public class ExportadorDeDatosAImagen<T> {
 
+    /**
+     * 
+     * @param <T>
+     * @param tablero no puede ser null
+     * @param basePath no puede ser null
+     * @throws Exception
+     */
+    public static <T> void exportarTableroPorCapas(Tablero<T> tablero, String basePath) throws Exception {
+    
+        int grosorDeLinea = 10;
+        int ancho = 1024;
+        int alto = 1024;
+        
+        // Calcular el desplazamiento necesario para centrar el tablero
+        int xOffset = 0;
+        int yOffset = 0;
+
+
+        ListaOrdenableSimplementeEnlazada<Integer> indicesDeFilasADibujar = new ListaOrdenableSimplementeEnlazada<Integer>();
+        ListaOrdenableSimplementeEnlazada<Integer> indicesDeColumnasADibujar = new ListaOrdenableSimplementeEnlazada<Integer>();
+        ListaOrdenableSimplementeEnlazada<Integer> indicesDeCapasADibujar = new ListaOrdenableSimplementeEnlazada<Integer>();
+
+        Lista<Lista<Integer>> indicesTablero = new ListaSimplementeEnlazada<>();
+        indicesTablero.agregar(indicesDeFilasADibujar);
+        indicesTablero.agregar(indicesDeColumnasADibujar);
+        indicesTablero.agregar(indicesDeCapasADibujar);
+
+
+        Utiles.agregarOrdenadoSinRepetir(1, indicesDeFilasADibujar);
+        Utiles.agregarOrdenadoSinRepetir(tablero.getAlto(), indicesDeFilasADibujar);
+        
+        Utiles.agregarOrdenadoSinRepetir(1, indicesDeColumnasADibujar);
+        Utiles.agregarOrdenadoSinRepetir(tablero.getAncho(), indicesDeColumnasADibujar);
+        
+        Utiles.agregarOrdenadoSinRepetir(1, indicesDeCapasADibujar);
+        Utiles.agregarOrdenadoSinRepetir(tablero.getProfundidad(), indicesDeCapasADibujar);
 
         
-    
-        public static <T> void exportarTableroPorCapas(Tablero<T> tablero, String basePath) throws Exception {
-            ValidacionesUtiles.validarNoNulo(tablero, "El tablero no puede ser null");
-            ValidacionesUtiles.validarNoNulo(basePath, "La ruta base no puede ser null");
 
-            // Constantes
-            final int ANCHO_IMAGEN = 1024;
-            final int ALTO_IMAGEN = 1024;
-            final int GROSOR_LINEA = 10;
-            final Color COLOR_FONDO = Color.darkGray;
-            final Color COLOR_TABLERO = Color.gray;
-            final Color COLOR_TEXTO = Color.white;
-            final Color COLOR_CASILLERO_BLOQUEADO = Color.red;
+        tablero.getPosicionDeLosDatos().iniciarCursor();
+        while(tablero.getPosicionDeLosDatos().avanzarCursor())
+        {
+            Casillero<T> casillero = tablero.getPosicionDeLosDatos().obtenerCursor().getCasillero();            
+            Utiles.agregarOrdenadoSinRepetir(casillero.getX(), indicesDeColumnasADibujar);           
+            Utiles.agregarOrdenadoSinRepetir(casillero.getY(), indicesDeFilasADibujar);
+            Utiles.agregarOrdenadoSinRepetir(casillero.getZ(), indicesDeCapasADibujar);
+        }
 
-    
-            // Preparar listas para filas, columnas y capas a dibujar
-            ListaOrdenableSimplementeEnlazada<Integer> filas = new ListaOrdenableSimplementeEnlazada<>();
-            ListaOrdenableSimplementeEnlazada<Integer> columnas = new ListaOrdenableSimplementeEnlazada<>();
-            ListaOrdenableSimplementeEnlazada<Integer> capas = new ListaOrdenableSimplementeEnlazada<>();
-    
-            inicializarCoordenadas(tablero, filas, columnas, capas);
-    
-            // Rellenar intervalos vacíos
-            rellenarIntervalos(filas);
-            rellenarIntervalos(columnas);
-            rellenarIntervalos(capas);
-    
-            // Dibujar imágenes por capa
-            capas.iniciarCursor();
-            int numeroCapa = 1;
-    
-            while (capas.avanzarCursor()) {
-                Integer capaActual = capas.obtenerCursor();
-                String rangoIntervalo = obtenerRangoIntervalo(capaActual, capas, numeroCapa);
-    
-                BufferedImage imagen = crearImagenBase();
-                Graphics2D g = imagen.createGraphics();
-                dibujarTablero(g, filas, columnas, capaActual, tablero, rangoIntervalo);
-    
-                // Guardar la imagen
-                String nombreArchivo = (rangoIntervalo != null) 
-                    ? "capa_" + rangoIntervalo + ".bmp" 
-                    : "capa_" + capaActual + ".bmp";
-                ImageIO.write(imagen, "bmp", new File(basePath, nombreArchivo));
-    
-                numeroCapa++;
+        tablero.getCasillerosBloqueados().iniciarCursor();
+        while(tablero.getCasillerosBloqueados().avanzarCursor())
+        {
+            Casillero<T> casillero = tablero.getCasillerosBloqueados().obtenerCursor();            
+            Utiles.agregarOrdenadoSinRepetir(casillero.getX(), indicesDeColumnasADibujar);           
+            Utiles.agregarOrdenadoSinRepetir(casillero.getY(), indicesDeFilasADibujar);
+            Utiles.agregarOrdenadoSinRepetir(casillero.getZ(), indicesDeCapasADibujar);
+        }
+
+
+        indicesTablero.iniciarCursor();
+        while(indicesTablero.avanzarCursor())
+        {
+            Lista<Integer> lista = indicesTablero.obtenerCursor();
+            if(lista.getTamanio() >= 2)
+            {
+                Utiles.rellenarExacto(lista, 1);
+                agregarIntervalosVacios(lista);
             }
         }
-    
-        private static <T> void inicializarCoordenadas(Tablero<T> tablero,
-                                                       Lista<Integer> filas,
-                                                       Lista<Integer> columnas,
-                                                       Lista<Integer> capas) {
-            // Agregar bordes iniciales
-            Utiles.agregarOrdenadoSinRepetir(1, filas);
-            Utiles.agregarOrdenadoSinRepetir(tablero.getAlto(), filas);
-            Utiles.agregarOrdenadoSinRepetir(1, columnas);
-            Utiles.agregarOrdenadoSinRepetir(tablero.getAncho(), columnas);
-            Utiles.agregarOrdenadoSinRepetir(1, capas);
-            Utiles.agregarOrdenadoSinRepetir(tablero.getProfundidad(), capas);
-    
-            // Agregar coordenadas de datos y casilleros bloqueados
-            agregarCoordenadasDesdeCasilleros(tablero.getPosicionDeLosDatos(), filas, columnas, capas);
-            agregarCoordenadasDesdeCasilleros(tablero.getCasillerosBloqueados(), filas, columnas, capas);
-        }
-    
-        private static <T> void agregarCoordenadasDesdeCasilleros(Lista<Casillero<T>> casilleros,
-                                                                  Lista<Integer> filas,
-                                                                  Lista<Integer> columnas,
-                                                                  Lista<Integer> capas) {
-            casilleros.iniciarCursor();
-            while (casilleros.avanzarCursor()) {
-                Casillero<T> casillero = casilleros.obtenerCursor();
-                Utiles.agregarOrdenadoSinRepetir(casillero.getX(), columnas);
-                Utiles.agregarOrdenadoSinRepetir(casillero.getY(), filas);
-                Utiles.agregarOrdenadoSinRepetir(casillero.getZ(), capas);
-            }
-        }
-    
-        private static void rellenarIntervalos(Lista<Integer> coordenadas) {
-            int i = 1;
-            while (i < coordenadas.getTamanio()) {
-                if (coordenadas.obtener(i + 1) - coordenadas.obtener(i) > 1) {
-                    coordenadas.agregar(null, i + 1);
-                    i++;
-                }
-                i++;
-            }
-        }
-    
-        private static String obtenerRangoIntervalo(Integer capaActual, 
-                                                    Lista<Integer> capas, 
-                                                    int indice) {
-            if (capaActual == null && ValidacionesUtiles.estaEstrictamenteEntre(indice, 1, capas.getTamanio())) {
-                return (capas.obtener(indice - 1) + 1) + "_a_" + (capas.obtener(indice + 1) - 1);
-            }
-            return null;
-        }
-    
-        private static BufferedImage crearImagenBase() {
-            BufferedImage imagen = new BufferedImage(ANCHO_IMAGEN, ALTO_IMAGEN, BufferedImage.TYPE_INT_RGB);
+
+        int casilleroSizeX = 3 * ancho / (indicesDeFilasADibujar.getTamanio() + indicesDeColumnasADibujar.getTamanio() + 1) / 2;
+        int casilleroSizeY = 3 * alto / (indicesDeColumnasADibujar.getTamanio() + indicesDeFilasADibujar.getTamanio() +  1) / 2;
+        yOffset = (alto / 2);
+
+
+        int TAMANIO_TEXTO_EJES = casilleroSizeX / 3;
+        int TAMANIO_CRUZ_FICHAS = casilleroSizeX / 5;
+        int TAMANIO_FIJO_ICONOS_X = 3 * ancho / 14;
+        int TAMANIO_FIJO_ICONOS_Y = 3 * alto / 14;
+        int TAMANIO_FIJO_DESCRIPCION = ancho / 28;
+
+
+
+        Color COLOR_DE_FONDO = Color.darkGray,
+                COLOR_DEL_TABLERO = Color.gray,
+                COLOR_TEXTO_EJES = Color.white,
+                COLOR_TEXTO_FILAS = Color.white,
+                COLOR_TEXTO_COLUMNAS = Color.white;
+
+        indicesDeCapasADibujar.iniciarCursor();
+        
+        int numeroCapa = 1;
+        while(indicesDeCapasADibujar.avanzarCursor())
+        {
+            BufferedImage imagen = new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_RGB);
             Graphics2D g = imagen.createGraphics();
-            g.setColor(COLOR_FONDO);
-            g.fillRect(0, 0, ANCHO_IMAGEN, ALTO_IMAGEN);
-            return imagen;
+        
+            // Rellenar el fondo de la imagen
+            g.setColor(COLOR_DE_FONDO);
+            g.fillRect(0, 0, ancho, alto);
+
+            indicesDeFilasADibujar.iniciarCursor();
+            int y = 1;
+            Integer indiceCapa = indicesDeCapasADibujar.obtenerCursor();
+
+            String rangoCapasIntervaloVacio = "";
+            if(estaEnIntervaloVacio(indiceCapa) && ValidacionesUtiles.estaEstrictamenteEntre(numeroCapa, 1, indicesDeCapasADibujar.getTamanio()))
+            {
+                rangoCapasIntervaloVacio = (indicesDeCapasADibujar.obtener(numeroCapa - 1) + 1) + "_a_" + (indicesDeCapasADibujar.obtener(numeroCapa + 1) - 1);
+            }
+
+            dibujarString("X", COLOR_TEXTO_EJES, TAMANIO_TEXTO_EJES, grosorDeLinea, g,
+                         obtenerCoordenadaIsometricaX(2, -1, xOffset, casilleroSizeX),
+                         obtenerCoordenadaIsometricaY(2, -1, yOffset, casilleroSizeY));
+            
+            dibujarString("Y", COLOR_TEXTO_EJES, TAMANIO_TEXTO_EJES, grosorDeLinea, g,
+                         obtenerCoordenadaIsometricaX(-1, 2, xOffset, casilleroSizeX),
+                         obtenerCoordenadaIsometricaY(-1, 2, yOffset, casilleroSizeY));   
+            
+            dibujarString("Z = " + 
+                    ((estaEnIntervaloVacio(indiceCapa)) ? rangoCapasIntervaloVacio : indiceCapa), 
+                    COLOR_TEXTO_EJES, TAMANIO_TEXTO_EJES,
+                    grosorDeLinea, g,
+                    obtenerCoordenadaIsometricaX(indicesDeColumnasADibujar.getTamanio() - 1,
+                                                 indicesDeFilasADibujar.getTamanio() + 1,
+                                                 xOffset, casilleroSizeX),
+                    obtenerCoordenadaIsometricaY(indicesDeColumnasADibujar.getTamanio() - 1,
+                                                 indicesDeFilasADibujar.getTamanio() + 1,
+                                                 yOffset, casilleroSizeY));    
+
+            while(indicesDeFilasADibujar.avanzarCursor())
+            {
+                indicesDeColumnasADibujar.iniciarCursor();
+                int x = 1;
+                Integer indiceFila = indicesDeFilasADibujar.obtenerCursor();
+                dibujarString((estaEnIntervaloVacio(indiceFila)) ? "..." : Integer.toString(indiceFila),
+                                COLOR_TEXTO_FILAS, TAMANIO_TEXTO_EJES,
+                                grosorDeLinea, g,
+                                obtenerCoordenadaIsometricaX(x - 1, y, xOffset, casilleroSizeX),
+                                obtenerCoordenadaIsometricaY(x - 1, y, yOffset, casilleroSizeY));
+
+                while(indicesDeColumnasADibujar.avanzarCursor())
+                {
+                    int posicionIsometricaX = obtenerCoordenadaIsometricaX(x, y, xOffset, casilleroSizeX);
+                    int posicionIsometricaY = obtenerCoordenadaIsometricaY(x, y, yOffset, casilleroSizeY);
+
+                    dibujarRombo(grosorDeLinea, COLOR_DEL_TABLERO, g,
+                                 posicionIsometricaX, posicionIsometricaY,
+                                 casilleroSizeX, casilleroSizeY);
+                    
+                    Integer indiceColumna = indicesDeColumnasADibujar.obtenerCursor();
+                    dibujarString((estaEnIntervaloVacio(indiceColumna)) ? "..." : Integer.toString(indiceColumna),
+                                    COLOR_TEXTO_COLUMNAS, TAMANIO_TEXTO_EJES,
+                                    grosorDeLinea, g,
+                                    obtenerCoordenadaIsometricaX(x, 0, xOffset, casilleroSizeX),
+                                    obtenerCoordenadaIsometricaY(x, 0, yOffset, casilleroSizeY));
+                    
+                    
+                    if(!estaEnIntervaloVacio(indiceFila) &&
+                    !estaEnIntervaloVacio(indiceColumna) &&
+                    !estaEnIntervaloVacio(indiceCapa))
+                    {
+                        Casillero<T> casillero = tablero.getCasillero(indiceColumna,indiceFila, indiceCapa);
+                        if (casillero.estaOcupado()) {
+                            Color colorCirculo = tablero.getColorDato(casillero.getDato());
+                            dibujarCirculo(grosorDeLinea, g,
+                                           posicionIsometricaX, posicionIsometricaY,
+                                           casilleroSizeX, casilleroSizeY,
+                                           colorCirculo);
+     
+                            if(((Ficha)casillero.getDato()).estaBloqueado())
+                            {
+                                Color colorCruz = (Utiles.esColorOscuro(
+                                                    tablero.getColorDato(casillero.getDato())))
+                                                    ? Color.white : Color.black;
+                                dibujarCirculoConString(colorCirculo, "B", colorCruz,
+                                                        TAMANIO_CRUZ_FICHAS, grosorDeLinea, g,
+                                                        posicionIsometricaX, posicionIsometricaY,
+                                                        casilleroSizeX, casilleroSizeY);
+                            }
+                        }
+                        if(casillero.estaBloqueado())
+                        {
+                            dibujarRomboConRelleno(grosorDeLinea, Color.gray, Color.red , g,
+                                                   posicionIsometricaX, posicionIsometricaY,
+                                                   casilleroSizeX, casilleroSizeY);
+                        }
+                    }
+                    
+                    x++;
+                }
+                
+                y++;
+            }
+            dibujarRomboConRelleno(grosorDeLinea, COLOR_DEL_TABLERO,
+                                   Color.red , g,
+                                   (1 * ancho / 10), 8 * alto / 10,
+                                   TAMANIO_FIJO_ICONOS_X / 2, TAMANIO_FIJO_ICONOS_Y / 2);
+            dibujarString("Casillero bloqueado", COLOR_TEXTO_EJES,
+                                 TAMANIO_FIJO_DESCRIPCION, grosorDeLinea, g,
+                                (2 * ancho / 10), 8 * alto / 10);
+            dibujarCirculoConString(Color.black, "B", Color.white,
+                                TAMANIO_FIJO_DESCRIPCION, grosorDeLinea, g,
+                                (1 * ancho / 10), 9 * alto / 10,
+                                TAMANIO_FIJO_ICONOS_X, TAMANIO_FIJO_ICONOS_Y);
+            dibujarString("Ficha bloqueada", COLOR_TEXTO_EJES,
+                                TAMANIO_FIJO_DESCRIPCION, grosorDeLinea, g,
+                               (2 * ancho / 10), 9 * alto / 10);
+
+
+
+            g.dispose();
+            ImageIO.write(imagen, "bmp",
+                         new File(basePath, "_capa_" +
+                        ((estaEnIntervaloVacio(indiceCapa)) ? rangoCapasIntervaloVacio : indiceCapa) +
+                         ".bmp"));
+            numeroCapa++;
         }
-    
-        private static <T> void dibujarTablero(Graphics2D g, 
-                                               Lista<Integer> filas, 
-                                               Lista<Integer> columnas, 
-                                               Integer capa, 
-                                               Tablero<T> tablero, 
-                                               String rangoIntervalo) {
-            // Aquí agregarías el resto de la lógica para dibujar el tablero y los casilleros.
-            // Este método centraliza toda la lógica de dibujo.
-        }
-    }
-    
+        
+    } 
     private static <T> void agregarIntervalosVacios(Lista<Integer> elementos) throws Exception
     {
         int i = 1;
