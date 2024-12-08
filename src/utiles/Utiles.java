@@ -257,4 +257,42 @@ public class Utiles {
             System.out.println("Se interrumpió la espera.");
         }
     }
+
+    /**
+     * Imprime en la consola un circulo de color formado por r,g,b.
+     * Solo sera visible si la terminal soporta codigos de escape ANSI
+     * @param r debe estar en el rango [0, 255]
+     * @param g debe estar en el rango [0, 255]
+     * @param b debe estar en el rango [0, 255]
+     * @throws IllegalArgumentException si algun parametro esta fuera de rango
+     */
+    public static void imprimirCirculoConRelleno(int r, int g, int b)
+                                    throws IllegalArgumentException{
+
+        ValidacionesUtiles.validarEnteroEnRango(r, 0, 255, "r");
+        ValidacionesUtiles.validarEnteroEnRango(g, 0, 255, "g");
+        ValidacionesUtiles.validarEnteroEnRango(b, 0, 255, "b");
+
+        // Convierte el color RGB a formato ANSI
+        String codigoDeColor = String.format("\u001B[38;2;%d;%d;%dm", r, g, b);
+
+        // Reset para volver al color original
+        String reset = "\u001B[0m";
+
+        // Imprime el círculo con el color deseado
+        System.out.printf("%s%s%s \n", codigoDeColor, "●", reset);
+        
+    }
+
+    /**
+     * Imprime en la consola un circulo del color recibido
+     * Solo sera visible si la terminal soporta codigos de escape ANSI
+     * @param color no puede ser null
+     * @throws  NullPointerException si ccolor es null
+     */
+    public static void imprimirCirculoConRelleno(Color color) throws NullPointerException
+    {
+        ValidacionesUtiles.validarNoNull(color, "color");
+        imprimirCirculoConRelleno(color.getRed(), color.getGreen(), color.getBlue());
+    }
 }
