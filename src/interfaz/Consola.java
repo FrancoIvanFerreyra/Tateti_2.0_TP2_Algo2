@@ -8,12 +8,21 @@ import utiles.ValidacionesUtiles;
 public class Consola {
 
     /**
+     * Imprime el mensaje en la terminal y luego salta de linea
+     * @param mensaje
+     */
+    public static void imprimirMensajeConSalto(String mensaje)
+    {
+        System.out.println(mensaje);
+    }
+
+        /**
      * Imprime el mensaje en la terminal
      * @param mensaje
      */
     public static void imprimirMensaje(String mensaje)
     {
-        System.out.println(mensaje);
+        System.out.print(mensaje);
     }
 
     /**
@@ -51,9 +60,9 @@ public class Consola {
        }
        if(tieneOpcionParaVolver)
        {
-        resultado += "0- Volver atras\n";
+        resultado += "0- Volver al menu anterior\n";
         }
-       imprimirMensaje(resultado);
+       imprimirMensajeConSalto(resultado);
    }
 
     /**
@@ -144,7 +153,7 @@ public class Consola {
                 numero = Teclado.leerEntero();
                 ingresoNumero = true;
             } catch (InputMismatchException e) {
-                imprimirMensaje("Debe ingresar un numero");
+                imprimirMensajeConSalto("Debe ingresar un numero");
                 Teclado.limpiarEntrada();
             }
         } while (!ingresoNumero);
@@ -217,7 +226,7 @@ public class Consola {
         int numero = obtenerNumeroEnteroDelUsuario(titulo);
         while(!ValidacionesUtiles.estaEntre(numero, minimoValido, maximoValido))
         {
-            imprimirMensaje("Por favor ingrese un numero entre " + minimoValido + " y " + maximoValido + "\t");
+            imprimirMensajeConSalto("Por favor ingrese un numero entre " + minimoValido + " y " + maximoValido + "\t");
             numero = obtenerNumeroEnteroDelUsuario(titulo);
         }
         return numero;
@@ -240,7 +249,7 @@ public class Consola {
             numero = obtenerNumeroEnteroDelUsuario(titulo);
             if(!ValidacionesUtiles.esMayorOIgualQue(numero, minimoValido))
             {
-                imprimirMensaje("Por favor ingrese un numero mayor o igual que " + minimoValido + "\t");
+                imprimirMensajeConSalto("Por favor ingrese un numero mayor o igual que " + minimoValido + "\t");
             }
         } while (!ValidacionesUtiles.esMayorOIgualQue(numero, minimoValido));
         return numero;
@@ -264,7 +273,7 @@ public class Consola {
             numero = obtenerNumeroEnteroDelUsuario(titulo);
             if(!ValidacionesUtiles.esMenorOIgualQue(numero, maximoValido))
             {
-                imprimirMensaje("Por favor ingrese un numero menor o igual que " + maximoValido + "\t");
+                imprimirMensajeConSalto("Por favor ingrese un numero menor o igual que " + maximoValido + "\t");
             }
         } while (!ValidacionesUtiles.esMenorOIgualQue(numero, maximoValido));
         return numero;

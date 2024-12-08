@@ -35,7 +35,7 @@ public class JugadaDuplicarTurno extends Jugada {
         ValidacionesUtiles.validarNoNull(turnoActual, "turnoActual");
 
 		turnoActual.agregarSubturno();
-		Consola.imprimirMensaje("Turno duplicado. Podes jugar nuevamente!");
+		Consola.imprimirMensajeConSalto("Turno duplicado. Podes jugar nuevamente!");
 		return true;
 	}
 	/*
@@ -47,7 +47,7 @@ public class JugadaDuplicarTurno extends Jugada {
 		ValidacionesUtiles.validarNoNull(tateti, "tateti");
 		
 		//No se puede deshacer
-		Consola.imprimirMensaje("No se puede deshacer la duplicacion del turno");
+		Consola.imprimirMensajeConSalto("No se puede deshacer la duplicacion del turno");
 
     }
 	

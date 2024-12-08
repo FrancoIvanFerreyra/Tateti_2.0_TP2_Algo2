@@ -56,7 +56,7 @@ public boolean jugar(Tateti tateti, Turno turnoActual) throws NullPointerExcepti
             jugadorAAfectar = Consola.consultarOpcionAlUsuario(jugadores,
                         "A que jugador desea bloquear una ficha?", true);
         } catch (IllegalArgumentException e) {
-            Consola.imprimirMensaje("No hay fichas de otros jugadores en el tablero");
+            Consola.imprimirMensajeConSalto("No hay fichas de otros jugadores en el tablero");
             return false;
         }
         if(jugadorAAfectar == null)
@@ -76,7 +76,7 @@ public boolean jugar(Tateti tateti, Turno turnoActual) throws NullPointerExcepti
                              "Que ficha desea bloquear?", true);
             
         } catch (IllegalArgumentException e) {
-            Consola.imprimirMensaje("Todas las fichas del jugador " + jugadorAAfectar.getNombre() +
+            Consola.imprimirMensajeConSalto("Todas las fichas del jugador " + jugadorAAfectar.getNombre() +
                                      " estan bloqueadas!");
             casilleroFichaABloquear = null;
         }
@@ -87,7 +87,7 @@ public boolean jugar(Tateti tateti, Turno turnoActual) throws NullPointerExcepti
     casilleroFichaABloquear.getDato().incrementarBloqueosRestantes(tateti.getJugadores().getLongitud()
                                                                                                  + 1);
     getCasillerosAfectados().agregar(casilleroFichaABloquear);
-    Consola.imprimirMensaje("Se bloqueo correctamente la ficha ubicada en " +
+    Consola.imprimirMensajeConSalto("Se bloqueo correctamente la ficha ubicada en " +
                              casilleroFichaABloquear.toString() + "!");
     return true;
 
@@ -109,7 +109,7 @@ public void deshacer(Tateti tateti) throws NullPointerException {
         if(ficha.estaBloqueado())
         {
             ficha.reducirBloqueosRestantes(ficha.getBloqueosRestantes());
-            Consola.imprimirMensaje("Se libero correctamente a la ficha ubicada en " +
+            Consola.imprimirMensajeConSalto("Se libero correctamente a la ficha ubicada en " +
                                     casilleroAfectado.toString() + "!");
         }
     }

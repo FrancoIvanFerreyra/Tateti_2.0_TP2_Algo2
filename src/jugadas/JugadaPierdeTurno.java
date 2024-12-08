@@ -67,7 +67,7 @@ public class JugadaPierdeTurno extends Jugada {
 				Turno turno = tateti.obtenerTurno(jugadorABloquear); //le pregunto al tateti el proximo turno del jugador
 				turno.incrementarBloqueosRestantes(1);
 				getJugadoresAfectados().agregar(jugadorABloquear);
-				Consola.imprimirMensaje("Se bloqueo correctamente 1 turno a " + jugadorABloquear.toString() + "!");
+				Consola.imprimirMensajeConSalto("Se bloqueo correctamente 1 turno a " + jugadorABloquear.toString() + "!");
 				return true;
 			}
 		} while (!usuarioConfirmoSeleccion);
@@ -88,11 +88,11 @@ public class JugadaPierdeTurno extends Jugada {
 			try {
 				turno.reducirBloqueosRestantes(1);
 			} catch (IllegalArgumentException e) {
-				Consola.imprimirMensaje(jugadorAfectado.getNombre() +
+				Consola.imprimirMensajeConSalto(jugadorAfectado.getNombre() +
 										" ya cumplio con su bloqueo, imposible deshacer");
 				return;
 			}
-			Consola.imprimirMensaje("Se quito correctamente 1 bloqueo a " + 
+			Consola.imprimirMensajeConSalto("Se quito correctamente 1 bloqueo a " + 
 									jugadorAfectado.getNombre());		
 		}
 	}

@@ -31,11 +31,11 @@ public class JugadaRetrocederUnaJugada extends Jugada{
         try
         {
             tateti.retrocederTurnos(1);
-            Consola.imprimirMensaje("Se retrocedio correctamente una jugada!");
+            Consola.imprimirMensajeConSalto("Se retrocedio correctamente una jugada!");
         }
         catch(IllegalArgumentException e)
         {
-            Consola.imprimirMensaje("No hay jugadas que retroceder" + e.getMessage());
+            Consola.imprimirMensajeConSalto("No hay jugadas que retroceder");
             return false;
         }
         return true;
@@ -50,7 +50,7 @@ public class JugadaRetrocederUnaJugada extends Jugada{
     public void deshacer(Tateti tateti) throws NullPointerException {
         ValidacionesUtiles.validarNoNull(tateti, "tateti");
         //No se puede deshacer
-        Consola.imprimirMensaje("No se puede deshacer el retroceso de jugadas");
+        Consola.imprimirMensajeConSalto("No se puede deshacer el retroceso de jugadas");
     }
 
 }
