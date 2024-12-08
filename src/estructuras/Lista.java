@@ -105,6 +105,12 @@ public abstract class Lista<T> {
 	}
 
 	/**
+	 * Vacia la lista, dejandola con tamaño 0.
+	 */
+	public abstract void vaciar();
+
+
+	/**
 	 * 
 	 * @param posicion1 debe estar en el rango [1, contarElementos()], distinto a posicion2
 	 * @param posicion2 debe estar en el rango [1, contarElementos()], distinto a posicion1

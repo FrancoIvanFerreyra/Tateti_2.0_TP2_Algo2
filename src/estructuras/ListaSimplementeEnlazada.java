@@ -84,6 +84,19 @@ public class ListaSimplementeEnlazada<T> extends Lista<T> {
 		this.cambiar(this.obtener(posicion2), posicion1);
 		this.cambiar(auxiliar, posicion2);
 	}
+
+	@Override
+	public void vaciar()
+	{
+		if(!this.estaVacia())
+		{
+			this.iniciarCursor();
+			while(this.avanzarCursor())
+			{
+				this.remover(1);
+			}
+		}
+	}
 	
 //GETTERS SIMPLES -----------------------------------------------------------------------------------------
 //SETTERS SIMPLES -----------------------------------------------------------------------------------------	
