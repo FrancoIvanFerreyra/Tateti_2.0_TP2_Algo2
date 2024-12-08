@@ -793,6 +793,7 @@ public class Tateti {
 		// Verificar si no hay casilleros bloqueados
 		if (casillerosBloqueados.estaVacia()) {
 			Consola.imprimirMensajeConSalto("No hay casilleros bloqueados");
+			Utiles.pausarEjecucion(2000);
 			return;  // Salir del método si no hay casilleros bloqueados
 		}
 		// Iniciar el cursor para recorrer los casilleros bloqueados
