@@ -107,7 +107,7 @@ public class ValidacionesUtiles {
     {
         if(!esMayorOIgualQue(entero, minimo))
         {
-            throw new IllegalArgumentException(nombre + "debe ser mayor o igual a " + minimo);
+            throw new IllegalArgumentException(nombre + " debe ser mayor o igual a " + minimo);
         }
     }
 
@@ -126,7 +126,7 @@ public class ValidacionesUtiles {
         validarNoNull(nombre, "nombre");
         if(!esMenorOIgualQue(entero, maximo))
         {
-            throw new IllegalArgumentException(nombre + "debe ser menor o igual a " + maximo);
+            throw new IllegalArgumentException(nombre + " debe ser menor o igual a " + maximo);
         }
     }
 
@@ -196,7 +196,7 @@ public class ValidacionesUtiles {
     * @return devuelve veradero si el objeto puede ejecutar el metodo toString()
     */
    public static <T> boolean tieneMetodoToString(T objeto) {
-    ValidacionesUtiles.validarNoNull(objeto, "objeto");
+    validarNoNull(objeto, "objeto");
        try {
            Method metodo = objeto.getClass().getMethod("toString");
            return metodo != null;

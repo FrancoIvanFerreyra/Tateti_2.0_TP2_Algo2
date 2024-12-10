@@ -272,7 +272,7 @@ public class ExportadorDeDatosAImagen<T> {
                ((estaEnIntervaloVacio(indiceCapa)) ? rangoCapasIntervaloVacio : indiceCapa) +
                 ".bmp"));
             } catch (IOException e) {
-                Consola.imprimirMensaje("Hubo un error al intentar exportar la imagen: " + e.getMessage());
+                Consola.imprimirMensajeConSalto("Hubo un error al intentar exportar la imagen: " + e.getMessage());
             }
             
             //Siguiente capa Z

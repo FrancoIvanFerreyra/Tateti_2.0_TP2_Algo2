@@ -40,7 +40,7 @@ public class JugadaCambiarColorFicha extends Jugada {
         
         if(jugadorBeneficiado.tieneTodasLasFichasEnElTablero(tateti.getTablero()))
         {
-            Consola.imprimirMensaje("No tenes fichas disponibles para intercambiar." +
+            Consola.imprimirMensajeConSalto("No tenes fichas disponibles para intercambiar." +
             " Todas estan en el tablero!");
             return false;
         }
@@ -59,7 +59,7 @@ public class JugadaCambiarColorFicha extends Jugada {
                 "¿A qué jugador desea cambiarle la ficha?", true);
                 
             } catch (IllegalArgumentException e) {
-                Consola.imprimirMensaje("No hay fichas de otros jugadores en el tablero.");
+                Consola.imprimirMensajeConSalto("No hay fichas de otros jugadores en el tablero.");
                 return false;
             }
             
@@ -80,7 +80,7 @@ public class JugadaCambiarColorFicha extends Jugada {
                 "Que ficha desea cambiar de color?",
                 true);
             } catch (IllegalArgumentException e) {
-                Consola.imprimirMensaje("Todas las fichas del jugador " + jugadorAfectado + 
+                Consola.imprimirMensajeConSalto("Todas las fichas del jugador " + jugadorAfectado + 
                 " están bloqueadas!");
                 casilleroFichaACambiarColor = null;
             }
@@ -102,7 +102,7 @@ public class JugadaCambiarColorFicha extends Jugada {
         setJugador(jugadorBeneficiado);
         getJugadoresAfectados().agregar(jugadorAfectado);
         getCasillerosAfectados().agregar(casilleroFichaACambiarColor);
-        Consola.imprimirMensaje("Se cambio correctamente el color de la ficha ubicada en " + 
+        Consola.imprimirMensajeConSalto("Se cambio correctamente el color de la ficha ubicada en " + 
         casilleroFichaACambiarColor.toString() + "!");      
         return true;
     }
@@ -116,7 +116,7 @@ public class JugadaCambiarColorFicha extends Jugada {
     public void deshacer(Tateti tateti) throws NullPointerException{
         ValidacionesUtiles.validarNoNull(tateti, "tateti");
         if (getJugadoresAfectados().estaVacia() || getCasillerosAfectados().estaVacia()) {
-            Consola.imprimirMensaje("No hay información suficiente para deshacer la jugada.");
+            Consola.imprimirMensajeConSalto("No hay información suficiente para deshacer la jugada.");
             return;
         }
         
@@ -141,7 +141,7 @@ public class JugadaCambiarColorFicha extends Jugada {
                 tateti.getTablero().actualizarRelacionDatoColor(fichaAReponer, jugadorAfectado.getColor());
                 jugadorAfectado.agregarFicha(fichaAReponer);
                 
-                Consola.imprimirMensaje("La ficha ubicada en " + 
+                Consola.imprimirMensajeConSalto("La ficha ubicada en " + 
                 casillero.toString() + "volvio a su color anterior!");              
             }
             

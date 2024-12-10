@@ -56,7 +56,7 @@ public class JugadaTeletransportarFicha extends Jugada{
                  true);
 
             } catch (IllegalArgumentException e) {
-                Consola.imprimirMensaje("No tenes fichas en el tablero o todas estan bloqueadas!");
+                Consola.imprimirMensajeConSalto("No tenes fichas en el tablero o todas estan bloqueadas!");
                 return false;
             }
             if(casilleroOrigen == null)
@@ -81,7 +81,7 @@ public class JugadaTeletransportarFicha extends Jugada{
         setJugador(jugadorActual);
         getCasillerosAfectados().agregar(casilleroDestino);
         getCasillerosAfectados().agregar(casilleroOrigen);
-        Consola.imprimirMensaje("Se teletransporto correctamente la ficha ubicada en " + 
+        Consola.imprimirMensajeConSalto("Se teletransporto correctamente la ficha ubicada en " + 
                                 casilleroOrigen.toString() + " a " +
                                 casilleroDestino.toString() + "!");                      
         return true;
@@ -109,7 +109,7 @@ public class JugadaTeletransportarFicha extends Jugada{
         casilleroDestino.vaciar();
         tateti.getTablero().actualizarRelacionDatoCasillero(casilleroOrigen.getDato(), casilleroOrigen);
 
-        Consola.imprimirMensaje("La ficha teletransportada a " + 
+        Consola.imprimirMensajeConSalto("La ficha teletransportada a " + 
                                 casilleroDestino.toString() + "volvio a ubicarse en " + 
                                 casilleroOrigen.toString() + "!");  
     }

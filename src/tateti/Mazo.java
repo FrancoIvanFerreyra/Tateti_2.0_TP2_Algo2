@@ -44,7 +44,7 @@ public class Mazo {
                     InstantiationException | NoSuchMethodException | 
                     NullPointerException | SecurityException | 
                     InvocationTargetException e) {
-                Consola.imprimirMensaje("No se pudo crear la carta para el mazo" + e.getMessage());
+                Consola.imprimirMensajeConSalto("No se pudo crear la carta para el mazo" + e.getMessage());
             }
         }
     }
@@ -142,6 +142,7 @@ public class Mazo {
             cartasUtilizadas.intercambiar(indiceMazo1, indiceMazo2);
         }
         cartasDisponibles.acolar(cartasUtilizadas);
+        cartasUtilizadas.vaciar();
 
 
     }
@@ -160,5 +161,13 @@ public class Mazo {
     public boolean estaCompleto()
     {
         return this.cartasDisponibles.contarElementos() == this.tamanio;
+    }
+
+    /**
+     * 
+     * @return devuelve el tamaño maximo del mazo (la cantidad total de cartas)
+     */
+    public int getTamanio(){
+        return this.tamanio;
     }
 }

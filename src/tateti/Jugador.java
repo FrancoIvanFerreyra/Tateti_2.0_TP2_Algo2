@@ -108,6 +108,16 @@ public class Jugador {
 		return false;
 	}
 
+	/**
+	 * 
+	 * @return devuelve verdadero si el jugador tiene al menos una carta en
+	 * su poder
+	 */
+	public boolean tieneCartas()
+	{
+		return this.cartas.contarElementos() > 0;
+	}
+
     /**
      * Agrega una ficha al jugador.
      * @param ficha no puede ser null.
